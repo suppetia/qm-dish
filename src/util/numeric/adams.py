@@ -1,20 +1,14 @@
 import numpy as np
-import sympy as sp
 
-from util.math.taylor import taylor_coefficients, sym_x
 from util.math.linear_algebra import matmul_pointwise
 from util.LUTs import AM_taylor_coeffs
 
 
 def adams_moulton_coefficients(order):
-    # taylor series coefficients of -d/log(1-d) as tuples containing (numerator, denominator)
-    # taylor_coeffs = np.array([(1,1), (-1, 2), (-1, 12), (-1, 24), (-19, 720), (-3, 160),
-    #                           (-863, 60_480), (-275, 24_192), (-33_953, 3_628_500), (-8_183, 1_036_800)],
-    #                          dtype=np.int64)
-    # if order > len(taylor_coeffs) - 1:
-    #     raise ValueError(f"Adams-Moulton not implemented for orders larger than {len(taylor_coeffs) - 1}")
-    
-    D = np.lcm.reduce(AM_taylor_coeffs[:order+1, 1])
+    # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
+    if order > len(AM_taylor_coeffs):
+        raise ValueError("order exceeded the stored taylor coefficients. Create a larger LUT to work with this order.")
+    D = np.lcm.reduce(AM_taylor_coeffs[:order+1, 1])  # calculate D as the least common multiple of the taylor coefficients denominators
     AM_coeffs = np.zeros(order+1, dtype=np.int64)
 
     AM_coeffs[0] = D  # k=0
@@ -65,35 +59,44 @@ def adams_schrodinger(k: int, direction: str, y_start: np.array, b: np.array, c:
     else:
         return y
 
+
 def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
     if direction.lower() not in ["in", "out"]:
         raise ValueError(f"integration direction must be 'in' or 'out'")
 
+    dim = G.shape[1]  # get the dimension of y from G as G is in \mathbb{R}^{dim \times dim}
+
     assert len(y_start.shape) == 2  # assure y_start is an 2-dim-array
     assert y_start.shape[0] == k  # with the length equals to the order k since the k + 1 order Adams-Moulton needs k start values
-    assert y_start.shape[1] == 2  # and with two entries (R, Q) in the second dimension
-    assert G.shape[1:] == (2,2)
+    assert y_start.shape[1] == dim
+    assert G.shape[1:] == (dim, dim)
 
     AM_coeffs, D = adams_moulton_coefficients(k)
 
     # the naming of the variables follows Johnson (Lectures 2006) chapter 2.3.1
-    y = np.empty((len(G), 2), dtype=np.float64)
+    y = np.empty((len(G), dim), dtype=np.float64)
     y[:k] = y_start
 
     for n in range(k, y.shape[0]):
-        M_inv = np.linalg.inv(np.identity(2) - h * AM_coeffs[k]/D * G[n])
+        M_inv = np.linalg.inv(np.identity(dim) - h * (AM_coeffs[k]/D) * G[n])
 
         f = matmul_pointwise(G[n-k:n], y[n-k:n])
-        y[n] = np.matmul(M_inv,
-                         (y[n-1] + h/D * np.sum(np.array([AM_coeffs[:-1], AM_coeffs[:-1]]).T * f,
-                                                axis=0
-                                                )
-                          )
-                         )
-    if direction.lower() == "in":
-        return y[::-1]
-    else:
-        return y
+        # f = np.empty((k, 2))
+        # for i in range(k):
+        #     f[i] = G[n-k+i] @ y[n-k+i]
+        # y[n] = np.matmul(M_inv,
+        #                  (y[n-1] + h/D * np.sum(np.array([AM_coeffs[:-1]]*dim).T * f,
+        #                                         axis=0
+        #                                         )
+        #                   )
+        #                  )
+        y_temp = np.sum([(AM_coeffs[i] * f[i])/D for i in range(k)], axis=0)
+        y[n] = M_inv @ (y[n-1] + h * y_temp)
+    # if direction.lower() == "in":
+    #     return y[::-1]
+    # else:
+    #     return y
+    return y
 
 
 
