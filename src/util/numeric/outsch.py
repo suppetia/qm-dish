@@ -78,10 +78,10 @@ def outsch(order, p0, q0, l, E, V, r, t):
     p = result[:k]
     q = result[k:]
 
-    P = r[:k]**(l+1)*p
+    R = r[:k]**(l+1)*p
     Q = r[:k]**(l+1)*(q+(l+1)/r[:k]*p)
 
-    return P, Q
+    return R, Q
 
 
 
@@ -117,11 +117,11 @@ if __name__ == "__main__":
     E = energy(n, Z)
     V = - Z*mu/r
 
-    P, Q = outsch(order, p0=1, q0=-Z*mu/(l+1), l=l, E=E, V=V, r=r, t=t)
+    R, Q = outsch(order, p0=1, q0=-Z*mu/(l+1), l=l, E=E, V=V, r=r, t=t)
 
-    P_ = radial_function(n, l, r, Z, np.inf)
+    R_ = radial_function(n, l, r, Z, np.inf)
 
-    print(P)
-    print(P_[:order])
+    print(R)
+    print(R_[:order])
 
 

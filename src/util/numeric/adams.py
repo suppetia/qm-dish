@@ -106,7 +106,7 @@ if __name__ == "__main__":
     t = np.arange(N)/h + 1
     r = r0*(np.exp(t)-1)
 
-    k = 10
+    k = 13
 
     b = np.append(np.diff(r)/np.diff(t), [np.nan])
     c = -2 * b * (1-1/r-1/(2*r**2))
@@ -126,7 +126,9 @@ if __name__ == "__main__":
 
     import timeit
     # print(timeit.timeit(lambda: adams_schrodinger(k, "out", y_start_out, b, c, h), number=10_000))
-    print(timeit.timeit(lambda: adams(k, "out", y_start, G, h), number=1_000))
+    # print(timeit.timeit(lambda: adams(k, "out", y_start, G, h), number=1_000))
+    for k_ in range(1, k+1):
+        print(f"k = {k_}:", timeit.timeit(lambda: adams(k_, "out", y_start[:k_], G, h), number=1_000))
 
 
 
