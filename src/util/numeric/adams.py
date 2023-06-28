@@ -25,7 +25,7 @@ def adams_schrodinger(k: int, direction: str, y_start: np.array, b: np.array, c:
     if direction.lower() not in ["in", "out"]:
         raise ValueError(f"integration direction must be 'in' or 'out'")
 
-    assert len(y_start.shape) == 2  # assure y_start is an 2-dim-array
+    assert len(y_start.shape) == 2  # assure y_start_out is an 2-dim-array
     assert y_start.shape[0] == k  # with the length equals to te order k since the k + 1 order Adams-Moulton needs k start values
     assert y_start.shape[1] == 2  # and with two entries (R, Q) in the second dimension
     assert b.shape == c.shape  # assure b and c got the same length
@@ -64,39 +64,33 @@ def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
     if direction.lower() not in ["in", "out"]:
         raise ValueError(f"integration direction must be 'in' or 'out'")
 
-    dim = G.shape[1]  # get the dimension of y from G as G is in \mathbb{R}^{dim \times dim}
+    dim = G.shape[1]  # get the dimension of y from G as each element in G is in \mathbb{R}^{dim \times dim}
 
-    assert len(y_start.shape) == 2  # assure y_start is an 2-dim-array
+    assert len(y_start.shape) == 2  # assure y_start_out is an 2-dim-array
     assert y_start.shape[0] == k  # with the length equals to the order k since the k + 1 order Adams-Moulton needs k start values
     assert y_start.shape[1] == dim
     assert G.shape[1:] == (dim, dim)
 
     AM_coeffs, D = adams_moulton_coefficients(k)
 
+    if direction.lower() == "in":
+        G = G[::-1]
+
     # the naming of the variables follows Johnson (Lectures 2006) chapter 2.3.1
     y = np.empty((len(G), dim), dtype=np.float64)
-    y[:k] = y_start
+    y[:k] = y_start if direction.lower() == "out" else y_start[::-1]
 
+    f = np.empty_like(y)  # f = G*y
+    f[:k] = matmul_pointwise(G[:k], y[:k])
+    a = np.array([AM_coeffs[:-1]]*dim).T  # coefficient matrix used to multiply elementwise with f, generate here for increased perfomance
     for n in range(k, y.shape[0]):
         M_inv = np.linalg.inv(np.identity(dim) - h * (AM_coeffs[k]/D) * G[n])
-
-        f = matmul_pointwise(G[n-k:n], y[n-k:n])
-        # f = np.empty((k, 2))
-        # for i in range(k):
-        #     f[i] = G[n-k+i] @ y[n-k+i]
-        # y[n] = np.matmul(M_inv,
-        #                  (y[n-1] + h/D * np.sum(np.array([AM_coeffs[:-1]]*dim).T * f,
-        #                                         axis=0
-        #                                         )
-        #                   )
-        #                  )
-        y_temp = np.sum([(AM_coeffs[i] * f[i])/D for i in range(k)], axis=0)
-        y[n] = M_inv @ (y[n-1] + h * y_temp)
-    # if direction.lower() == "in":
-    #     return y[::-1]
-    # else:
-    #     return y
-    return y
+        y[n] = M_inv @ (y[n-1] + h/D * np.sum(a * f[n-k:n], axis=0))
+        f[n] = G[n] @ y[n]
+    if direction.lower() == "in":
+        return y[::-1]
+    else:
+        return y
 
 
 
@@ -106,9 +100,6 @@ def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
 
 
 if __name__ == "__main__":
-    # for k in range(1,9):
-    #     print(adams_moulton_coefficients(k))
-
     N = 100
     h = 1  # 0.02
     r0 = 1  # 0.0005
@@ -133,12 +124,9 @@ if __name__ == "__main__":
     print(y2)
     print(np.allclose(y1[:-1], y2[:-1]))
 
-    # print(timeit.timeit(lambda: adams_schrodinger(k, "out", y_start, b, c, h), number=10_000))
-    #
-    # G = np.zeros((len(b), 2, 2))
-    # G[:, 0, 1] = b
-    # G[:, 1, 0] = c
-    # print(timeit.timeit(lambda: adams(k, "out", y_start, G, h), number=10_000))
+    import timeit
+    # print(timeit.timeit(lambda: adams_schrodinger(k, "out", y_start_out, b, c, h), number=10_000))
+    print(timeit.timeit(lambda: adams(k, "out", y_start, G, h), number=1_000))
 
 
 
