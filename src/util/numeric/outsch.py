@@ -3,6 +3,7 @@ import numpy as np
 from util.math.taylor import sym_x, taylor_coefficients
 from util.LUTs.outsch import taylor_coeffs
 
+coefficients_storage = {}  # if differentiation coefficients have been computed once, store them in a dict
 
 def differentiation_coefficients(order):
     # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
@@ -26,6 +27,9 @@ def differentiation_coefficients(order):
     return m
 
 def differentiation_coefficients_efficient(order):
+    if order in coefficients_storage:  # if the coefficients have been computed once, load the values
+        return coefficients_storage[order]
+
     # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
     if order > len(taylor_coeffs):
         raise ValueError("order exceeded the stored taylor coefficients. Create a larger LUT to work with this order.")
@@ -48,12 +52,13 @@ def differentiation_coefficients_efficient(order):
             continue
         m[j] = - m[j_, ::-1]  # use symmetry
 
+    coefficients_storage[order] = m
     return m
 
 
 def outsch(order, p0, q0, l, E, V, r, t):
     k = order
-    m = differentiation_coefficients(k)
+    m = differentiation_coefficients_efficient(k)
 
     b = (np.diff(r)/np.diff(t))[:k]
     c = -2 * b * (E-V[:k])
