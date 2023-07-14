@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.util.numeric import adams, insch, outsch
-from src.util.math import count_nodes
-from src.schrodinger.coulomb.analytical import energy
+from util.numeric import adams, insch, outsch
+from util.math import count_nodes
+from schrodinger.coulomb.analytical import energy
 
 import matplotlib.pyplot as plt
 from typing import Union
@@ -24,9 +24,11 @@ def master(n, l, Z, M, V, r, t, charge=0,
     if E_guess == "auto":
         E_guess = energy(n, Z, M)
 
-
+    # calculate/prepare outside the loop for speed improvements
     b = np.diff(r, append=r[-1]) / np.diff(t, append=t[-1]+(t[-1]-t[-2]))
     c = lambda E: -2 * b * (E - V - l * (l+1) / (2 * r ** 2))
+    G = np.zeros((len(b), 2, 2))
+    G[:, 0, 1] = b
 
     n_r = n-l-1  # number of radial nodes
 
@@ -49,11 +51,7 @@ def master(n, l, Z, M, V, r, t, charge=0,
                               ).T
 
 
-        # print(a_c)
-        G = np.zeros((len(b), 2, 2))
-        G[:, 0, 1] = b
-        G[:, 1, 0] = c(E_guess)
-        # for inward integration the sign of b and therefore G changes!
+        G[:, 1, 0] = c(E_guess)  # for inward integration the sign of b and therefore G changes!
 
         y_out = adams.adams(order_adams, "out", y_start_out, G[:a_c+1], h)
         y_in = adams.adams(order_adams, "in", y_start_in, -G[a_c:], h)
@@ -102,7 +100,7 @@ def master(n, l, Z, M, V, r, t, charge=0,
             else:
                 E_guess_new = E_guess * 1.2
         else:
-            # check if the first derivative is continues
+            # check if the first derivative is continuous
             # if this is fulfilled, we found the eigenfunction and therefore the eigenenergy
             print(y_out[-1, 1] - y_in[0, 1])
             if np.isclose(y_out[-1, 1], y_in[0, 1], atol=1e-5):
@@ -129,22 +127,25 @@ if __name__ == "__main__":
     M = np.inf
     mu = 1 / (1 + 1 / M)
 
-    N = 550
+    N = 570
     h = 0.025
     r0 = 0.0005  # 0.0005
     t = (np.arange(N) + 1) * h
     r = r0 * (np.exp(t) - 1)
 
-    n, l = 10, 3
+    n, l = 15,10#10, 3
 
     V = - Z * 1/(1+1/M)/r
 
+    import time
+    t_start = time.time()
     R, E, a_c = master(n, l, Z, M, V, r, t,
                        order_adams = 9,
                        order_insch = 5,
                        E_guess = "auto",
                        max_number_of_iterations = 1000
                        )
+    print(f"finding eigenenergy and -function took {time.time()-t_start:.3f}s")
 
     import matplotlib.pyplot as plt
     from src.schrodinger.coulomb.analytical import radial_function, energy
