@@ -1,10 +1,13 @@
 import numpy as np
 import scipy as sc
-from numba import njit, jit
 
 from util.math.linear_algebra import matmul_pointwise
 from util.LUTs import AM_taylor_coeffs
-from util.numeric.adams_f import adams as adams_f_subroutine
+try:
+    from util.numeric.adams_f import adams as adams_f_subroutine
+    _NO_FORTRAN = False
+except ModuleNotFoundError:
+    _NO_FORTRAN = True
 
 
 def adams_moulton_coefficients(order) -> np.ndarray:
@@ -103,31 +106,32 @@ def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
     else:
         return y
 
-def adams_f(k: int, direction: str, y_start: np.array, G: np.array, h: float):
-    if direction.lower() not in ["in", "out"]:
-        raise ValueError(f"integration direction must be 'in' or 'out'")
+if not _NO_FORTRAN:
+    def adams_f(k: int, direction: str, y_start: np.array, G: np.array, h: float):
+        if direction.lower() not in ["in", "out"]:
+            raise ValueError(f"integration direction must be 'in' or 'out'")
 
-    dim = G.shape[1]  # get the dimension of y from G as each element in G is in \mathbb{R}^{dim \times dim}
+        dim = G.shape[1]  # get the dimension of y from G as each element in G is in \mathbb{R}^{dim \times dim}
 
-    assert len(y_start.shape) == 2  # assure y_start_out is an 2-dim-array
-    assert y_start.shape[0] == k  # with the length equals to the order k since the k + 1 order Adams-Moulton needs k start values
-    assert y_start.shape[1] == dim
-    assert G.shape[1:] == (dim, dim)
+        assert len(y_start.shape) == 2  # assure y_start_out is an 2-dim-array
+        assert y_start.shape[0] == k  # with the length equals to the order k since the k + 1 order Adams-Moulton needs k start values
+        assert y_start.shape[1] == dim
+        assert G.shape[1:] == (dim, dim)
 
-    AM_coeffs = np.asfortranarray(adams_moulton_coefficients(k), dtype=np.int64)
+        AM_coeffs = np.asfortranarray(adams_moulton_coefficients(k), dtype=np.int64)
 
-    if direction.lower() == "in":
-        G = G[::-1]
-    G = np.asfortranarray(G, dtype=np.float64)
+        if direction.lower() == "in":
+            G = G[::-1]
+        G = np.asfortranarray(G, dtype=np.float64)
 
-    # the naming of the variables follows Johnson (Lectures 2006) chapter 2.3.1
-    y = np.empty((len(G), dim), dtype=np.float64, order="F")
-    y[:k] = y_start if direction.lower() == "out" else y_start[::-1]
-    adams_f_subroutine(y, G, AM_coeffs, h, k, G.shape[0], dim)
-    if direction.lower() == "in":
-        return y[::-1]
-    else:
-        return y
+        # the naming of the variables follows Johnson (Lectures 2006) chapter 2.3.1
+        y = np.empty((len(G), dim), dtype=np.float64, order="F")
+        y[:k] = y_start if direction.lower() == "out" else y_start[::-1]
+        adams_f_subroutine(y, G, AM_coeffs, h, k, G.shape[0], dim)
+        if direction.lower() == "in":
+            return y[::-1]
+        else:
+            return y
 
 
 

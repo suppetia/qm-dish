@@ -148,7 +148,7 @@ if __name__ == "__main__":
     print(f"finding eigenenergy and -function took {time.time()-t_start:.3f}s")
 
     import matplotlib.pyplot as plt
-    from src.schrodinger.coulomb.analytical import radial_function, energy
+    from schrodinger.coulomb.analytical import radial_function, energy
     R_func = radial_function(n, l, r, Z, M)
     E_analytical = energy(n, Z, M)
     print(f"analytical value of eigenenergy: {E_analytical}")

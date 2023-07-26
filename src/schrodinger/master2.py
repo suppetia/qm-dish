@@ -1,6 +1,13 @@
 import numpy as np
 
-from util.numeric import adams, insch, outsch
+from util.numeric import insch, outsch
+# handle the case if no compiled Fortran module is present
+from util.numeric.adams import _NO_FORTRAN
+if _NO_FORTRAN:
+    from util.numeric.adams import adams
+else:
+    from util.numeric.adams import adams_f as adams
+
 from util.math import count_nodes
 from schrodinger.coulomb.analytical import energy
 
@@ -71,9 +78,10 @@ def master(n, l, Z, M, V, r, t, charge=0,
             G[:, 2*i+1, 2*i] = c(E_)  # for inward integration the sign of b and therefore G changes!
 
         # compute adams outside the loop for speed improvements
-        y_out = adams.adams_f(order_adams, "out", y_start_out, G[:np.max(a_cs)+1], h)
-        y_in = adams.adams_f(order_adams, "in", y_start_in, -G[np.min(a_cs):], h)
-        y_in[np.isclose(y_in, 0, atol=1e-10)] = 0
+        y_out = adams(order_adams, "out", y_start_out, G[:np.max(a_cs)+1], h)
+        y_in = adams(order_adams, "in", y_start_in, -G[np.min(a_cs)-1:], h)
+        # y_in[np.isclose(y_in, 0, atol=1e-10)] = 0
+
 
         y_in_scaling = [[y_out[a_cs[i], 2*i]/y_in[-(len(r)-a_cs[i]), 2*i]]*2 for i in range(num_parallel_guesses)]
         y_in_scaling = np.ravel(y_in_scaling)
@@ -83,7 +91,6 @@ def master(n, l, Z, M, V, r, t, charge=0,
             y[i] = np.append(y_out[:a_cs[i]+1, 2*i:2*(i+1)], y_in[-(len(r)-a_cs[i])+1:, 2*i:2*(i+1)], axis=0)
 
             num_nodes[i] = count_nodes(y[i, :, 0])
-            # print(num_nodes[i])
 
             if num_nodes[i] < n_r:
                 E_l = max(E_l, energies[i])  # keep track of the lower bound of energy (greatest energy with too few nodes)
@@ -93,8 +100,6 @@ def master(n, l, Z, M, V, r, t, charge=0,
 
             else:
                 energies_with_correct_num_nodes.append(i)
-                # discontinuities.append(y_out[-1, 1] - y_in[0, 1])
-                # a_cs.append(a_c)
 
         if energies_with_correct_num_nodes:
             min_discontinuity = np.min(np.abs(discontinuities[energies_with_correct_num_nodes]))
@@ -106,7 +111,7 @@ def master(n, l, Z, M, V, r, t, charge=0,
                 break
 
 
-            E_guess_new = E_best + discontinuities[idx_best]*y[idx_best, a_cs[idx_best], 0] / np.trapz(y[idx_best, :, 0]**2 * b)
+            E_guess_new = E_best + discontinuities[idx_best]*(y[idx_best, a_cs[idx_best], 0] / (2 * np.trapz(y[idx_best, :, 0]**2, x=r)))
             # if np.isclose(E_guess_new,E_best, atol=1e-8, rtol=1e-10):
             #     fig1, ax = plt.subplots(2)
             #     for ii in range(num_parallel_guesses):
@@ -119,9 +124,6 @@ def master(n, l, Z, M, V, r, t, charge=0,
                 E_guess_new = E_l * 0.9
             elif num_nodes[0] > n_r:
                 E_guess_new = E_u * 1.1
-
-        # if it >= 47:
-        #     print("hi")
 
         if E_guess_new < E_l:
             E_guess_new = (E_best+E_l)/2
@@ -142,32 +144,34 @@ def master(n, l, Z, M, V, r, t, charge=0,
 
 
 if __name__ == "__main__":
-    Z = 1
+    from util.misc import find_suitable_number_of_integration_points
+    Z = 2
     M = np.inf
     mu = 1 / (1 + 1 / M)
 
-    N = 570
-    h = 0.025
+    n, l = 4,1
+
+    #N = 400
+    h = 0.02
     r0 = 0.0005  # 0.0005
+    N = find_suitable_number_of_integration_points(Z, M, n, l, r0, h)
     t = (np.arange(N) + 1) * h
     r = r0 * (np.exp(t) - 1)
-
-    n, l = 14,4
 
     V = - Z * 1/(1+1/M)/r
 
     import time
-    t_start = time.time()
+    t_start = time.perf_counter()
     R, E, a_c = master(n, l, Z, M, V, r, t,
                        order_adams = 9,
                        order_insch = 5,
                        E_guess = -.1,#"auto",
                        max_number_of_iterations = 1000
                        )
-    print(f"finding eigenenergy and -function took {time.time()-t_start:.3f}s")
+    print(f"finding eigenenergy and -function took {time.perf_counter()-t_start:.3f}s")
 
     import matplotlib.pyplot as plt
-    from src.schrodinger.coulomb.analytical import radial_function, energy
+    from schrodinger.coulomb.analytical import radial_function, energy
     R_func = radial_function(n, l, r, Z, M)
     E_analytical = energy(n, Z, M)
     print(f"analytical value of eigenenergy: {E_analytical}")
@@ -184,9 +188,4 @@ if __name__ == "__main__":
     ax[1].plot(r[:a_c], R[:a_c, 1], ".", label="numerical out")
     ax[0].plot(r[a_c:], R[a_c:, 0], ".", label="numerical in")
     ax[1].plot(r[a_c:], R[a_c:, 1], ".", label="numerical in")
-
-    ax[0].legend()
-    # ax[0].set_xscale("log")
-    ax[1].legend()
-    # ax[1].set_xscale("log")
-    plt.show()
+    # ax[0].plot(r[1:a_c], R[:a_c-1, 0], ".", label="numerical out shifted
