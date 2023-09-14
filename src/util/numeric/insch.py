@@ -23,8 +23,8 @@ def insch(order, r, E, l, mu, effective_charge):
         return bks
 
     a = ak_list(order)
-    b = bk_list(order)
-    # b = [-lambda_] + [((sigma+k_)*(sigma-k_+1)-l*(l+1))/(2*k_)*a[k_-1] for k_ in range(1, order+1)]
+    #b = bk_list(order)
+    b = [-lambda_] + [((sigma+k_)*(sigma-k_+1)-l*(l+1))/(2*k_)*a[k_-1] for k_ in range(1, order+1)]
 
     R = np.power(r, sigma)*np.exp(-lambda_*r) * np.sum(np.array([a[k]/r**k for k in range(order+1)]), axis=0)
     Q = np.power(r, sigma)*np.exp(-lambda_*r) * np.sum(np.array([b[k]/r**k for k in range(order+1)]), axis=0)

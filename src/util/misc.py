@@ -20,7 +20,7 @@ def find_suitable_number_of_integration_points(Z, M, n, l,
     R = radial_function(n, l, r, Z, M)
     last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-5)).reshape(-1))]
 
-    N_max = np.log(last_significant_r/r_0 + 1)/h - 1
+    N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
 
-    return N_max + 10  # + 10 is just an arbitrary number to hold extra space
+    return int(N_max * 1.05)  # + 10 is just an arbitrary number to hold extra space
 

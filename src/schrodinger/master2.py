@@ -32,7 +32,8 @@ def master(n, l, Z, M, V, r, t, charge=0,
         E_guess = energy(n, Z, M)
 
     # calculate/prepare outside the loop for speed improvements
-    b = np.diff(r, append=r[-1]) / np.diff(t, append=t[-1] + (t[-1] - t[-2]))
+    # b = np.diff(r, append=r[-1]) / np.diff(t, append=t[-1] + (t[-1] - t[-2]))
+    b = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t)
     c = lambda E: -2 * b * (E - V - l * (l + 1) / (2 * r ** 2))
 
     n_r = n-l-1  # number of radial nodes
@@ -149,14 +150,18 @@ if __name__ == "__main__":
     M = np.inf
     mu = 1 / (1 + 1 / M)
 
-    n, l = 4,1
+    n, l = 4,1#4,1
+
 
     #N = 400
-    h = 0.02
-    r0 = 0.0005  # 0.0005
+    h = 0.0000005  #0.02
+    r0 = 0.1  # 0.0005
     N = find_suitable_number_of_integration_points(Z, M, n, l, r0, h)
-    t = (np.arange(N) + 1) * h
+    print(N)
+    # N = 1_000_000
+    t = np.arange(N) * h
     r = r0 * (np.exp(t) - 1)
+    r[np.isclose(r, 0, atol=1e-15)] = 1e-15
 
     V = - Z * 1/(1+1/M)/r
 
@@ -165,7 +170,7 @@ if __name__ == "__main__":
     R, E, a_c = master(n, l, Z, M, V, r, t,
                        order_adams = 9,
                        order_insch = 5,
-                       E_guess = -.1,#"auto",
+                       E_guess = "auto",
                        max_number_of_iterations = 1000
                        )
     print(f"finding eigenenergy and -function took {time.perf_counter()-t_start:.3f}s")

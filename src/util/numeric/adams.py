@@ -141,10 +141,10 @@ if not _NO_FORTRAN:
 
 
 if __name__ == "__main__":
-    N = 100
-    h = 1  # 0.02
+    N = 10000
+    h = 0.0001  # 0.02
     r0 = 1  # 0.0005
-    t = np.arange(N)/h + 1
+    t = (np.arange(N) + 1) * h
     r = r0*(np.exp(t)-1)
 
     k = 13
@@ -170,15 +170,10 @@ if __name__ == "__main__":
     print(f"ellapsed time (adams): {t_end-t_start}s")
 
     t_start = time.perf_counter()
-    y2 = adams2(k, "out", y_start, G, h, AM_coeffs)
-    t_end = time.perf_counter()
-    print(f"ellapsed time (adams2): {t_end-t_start}s")
-
-    t_start = time.perf_counter()
-    y3 = adams_f(k, "out", y_start, G, h)
+    y2 = adams_f(k, "out", y_start, G, h)
     t_end = time.perf_counter()
     print(f"ellapsed time (adams_f): {t_end-t_start}s")
-    print(np.allclose(y2, y3))
+    print(np.allclose(y[~np.isnan(y)], y2[~np.isnan(y2)]))
 
     # print(y1)
     # print(y2)
