@@ -8,10 +8,10 @@ import numpy as np
 # ------------------ (auxiliary) natural constants ------------------------------
 
 # speed of light
-c = 299_792_458  # in m s^-1
+c_0 = 299_792_458  # in m s^-1
 
 # vacuum permittivity
-epsilon_0 = 8.854_187_8128  # in F m^-1 = A s V^-1 m^-1)
+epsilon_0 = 8.854_187_812_8e-12  # in F m^-1 = A s V^-1 m^-1)
 
 # ------------------ coherent units ------------------------------
 
@@ -30,7 +30,10 @@ k_e = 1/(4 * np.pi * epsilon_0)  # in kg m^3 s^-4 A^-2
 # ------------------ derived units ------------------------------
 
 # Sommerfeld's finestructure constant
-alpha = e**2 * k_e / (hbar * c)
+alpha = e**2 * k_e / (hbar * c_0)
+
+# speed of light
+c = 1/alpha
 
 # Bohr radius / atomic unit of length
 a_0 = hbar**2 / (m_e * e**2 + k_e)

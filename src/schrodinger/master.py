@@ -1,6 +1,7 @@
 import numpy as np
 
-from util.numeric import insch, outsch
+from schrodinger import insch, outsch
+from schrodinger.coulomb.analytical import energy
 # handle the case if no compiled Fortran module is present
 from util.numeric.adams import _NO_FORTRAN
 if _NO_FORTRAN:
@@ -8,12 +9,8 @@ if _NO_FORTRAN:
 else:
     from util.numeric.adams import adams_f as adams
 from util.math import count_nodes
-from schrodinger.coulomb.analytical import energy
 
-import matplotlib.pyplot as plt
 from typing import Union
-
-from multiprocessing import Pool
 
 
 def outer_classical_turning_point(V, E, l, r) -> int:
@@ -54,10 +51,11 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
 
         a_c = outer_classical_turning_point(V, E_guess, l, r)
 
-        y_start_out = np.array(outsch.outsch(order=order_adams, p0=1, q0=-Z*mu/(l+1), l=l, E=E_guess, V=-Z*mu/r,
-                                             r=r[:a_c+1],
-                                             t=t[:a_c+1])
-                               ).T
+        y_start_out = np.array(
+            outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z * mu / r,
+                          r=r[:a_c+1],
+                          t=t[:a_c+1])
+            ).T
         y_start_in = np.array(insch.insch(order=order_insch, r=r[-order_adams:],
                                           mu=mu, l=l, E=E_guess, effective_charge=effective_charge)
                               ).T
@@ -85,7 +83,7 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
         y_in = adams(order_adams, "in", y_start_in, -G[a_c:], h)
         y_in[np.isclose(y_in, 0, atol=1e-15)] = 0
 
-        y_in *= y_out[-1, 0]/y_in[0, 0]  # make R=y[:,0] continues
+        y_in *= y_out[-1, 0]/y_in[0, 0]  # make R=y[:,0] continuous
         # y_out *= y_in[0, 0] / y_out[-1, 0]
 
         y = np.append(y_out, y_in[1:], axis=0)
@@ -151,16 +149,16 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
 
 
 if __name__ == "__main__":
-    from util.misc import find_suitable_number_of_integration_points
-    Z = 50
-    n, l = 4,1#10, 3
+    from util.misc import find_suitable_number_of_integration_points_schrodinger
+    Z = 1
+    n, l = 5,0#10, 3
     M = np.inf
     mu = 1 / (1 + 1 / M)
 
     # N = 570
     h = 0.0005#0005 #0.00001
     r0 = 0.0005
-    N = find_suitable_number_of_integration_points(Z, M, n, l, r0, h)
+    N = find_suitable_number_of_integration_points_schrodinger(Z, M, n, l, r0, h)
     print(N)
     t = np.arange(N) * h
     r = r0 * (np.exp(t) - 1)
@@ -202,4 +200,7 @@ if __name__ == "__main__":
     # ax[0].set_xscale("log")
     ax[1].legend()
     # ax[1].set_xscale("log")
+    fig1.suptitle(f"Z={Z}, M={M}, n={n}, l={l}, h={h}")
+    fig1.savefig("recent_calculation.png", dpi=300)
+
     plt.show()

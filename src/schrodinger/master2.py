@@ -1,6 +1,6 @@
 import numpy as np
 
-from util.numeric import insch, outsch
+from schrodinger import insch, outsch
 # handle the case if no compiled Fortran module is present
 from util.numeric.adams import _NO_FORTRAN
 if _NO_FORTRAN:
@@ -9,9 +9,7 @@ else:
     from util.numeric.adams import adams_f as adams
 
 from util.math import count_nodes
-from schrodinger.coulomb.analytical import energy
 
-import matplotlib.pyplot as plt
 from typing import Union
 
 
@@ -67,13 +65,14 @@ def master(n, l, Z, M, V, r, t, charge=0,
             a_cs[i] = outer_classical_turning_point(V, E_, l, r)
             # print(a_cs[i])
 
-            y_start_out[:, 2*i:2*(i+1)] = np.array(outsch.outsch(order=order_adams, p0=1, q0=-Z*mu/(l+1), l=l, E=E_, V=-Z*mu/r,
-                                                 r=r[:a_cs[i]+1],
-                                                 t=t[:a_cs[i]+1])
-                                   ).T
+            y_start_out[:, 2*i:2*(i+1)] = np.array(
+                outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_, V=-Z * mu / r,
+                              r=r[:a_cs[i]+1],
+                              t=t[:a_cs[i]+1])
+                ).T
             y_start_in[:, 2*i:2*(i+1)] = np.array(insch.insch(order=order_insch, r=r[-order_adams:],
-                                              mu=mu, l=l, E=E_, effective_charge=effective_charge)
-                                  ).T
+                                                              mu=mu, l=l, E=E_, effective_charge=effective_charge)
+                                                  ).T
 
             G[:, 2*i, 2*i+1] = b
             G[:, 2*i+1, 2*i] = c(E_)  # for inward integration the sign of b and therefore G changes!
@@ -145,7 +144,7 @@ def master(n, l, Z, M, V, r, t, charge=0,
 
 
 if __name__ == "__main__":
-    from util.misc import find_suitable_number_of_integration_points
+    from util.misc import find_suitable_number_of_integration_points_schrodinger
     Z = 2
     M = np.inf
     mu = 1 / (1 + 1 / M)
@@ -156,7 +155,7 @@ if __name__ == "__main__":
     #N = 400
     h = 0.0000005  #0.02
     r0 = 0.1  # 0.0005
-    N = find_suitable_number_of_integration_points(Z, M, n, l, r0, h)
+    N = find_suitable_number_of_integration_points_schrodinger(Z, M, n, l, r0, h)
     print(N)
     # N = 1_000_000
     t = np.arange(N) * h

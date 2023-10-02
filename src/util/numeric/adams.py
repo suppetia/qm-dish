@@ -8,6 +8,8 @@ try:
     _NO_FORTRAN = False
 except ModuleNotFoundError:
     _NO_FORTRAN = True
+    print("for improved speeds compile the Fortran-version of adams")
+print(_NO_FORTRAN)
 
 
 def adams_moulton_coefficients(order) -> np.ndarray:
