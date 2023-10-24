@@ -58,11 +58,13 @@ def master(n, l, j, Z, M, V, r, t, h,
     W_l = -np.inf  # lowest energy with n_r nodes
 
     it = 0
+    W_guess = E_guess - c ** 2
+
     while it < max_number_of_iterations:
         it += 1
 
-        W_guess = E_guess - c ** 2
-        # print(W_guess)
+        print(W_guess)
+        E_guess = W_guess + c ** 2
 
         a_c = outer_classical_turning_point(V, W_guess)
         # print(a_c)
@@ -76,6 +78,16 @@ def master(n, l, j, Z, M, V, r, t, h,
             indir(order=order_indir, r=r[-order_adams:], E=E_guess, kappa=kappa,
                   effective_charge=zeta)
         ).T
+        #
+        # offset = 0
+        # while np.allclose(y_start_in, 0, atol=1e-15):
+        #     offset += order_adams
+        #     print(r[-order_adams-offset:-offset])
+        #     y_start_in = np.array(
+        #         indir(order=order_indir, r=r[-order_adams-offset:-offset], E=E_guess, kappa=kappa,
+        #               effective_charge=zeta)
+        #     ).T
+        #     print(y_start_in)
 
         # for inward integration the sign of r_prime and therefore G changes!
         G[:, 0, 1] = b_mat(W_guess)
@@ -83,10 +95,12 @@ def master(n, l, j, Z, M, V, r, t, h,
 
         y_out = adams(order_adams, "out", y_start_out, G[:a_c + 1], h)
         y_in = adams(order_adams, "in", y_start_in, -G[a_c:], h)
-        y_in[np.isclose(y_in, 0, atol=1e-15)] = 0
+        # y_in[np.isclose(y_in, 0, atol=1e-15)] = 0
 
         # make P=y[:,0] continuous
         y_in *= y_out[-1, 0] / y_in[0, 0]
+        # print("y_in:", y_in[0,0])
+        # print(y_start_in[:,0])
 
         y = np.append(y_out, y_in[1:], axis=0)
 
@@ -106,14 +120,18 @@ def master(n, l, j, Z, M, V, r, t, h,
             if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-10):
                 break
 
-            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / np.trapz(y[:,0]**2 + y[:, 1]**2, x=r)
+            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / np.trapz(y[:, 0]**2 + y[:, 1]**2, x=r)
 
+            # # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
+            # print(W_guess-W_guess_new)
+            # if np.isclose(W_guess-W_guess_new, 0, atol=1e-15):
+            #     break
         if W_guess_new < W_l:
             W_guess_new = (W_guess+W_l)/2
         elif W_guess_new > W_u:
             W_guess_new = (E_guess+W_u)/2
 
-        E_guess = W_guess_new + c**2
+        W_guess = W_guess_new
     else:
         it = -1  # set it to -1 as a flag that the algorithm didn't converge
 
@@ -130,7 +148,8 @@ if __name__ == "__main__":
 
     Z = 1
     # n, l, j = 2, 0, 1/2
-    n, l, j = parse_atomic_term_symbol("2p1/2")
+    n, l, j = parse_atomic_term_symbol("2p3/2")  # the algorithm does currently fail for this state
+    n, l, j = parse_atomic_term_symbol("2s1/2")
     M = np.inf
 
     mu = 1 / (1 + 1 / M)
@@ -143,6 +162,7 @@ if __name__ == "__main__":
     print(f"number of integration points: {N}")
     t = np.arange(N) * h
     r = r0 * (np.exp(t) - 1)
+    print(r[-1])
     r[np.isclose(r, 0, atol=1e-15)] = 1e-15
 
 
@@ -155,7 +175,7 @@ if __name__ == "__main__":
                                       order_adams=11,
                                       order_indir=7,
                                       E_guess="auto",
-                                      max_number_of_iterations=50
+                                      max_number_of_iterations=20
                                       )
     print(f"finding eigenenergy and -function took {time.time() - t_start:.3f}s and {num_iteration} iterations")
 
@@ -180,6 +200,8 @@ if __name__ == "__main__":
     ax[1].plot(r, Q_func, label="analytical")
     ax[0].plot(r, P, label="numerical")
     ax[1].plot(r, Q, label="numerical")
+    ax[0].scatter([r[a_c]], [P[a_c]], c="k", marker="x", label="outer classical turning point")
+    ax[1].scatter([r[a_c]], [Q[a_c]], c="k", marker="x", label="outer classical turning point")
 
     # ax[0].plot(r[:a_c], P[:a_c], "-", label="numerical out")
     # ax[1].plot(r[:a_c], Q[:a_c], "-", label="numerical out")

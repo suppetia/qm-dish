@@ -62,7 +62,7 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, M: float = np.inf):
     N_nkappa = np.sqrt((Z*mu*gamma_f(2*gamma+1+n-k))/(2*factorial(n-k)*(N-kappa))) / (N*gamma_f(2*gamma+1))
 
     F1 = (N-kappa) * confluent_hypergeometric_f(k-n, 2*gamma+1, x)
-    F2 = -(n-k) * confluent_hypergeometric_f(k-n+1, 2*gamma+1, x)
+    F2 = 0 if k-n == 0 else (k-n) * confluent_hypergeometric_f(k-n+1, 2*gamma+1, x)
     P = N_nkappa * np.sqrt(1+E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 + F2)
     Q = N_nkappa * np.sqrt(1-E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 - F2)
     return np.stack((P, Q))

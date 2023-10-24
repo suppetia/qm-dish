@@ -40,7 +40,7 @@ def find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r_0, h):
     :param h: parameter for the construction of r
     :return: N_max
     """
-    r = np.logspace(-2, 5, num=100)
+    r = np.logspace(-4, 4, num=300)
     R = radial_f_dirac(n, kappa, r, Z, M)
     last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-5)).reshape(-1))]
 
