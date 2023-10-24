@@ -46,7 +46,30 @@ def find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r_0, h):
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
 
-    return int(N_max * 1.05)  # *1.05 is just an arbitrary number to hold extra space
+    return int(N_max * 1.00) + 10  # *1.005 is just an arbitrary number to hold extra space
+
+
+class QuantumNumberSet:
+
+    def __init__(self, n, l, j):
+        self._n = n
+        self._l = l
+        self._j = j
+
+    @property
+    def n(self):
+        return self._n
+
+    @property
+    def l(self):
+        return self._l
+
+    @property
+    def j(self):
+        return self._j
+
+    def __iter__(self):
+        yield from [self.n, self.l, self.j]
 
 
 def parse_atomic_term_symbol(symbol: str):
@@ -69,12 +92,12 @@ def parse_atomic_term_symbol(symbol: str):
         raise ValueError(f"invalid value for orbital momentum quantum number l: '{l}'. Valid range: 0-{n-1}")
     if not (np.isclose(j, l+1/2) or np.isclose(j, l-1/2)):
         raise ValueError(f"invalid value for total angular momentum number j: '{j}.\nValid values are {l-1/2} and {l+1/2}.")
-    return n, l, j
+    return QuantumNumberSet(n, l, j)
 
 
 if __name__ == "__main__":
 
-    symbol = "2p7/2"
+    symbol = "2p1/2"
     n, l, j = parse_atomic_term_symbol(symbol)
 
     print(f"symbol '{symbol}': n={n}, l={l}, j={j}")

@@ -32,8 +32,8 @@ def master(n, l, j, Z, M, V, r, t, h,
     gamma = np.sqrt(kappa**2-(alpha*Z*mu)**2)
 
     if E_guess == "auto":
-        E_guess = energy(n, kappa, Z, M) * 0.99995
-        # E_guess = energy_schrodinger(n, Z, M) + c**2
+        # E_guess = energy(n, kappa, Z, M) #* 0.99995
+        E_guess = energy_schrodinger(n, Z, M) + c**2
 
     r_prime = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t)
 
@@ -62,10 +62,10 @@ def master(n, l, j, Z, M, V, r, t, h,
         it += 1
 
         W_guess = E_guess - c ** 2
-        print(W_guess)
+        # print(W_guess)
 
         a_c = outer_classical_turning_point(V, W_guess)
-        print(a_c)
+        # print(a_c)
 
         y_start_out = np.array(
             outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z * mu / r,
@@ -117,12 +117,12 @@ def master(n, l, j, Z, M, V, r, t, h,
     else:
         it = -1  # set it to -1 as a flag that the algorithm didn't converge
 
-    N = 1/np.sqrt(np.trapz(y[:, 0]**2+y[:, 1], x=r))
+    N = 1/np.sqrt(np.trapz(y[:, 0]**2+y[:, 1]**2, x=r))
 
     y *= N
     P, Q = y.T
 
-    return (P, Q), E_guess, a_c, it
+    return (P, Q), W_guess, a_c, it
 
 
 if __name__ == "__main__":
@@ -130,17 +130,17 @@ if __name__ == "__main__":
 
     Z = 1
     # n, l, j = 2, 0, 1/2
-    n, l, j = parse_atomic_term_symbol("2s1/2")
+    n, l, j = parse_atomic_term_symbol("2p1/2")
     M = np.inf
 
     mu = 1 / (1 + 1 / M)
     kappa = -l - 1 if np.isclose(j, l+1/2) else l
 
     # N = 570
-    h = 0.0005
+    h = 0.005
     r0 = 0.0005
     N = find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r0, h)
-    print(N)
+    print(f"number of integration points: {N}")
     t = np.arange(N) * h
     r = r0 * (np.exp(t) - 1)
     r[np.isclose(r, 0, atol=1e-15)] = 1e-15
@@ -162,21 +162,29 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from dirac.coulomb.analytical import radial_function, energy
     P_func, Q_func = radial_function(n, kappa, r, Z, M)
-    E_analytical = energy(n, kappa, Z, M)
+    E_analytical = energy(n, kappa, Z, M) - c**2
     print(f"analytical value of eigenenergy: {E_analytical}")
     print(f"numerical value of eigenenergy: {E}")
 
-    print(f"absolute error: {E_analytical-E:.3e} a.u.")
-    print(f"relative error: {abs((E_analytical - E)/E):.3e}")
+    print(f"absolute error in eigenenergy: {E_analytical-E:.3e} a.u.")
+    print(f"relative error in eigenenergy: {abs((E_analytical - E)/E):.3e}")
+
+    print(f"absolute error in wave function: {np.sum(np.abs(P-P_func))}")
+    print(f"absolute error in wave function normalized by number of integration points: {np.sum(np.abs(P-P_func))/N}")
 
     fig1, ax = plt.subplots(2)
+    # fig1.tight_layout()
+    ax[0].set_title("large component")
+    ax[1].set_title("small component")
     ax[0].plot(r, P_func, label="analytical")
     ax[1].plot(r, Q_func, label="analytical")
+    ax[0].plot(r, P, label="numerical")
+    ax[1].plot(r, Q, label="numerical")
 
-    ax[0].plot(r[:a_c], P[:a_c], "-", label="numerical out")
-    ax[1].plot(r[:a_c], Q[:a_c], "-", label="numerical out")
-    ax[0].plot(r[a_c:], P[a_c:], "-", label="numerical in")
-    ax[1].plot(r[a_c:], Q[a_c:], "-", label="numerical in")
+    # ax[0].plot(r[:a_c], P[:a_c], "-", label="numerical out")
+    # ax[1].plot(r[:a_c], Q[:a_c], "-", label="numerical out")
+    # ax[0].plot(r[a_c:], P[a_c:], "-", label="numerical in")
+    # ax[1].plot(r[a_c:], Q[a_c:], "-", label="numerical in")
 
     ax[0].legend()
     # ax[0].set_xscale("log")
