@@ -73,7 +73,7 @@ class QuantumNumberSet:
 
 
 def parse_atomic_term_symbol(symbol: str):
-    l_values = list("spdfghilmnopqrtuvwxyz")
+    l_values = list("spdfghijklmno")
 
     pattern = re.compile(rf"(?P<n>[0-9]+)(?P<l>[{''.join(l_values)}])(?P<j>[0-9]+(\/2)?)", re.IGNORECASE)
 
