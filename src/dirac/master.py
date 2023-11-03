@@ -144,8 +144,8 @@ if __name__ == "__main__":
     from util.misc import find_suitable_number_of_integration_points_dirac, parse_atomic_term_symbol
 
     Z = 2
-    n, l, j = parse_atomic_term_symbol("25k15/2")
-    n, l, j = parse_atomic_term_symbol("2p1/2")
+    # n, l, j = parse_atomic_term_symbol("25k17/2")
+    n, l, j = parse_atomic_term_symbol("2p3/2")
     M = np.inf
 
     mu = 1 / (1 + 1 / M)
@@ -161,8 +161,14 @@ if __name__ == "__main__":
     print(r[-1])
     r[np.isclose(r, 0, atol=1e-15)] = 1e-15
 
+    from util.potential import fermi
 
-    V = - Z * mu/r
+    core = 1
+    a = 2.5e-1
+
+    V = - fermi.potential(Z, core, a, r)
+
+    # V = - Z * mu/r
 
     import time
 
