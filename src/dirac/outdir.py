@@ -2,14 +2,17 @@ import numpy as np
 
 from schrodinger.outsch import differentiation_coefficients_efficient
 from util.atomic_units import alpha
+from util.misc import DistanceGrid
 
 
-def outdir(order, Z, kappa, W, V, r, t):
+def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
     k = order
     m = differentiation_coefficients_efficient(k)
     gamma = np.sqrt(kappa**2 - (alpha*Z)**2)
 
-    r_prime = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t[:k])
+    r = r_grid.r
+    r_prime = r_grid.rp[:k]
+
     r_ = r[:k]
 
     a = -(gamma+kappa)*r_prime/r_

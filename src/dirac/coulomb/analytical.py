@@ -21,6 +21,17 @@ def energy(n: int, kappa: int, Z: int, M: float = np.inf):
     gamma = np.sqrt(kappa**2-(alpha*Z)**2)
     return c**2/np.sqrt(1+(alpha*Z*mu)**2/(gamma+n-abs(kappa))**2)
 
+def reduced_energy(n: int, kappa: int, Z: int, M: float = np.inf):
+    r"""
+    Calculate the energy of state with quantum number n for hydrogen-like atom with charge Z and nuclear mass M.
+    The electron rest-energy is subtracted
+    :param n: principal quantum number
+    :param kappa: ? quantum number
+    :param Z: nuclear charge in e
+    :param M: nuclear mass in m_e
+    :return:
+    """
+    return energy(n,kappa,Z,M) - c**2
 
 def radial_function(n: int, kappa: int, r: np.array, Z: int, M: float = np.inf):
     """

@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.integrate import simpson
 
 from typing import Union
 
@@ -11,19 +12,23 @@ from util.numeric.adams import adams
 
 from util.atomic_units import c, alpha
 from util.math import count_nodes
+from util.wave_function import RadialDiracWaveFunction
+from util.misc import DistanceGrid
 
 
 def outer_classical_turning_point(V, W) -> int:
     return int(np.argmin(np.abs(W-V)))
 
 
-def master(n, l, j, Z, M, V, r, t, h,
+def master(n, l, j, Z, M, V,
+           r: Union[DistanceGrid, np.array],
+           t: np.array = None,
+           h: float = None,
            order_adams: int = 7,
            order_indir: int = 7,
            E_guess: Union[float, str] = "auto",
            max_number_of_iterations: int = 50):
 
-    num_integration_points = len(t)
     mu = 1/(1+1/M)
 
     kappa = -l - 1 if np.isclose(j, l+1/2) else l
@@ -32,17 +37,28 @@ def master(n, l, j, Z, M, V, r, t, h,
     gamma = np.sqrt(kappa**2-(alpha*Z*mu)**2)
 
     if E_guess == "auto":
-        # E_guess = energy(n, kappa, Z, M) #* 0.99995
-        E_guess = energy_schrodinger(n, Z, M) + c**2
+        E_guess = energy(n, kappa, Z, M)
+        # E_guess = energy_schrodinger(n, Z, M) + c**2
 
-    r_prime = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t)
+    if isinstance(r, DistanceGrid):
+        r_grid = r
+    else:
+        # TODO: refactor properly
+        if t is None or h is None:
+            raise ValueError("values for 'r', 't' and 'h' must be provided if r isn't a DistanceGrid")
+        # create a new Grid as a workaround
+        r_grid = DistanceGrid(h, r[-1]/(np.exp(t[-1])-1), len(r))
+
+    r = r_grid.r
+    r_prime = r_grid.rp
+    h = r_grid.h
 
     a_mat = -r_prime * (kappa / r)
     b_mat = lambda W: -alpha * r_prime * (W - V + 2 * c**2)
     c_mat = lambda W: alpha * r_prime * (W - V)
     d_mat = -a_mat
 
-    G = np.zeros((num_integration_points, 2, 2))
+    G = np.zeros((len(r), 2, 2))
     G[:, 0, 0] = a_mat
     G[:, 1, 1] = d_mat
 
@@ -63,7 +79,7 @@ def master(n, l, j, Z, M, V, r, t, h,
     while it < max_number_of_iterations:
         it += 1
 
-        print(W_guess)
+        # print(W_guess)
         E_guess = W_guess + c ** 2
 
         a_c = outer_classical_turning_point(V, W_guess)
@@ -71,7 +87,7 @@ def master(n, l, j, Z, M, V, r, t, h,
 
         y_start_out = np.array(
             outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z * mu / r,
-                   r=r[:a_c + 1], t=t[:a_c + 1])
+                   r_grid=r_grid)
         ).T
 
         y_start_in = np.array(
@@ -90,19 +106,14 @@ def master(n, l, j, Z, M, V, r, t, h,
 
         y_out = adams(order_adams, "out", y_start_out, G[:a_c + 1], h)
         y_in = adams(order_adams, "in", y_start_in, -G[a_c:], h)
-        # y_in[np.isclose(y_in, 0, atol=1e-15)] = 0
 
         # make P=y[:,0] continuous
         y_in *= y_out[-1, 0] / y_in[0, 0]
-        # if not np.isclose(y_in[0,0], 0, atol=1e-20):
-        #     y_in *= y_out[-1, 0] / y_in[0, 0]
-        # print("y_in:", y_in[0,0])
-        # print(y_start_in[:,0])
 
         y = np.append(y_out, y_in[1:], axis=0)
 
         num_nodes = count_nodes(y[:, 0])
-        print("number of nodes:", num_nodes)
+        # print("number of nodes:", num_nodes)
 
         if num_nodes < n_r:
             W_l = max(W_l, W_guess)  # keep track of the lower bound of energy (greatest energy with too few nodes)
@@ -113,14 +124,13 @@ def master(n, l, j, Z, M, V, r, t, h,
         else:
             # check if Q is continuous
             # if this is fulfilled, we found the eigenfunction and therefore the eigenenergy
-            # print(y_out[-1, 1] - y_in[0, 1])
-            if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-10):
+            if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-15):
                 break
 
-            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / np.trapz(y[:, 0]**2 + y[:, 1]**2, x=r)
+            # W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / np.trapz(y[:, 0]**2 + y[:, 1]**2, x=r)
+            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h)
 
-            # # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
-            # print(W_guess-W_guess_new)
+            # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
             if np.isclose(W_guess-W_guess_new, 0, atol=1e-15):
                 break
         if W_guess_new < W_l:
@@ -128,58 +138,66 @@ def master(n, l, j, Z, M, V, r, t, h,
         elif W_guess_new > W_u:
             W_guess_new = (W_guess+W_u)/2
 
+        energy_convergence = abs(W_guess - W_guess_new)
         W_guess = W_guess_new
     else:
         it = -1  # set it to -1 as a flag that the algorithm didn't converge
 
-    N = 1/np.sqrt(np.trapz(y[:, 0]**2+y[:, 1]**2, x=r))
+    # N = 1/np.sqrt(np.trapz(y[:, 0]**2+y[:, 1]**2, x=r))
+    N = 1/np.sqrt(simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h))
 
     y *= N
-    P, Q = y.T
 
-    return (P, Q), W_guess, a_c, it
+    return RadialDiracWaveFunction(r, y), W_guess, energy_convergence, a_c, it
 
 
 if __name__ == "__main__":
     from util.misc import find_suitable_number_of_integration_points_dirac, parse_atomic_term_symbol
+    from util.atomic_units import convert_units
 
-    Z = 2
+    Z = 20
     # n, l, j = parse_atomic_term_symbol("25k17/2")
-    n, l, j = parse_atomic_term_symbol("2p3/2")
-    M = np.inf
+    n, l, j = parse_atomic_term_symbol("2p1/2")
+    n, l, j = parse_atomic_term_symbol("1s1/2")
+
+    M = convert_units("u", "m_e", 42) #np.inf
 
     mu = 1 / (1 + 1 / M)
     kappa = -l - 1 if np.isclose(j, l+1/2) else l
 
     # N = 570
-    h = 0.0005
-    r0 = 0.0005
+    h = 0.005
+    r0 = 2e-6#0.0005
+    h = 0.005
+    r0 = 1e-6#0.0005
     N = find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r0, h)
     print(f"number of integration points: {N}")
-    t = np.arange(N) * h
+    t = (np.arange(N)+1) * h
     r = r0 * (np.exp(t) - 1)
-    print(r[-1])
-    r[np.isclose(r, 0, atol=1e-15)] = 1e-15
+    # print(r[-1])
+    # r[np.isclose(r, 0, atol=1e-15)] = 1e-15
 
     from util.potential import fermi
+    from util.atomic_units import a_0
 
-    core = 1
-    a = 2.5e-1
+    core = convert_units("m", "a_0", 3.4759582751250715e-15)
+    a = 2.3e-15/a_0 / (4*np.log(3))
 
     V = - fermi.potential(Z, core, a, r)
 
-    # V = - Z * mu/r
+    V = - Z * mu/r
 
     import time
 
     t_start = time.time()
-    (P, Q), E, a_c, num_iteration = master(n, l, j, Z, M, V, r, t, h,
+    Psi, E, dE, a_c, num_iteration = master(n, l, j, Z, M, V, r, t, h,
                                       order_adams=11,
                                       order_indir=11,
                                       E_guess="auto",
                                       max_number_of_iterations=20
                                       )
     print(f"finding eigenenergy and -function took {time.time() - t_start:.3f}s and {num_iteration} iterations")
+    P,Q = Psi.Psi.T
 
     import matplotlib.pyplot as plt
     from dirac.coulomb.analytical import radial_function, energy
@@ -192,7 +210,7 @@ if __name__ == "__main__":
     print(f"relative error in eigenenergy: {abs((E_analytical - E)/E):.3e}")
 
     print(f"absolute error in wave function: {np.sum(np.abs(P-P_func))}")
-    print(f"absolute error in wave function normalized by number of integration points: {np.sum(np.abs(P-P_func))/N}")
+    print(f"mean squared error in wave function: {np.sum((P-P_func)**2)/N}")
 
     fig1, ax = plt.subplots(2)
     # fig1.tight_layout()

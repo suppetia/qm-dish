@@ -2,10 +2,10 @@ import numpy as np
 from scipy.interpolate import PchipInterpolator
 
 
-def S(k, mu, order=15):
+def S(k, mu, order=50):
     return np.sum([pow(-1, (n-1) % 2)/pow(n, k)*np.exp(-n*mu) for n in range(1, order+1)], axis=0)
 
-def P(k, r, c, a, order=15):
+def P(k, r, c, a, order=50):
     return np.sum([pow(-1, (n-1) % 2) / pow(n, k) * np.exp(-n*np.abs(r-c)/a) for n in range(1, order + 1)],
                   axis=0)
 
@@ -18,15 +18,16 @@ def fermi_charge_distribution(Z, c, a, r):
         N = 1 + (a*np.pi/c)**2 + 6*(a/c)**3*S(3, mu)
 
     rho0 = 3/(4*np.pi*pow(c,3))*Z/N
-    return rho0/(1+np.exp(r/a-mu))
+    rho = rho0/(1+np.exp(r/a-mu))
+    return np.nan_to_num(rho, nan=0.)  # handle overflow for large distances
 
 
 def potential(Z, c, a, r):
-    # evaluate the potential on an evenly spaced grid and inter-/extrapolate afterwards on the given points
-    r_ = np.linspace(start=r[0] if r[0] > 0 else 1e-10,
-                     stop=r[-1],
-                     num=500)
-    # r_ = r
+    # # evaluate the potential on an evenly spaced grid and inter-/extrapolate afterwards on the given points
+    # r_ = np.linspace(start=r[0] if r[0] > 0 else 1e-10,
+    #                  stop=r[-1],
+    #                  num=5000)
+    r_ = r
 
     mu = c/a
     if mu > 1:

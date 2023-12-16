@@ -1,5 +1,6 @@
 import numpy as np
 import scipy as sc
+import math
 
 from util.math.linear_algebra import matmul_pointwise
 from util.LUTs import AM_taylor_coeffs
@@ -21,7 +22,7 @@ def adams_moulton_coefficients(order) -> np.ndarray:
     AM_coeffs[0] = D  # k=0
     for n in range(1, order + 1):
         # coefficients for f_{n-k} for k>0
-        f_nk_coeffs = np.array([1] + [(-1)**k * np.math.factorial(n) // (np.math.factorial(n-k)*np.math.factorial(k))
+        f_nk_coeffs = np.array([1] + [(-1)**k * math.factorial(n) // (math.factorial(n-k)*math.factorial(k))
                                       for k in range(1, n+1)], dtype=np.int64)
         AM_coeffs[:n+1] += AM_taylor_coeffs[n, 0]*(D // AM_taylor_coeffs[n, 1]) * f_nk_coeffs
 
