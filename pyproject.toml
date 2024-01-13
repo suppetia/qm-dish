@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qm-dish"
+version = "0.0.1"
+authors = [{name = "Christopher Mertens", email="suppetia@gmx.net"}]
+description = "lightweight DIrac Solver for Hydrogen-like systems"
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+    "numpy >= 1.20",
+    "scipy >= 1.11",
+    "sympy >= 1.11",
+    "mpmath",
+    "gmpy2"
+]
+requires-python = ">= 3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
