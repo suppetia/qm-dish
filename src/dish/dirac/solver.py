@@ -10,7 +10,7 @@ from dish.util.misc import (
 )
 from dish.util.wave_function import RadialDiracWaveFunction
 
-from typing import Union
+from typing import Union, Tuple
 from dataclasses import dataclass
 
 @dataclass
@@ -34,7 +34,7 @@ class SolvingResult:
 
 
 def solve(nucleus: Nucleus,
-          state: Union[str, QuantumNumberSet],
+          state: Union[str, QuantumNumberSet, Tuple[int, int, float]],
           r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
           potential_model: str = "Fermi",
           E_guess: Union[float, str] = "auto",
@@ -66,6 +66,8 @@ def solve(nucleus: Nucleus,
 
     if isinstance(state, str):
         state = parse_atomic_term_symbol(state)
+    elif isinstance(state, Tuple):
+        state = QuantumNumberSet(*state)
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):

@@ -28,7 +28,7 @@ else
 	$(PY) -m numpy.f2py -c adams_f.f90 -m adams_f -llapack --f90exec=$(FC) --f77exec=$(FC)
 endif
 	cp -u LICENSE MANIFEST.in pyproject.toml README.md $(BUILD_DIR)
-	$(PY) -m build $(BUILD_DIR) --outdir $(BUILD_DIR)/dist
+	$(PY) -m build $(BUILD_DIR) --outdir $(BUILD_DIR)
 
 source_dir:
 ifeq ($(wildcard $(SRC_DIR)),)
@@ -42,10 +42,10 @@ build_dir: source_dir
 
 
 install:
-ifeq ($(wildcard $(BUILD_DIR)/dist/$(PACKAGE_NAME)-*.*),)
+ifeq ($(wildcard $(BUILD_DIR)/$(PACKAGE_NAME)-*.*),)
 	$(error "package wasn't build. Make sure to run 'make [build]' first")
 endif
-	$(PY) -m pip install $(PACKAGE_NAME) --find-links $(BUILD_DIR)/dist/
+	$(PY) -m pip install $(PACKAGE_NAME) --find-links $(BUILD_DIR)/
 
 uninstall:
 	$(PY) -m pip uninstall $(PACKAGE_NAME) -y

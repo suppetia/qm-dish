@@ -4,6 +4,7 @@ source: 2018 CODATA recommended values
 """
 
 import re
+from typing import Union
 
 import numpy as np
 from mpmath import mp
@@ -50,7 +51,11 @@ def convert_u2m_e(mass):  # convert mass from u to m_e
     return mass*u/m_e
 
 
-def convert_units(old_unit, new_unit, value=1., old_unit_exp=1, new_unit_exp=1):
+def convert_units(old_unit: Union[str, float],
+                  new_unit: Union[str, float],
+                  value=1.,
+                  old_unit_exp=1,
+                  new_unit_exp=1):
     """
     Convert 'value' in unit 'old_unit' to 'new_unit'.
     ! YOU NEED TO ASSURE THAT THESE VALUES ARE OF THE SAME DIMENSION !
