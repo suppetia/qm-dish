@@ -1,6 +1,6 @@
 import numpy as np
 
-from dish.schrödinger.outsch import differentiation_coefficients_efficient
+from dish.schrodinger.outsch import differentiation_coefficients_efficient
 from dish.util.atomic_units import alpha
 from dish.util.misc import DistanceGrid
 
