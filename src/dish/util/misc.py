@@ -1,6 +1,6 @@
 import numpy as np
 
-from dish.schrödinger.coulomb.analytical import radial_function as radial_f_schrodinger
+from dish.schrodinger.coulomb.analytical import radial_function as radial_f_schrodinger
 from dish.dirac.coulomb.analytical import radial_function as radial_f_dirac
 
 import re

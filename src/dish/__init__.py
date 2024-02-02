@@ -1,6 +1,6 @@
 import dish.util
 import dish.dirac
-import dish.schrödinger
+import dish.schrodinger
 
 from dish.util.atom import Nucleus
 from dish.util.misc import parse_atomic_term_symbol
