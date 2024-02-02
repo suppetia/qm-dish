@@ -2,7 +2,7 @@ import numpy as np
 
 from dish.schrödinger.outsch import differentiation_coefficients_efficient
 from dish.util.atomic_units import alpha
-from dish.util.misc import DistanceGrid
+from dish.util.radial.grid import DistanceGrid
 
 
 def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
@@ -10,8 +10,8 @@ def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
     m = differentiation_coefficients_efficient(k)
     gamma = np.sqrt(kappa**2 - (alpha*Z)**2)
 
-    r = r_grid.r
-    r_prime = r_grid.rp[:k]
+    r = r_grid.r[1:]
+    r_prime = r_grid.rp[1:k+1]
 
     r_ = r[:k]
 
@@ -23,7 +23,7 @@ def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
     u0 = 1
     v0 = -(kappa+gamma)/(alpha*Z) if kappa > 0 else alpha*Z/(gamma-kappa)
 
-    # construct a system of linear ODEs using matrix notation A*x=B where x = (u,v)
+    # construct a system of linear equations using matrix notation A*x=B where x = (u,v)
     u0 = np.array(u0)
     v0 = -np.array(v0)
     B = np.empty(2 * k)

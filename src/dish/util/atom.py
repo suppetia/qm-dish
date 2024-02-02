@@ -11,7 +11,7 @@ from dish.util.potential import FermiChargeDistribution, CoulombChargeDistributi
 class Nucleus:
     Z: int
     M: float
-    R_rms: float  # root-mean-square radius
+    R0: float  # root-mean-square radius
     a: float = 2.3e-15/a_0 / (4*np.log(3))  # default value from Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7
 
     @property

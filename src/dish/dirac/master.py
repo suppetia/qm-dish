@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.integrate import simpson
 
 from typing import Union
 
@@ -11,8 +10,8 @@ from dish.util.numeric.adams import adams
 
 from dish.util.atomic_units import c, alpha
 from dish.util.math_util import count_nodes
-from dish.util.wave_function import RadialDiracWaveFunction
-from dish.util.misc import DistanceGrid
+from dish.util.radial.wave_function import RadialDiracWaveFunction
+from dish.util.radial.grid import DistanceGrid
 
 
 def outer_classical_turning_point(V, W) -> int:
@@ -48,13 +47,15 @@ def master(n, l, j, Z, M, V,
         # create a new Grid as a workaround
         r_grid = DistanceGrid(h, r[-1]/(np.exp(t[-1])-1), len(r))
 
-    r = r_grid.r
-    r_prime = r_grid.rp
+    # leave out the first point as there will be divide by zero errors
+    V_ = V[1:]
+    r = r_grid.r[1:]
+    r_prime = r_grid.rp[1:]
     h = r_grid.h
 
     a_mat = -r_prime * (kappa / r)
-    b_mat = lambda W: -alpha * r_prime * (W - V + 2 * c**2)
-    c_mat = lambda W: alpha * r_prime * (W - V)
+    b_mat = lambda W: -alpha * r_prime * (W - V_ + 2 * c**2)
+    c_mat = lambda W: alpha * r_prime * (W - V_)
     d_mat = -a_mat
 
     G = np.zeros((len(r), 2, 2))
@@ -75,13 +76,15 @@ def master(n, l, j, Z, M, V,
     it = 0
     W_guess = E_guess - c ** 2
 
+    energy_convergence = 0
+
     while it < max_number_of_iterations:
         it += 1
 
         # print(W_guess)
         E_guess = W_guess + c ** 2
 
-        a_c = outer_classical_turning_point(V, W_guess)
+        a_c = outer_classical_turning_point(V_, W_guess)
         # print(a_c)
 
         # y_start_out = radial_function(n, kappa, r[:order_adams], Z, M).T
@@ -153,12 +156,27 @@ def master(n, l, j, Z, M, V,
     # y_start *= y[5 * order_adams - 1] / y_start[-1]
     # y[:len(y_start)] = y_start
 
-    N = 1/np.sqrt(np.trapz((y[:, 0]**2+y[:, 1]**2) * r_prime, dx=h))
+    # find value where derivative changes sign (after initial guess)
+    num_points = len(r)
+    for i in [0,1]:
+        if np.min(np.abs(np.diff(y[order_adams:num_points//4, i])/np.diff(r[order_adams:num_points//4]))) < 1e-4:
+            dy_min = np.argmin(np.abs(
+                np.diff(y[order_adams:num_points // 4, i]) / np.diff(r[order_adams:num_points // 4]))) + order_adams
+            y[:dy_min, i] = r[:dy_min] / r[dy_min] * y[dy_min, i]
+
+    # #if np.isclose()
+    # dy_min = np.argmin(np.abs(np.diff(y[order_adams:num_points//4, 0])/np.diff(r[order_adams:num_points//4]))) + order_adams
+    # y[:dy_min, 0] = r[:dy_min]/r[dy_min] * y[dy_min, 0]
+
+    # all radial wavefunctions must be zero in the origin
+    y = np.insert(y, obj=0, values=0, axis=0)
+
+    N = 1/np.sqrt(np.trapz((y[:, 0]**2+y[:, 1]**2) * r_grid.rp, dx=h))
     # N = 1/np.sqrt(simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h))
 
     y *= N
 
-    return RadialDiracWaveFunction(r, y), W_guess, energy_convergence, a_c, it
+    return RadialDiracWaveFunction(r_grid, y), W_guess, energy_convergence, a_c, it
 
 
 if __name__ == "__main__":

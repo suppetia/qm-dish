@@ -3,12 +3,12 @@ import time
 from dish.dirac.master import master
 from dish.util.atom import Nucleus
 from dish.util.misc import (
-    DistanceGrid,
     QuantumNumberSet,
     find_suitable_number_of_integration_points_dirac,
     parse_atomic_term_symbol
 )
-from dish.util.wave_function import RadialDiracWaveFunction
+from dish.util.radial.grid import DistanceGrid
+from dish.util.radial.wave_function import RadialDiracWaveFunction
 
 from typing import Union, Tuple
 from dataclasses import dataclass

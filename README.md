@@ -11,7 +11,7 @@ A subpackage also allows to retrieve the non-relativistic wavefunctions and ener
 ### Building the package
 On Unix-based systems:  
 1. Make sure to have the following tools installed:
-   1. A working [Python](https://www.python.org/) solution and the python virtual environment package [venv](https://docs.python.org/3/library/venv.html) (on Unix systems this needs to be installed separately).
+   1. A working [Python](https://www.python.org/) (version < 3.12) solution and the python virtual environment package [venv](https://docs.python.org/3/library/venv.html) (on Unix systems this needs to be installed separately).
    2. The following Python packages [pip](https://pypi.org/project/pip/), [build](https://pypi.org/project/build/)
    3. *(optionally)* For increased performance it is highly recommended to compile an included fortran script. For that the following is required
       1. The Fortran compiler [gfortran](https://gcc.gnu.org/fortran/)
@@ -31,6 +31,24 @@ On Unix-based systems:
    > # modified version
    > PY := /path/to/your/executable
    > ```
+
+If you encounter any problems using `make` you can build it by hand by running the following commands in the main directory:
+> This assumes you have a working Python environment (with Python < 3.12 (!)) with numpy installed.
+```bash
+mkdir dist
+cp -r src/ dist/
+cp LICENSE MANIFEST.in pyproject.toml README.md dist/
+cd dist/src/dish/util/numeric
+python3 -m numpy.f2py -c adams_f.f90 -m adams_f -llapack
+# if this fails to identify your fortran compiler use
+#  --f90exec=/path/to/gfortran --f77exec=/path/to/gfortran
+# as additional arguments
+
+cd ../../../../..
+
+python3 -m build dist --outdir dist
+```
+
 
 On a Windows system:
 1. Make sure to have the following tools installed:
@@ -54,7 +72,7 @@ make install
 > This will install the package using pip. 
 > An installation using conda is currently not supported but building the package also provides the *sdist* from which a conda version can be build.
 
-On a **Windows** system run from the same directory
+On a **Windows** system (*or if you encounter any problems*) run from the same directory
 ```commandline
 python -m pip install qm-dish --find-links dist/
 ```
@@ -81,19 +99,20 @@ $`\rho(r) = \rho_0/(1+\exp((r-c)/a))`$
 Therefore, to following properties need to be specified:
 1. The nuclear charge *Ze* passed to the parameter `Z`.
 2. The mass of the nucleus `M`. To perform calculations with a fixed core this can be set to *numpy.inf* .
-3. The root mean squared radius of the charge distribution `R_rms`. 
+3. The radius of the charge distribution `R0`. 
    1. For a point-like model this is irrelevant and can be set to 0.
-   2. For a ball-like model the radius *r* of the sphere is $`r = \sqrt{(5/3)} \cdot R_{rms}`$ 
-   3. For a Fermi-charge-distribution $`c = R_{rms}`$
+   2. For a ball-like model the radius *r* of the sphere is $`r = R0`$ 
+   3. For a Fermi-charge-distribution $`c = R0`$
 4. (Optional and only necessary for a Fermi model) The _diffuseness_ parameter `a`. 
    > *a* defaults to $2.3 \text{fm} /a_0 / (4\cdot\ln(3))$ as described in *Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7*
 
 An example for Ca19+ looks like:
+
 ```python
 from dish import Nucleus, convert_units
 
 nuc = Nucleus(Z=20,
-              R_rms=convert_units("m", "a_0", 3.4776e-15),
+              R0=convert_units("m", "a_0", 3.4776e-15),
               M=convert_units("u", "m_e", 40.078)
               )
 ```

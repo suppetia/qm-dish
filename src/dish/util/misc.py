@@ -44,7 +44,7 @@ def find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r_0, h):
     :return: N_max
     """
     r = np.logspace(-4, 4, num=300)
-    R = radial_f_dirac(n, kappa, r, Z, M)
+    R = radial_f_dirac(n, kappa, r, Z, M).f
     last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-5)).reshape(-1))]
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
@@ -133,42 +133,6 @@ def parse_atomic_term_symbol(symbol: str) -> QuantumNumberSet:
         raise ValueError(f"invalid value for total angular momentum number j: '{j}.\nValid values are {l-1/2} and {l+1/2}.")
     return QuantumNumberSet(n, l, j)
 
-
-class DistanceGrid:
-
-    def __init__(self,
-                 h: float,
-                 r0: float,
-                 N: int = None,
-                 r_max: float = None):
-
-        if (N is None and r_max is None) or (N is not None and r_max is not None):
-            raise ValueError("Either 'N' or 'r_max' must be specified but not both.")
-
-        self._h = h
-        self._r0 = r0
-        if r_max is not None:
-            self._N = int(np.ceil(np.log(r_max/r0 + 1)/h))
-        else:
-            self._N = N
-
-        self._t = (np.arange(self._N)+1) * self._h
-        self._r = r0 * (np.exp(self._t) - 1)
-        self._rp = r0 * np.exp(self._t)  # r_prime -> derivative
-
-    @property
-    def t(self):
-        return self._t
-    @property
-    def r(self):
-        return self._r
-    @property
-    def h(self):
-        return self._h
-
-    @property
-    def rp(self):
-        return self._rp
 
 
 

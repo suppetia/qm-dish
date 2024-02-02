@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def matmul_pointwise(A: np.array, B: np.array):
+def matmul_pointwise(A: np.ndarray, B: np.ndarray):
     """
     A and B should be arrays of matrices to multiply. Return the matrix product for each entry in the first dimension.
     :param A: shape (T, n, k)

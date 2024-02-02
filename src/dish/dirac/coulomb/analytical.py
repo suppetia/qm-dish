@@ -4,6 +4,7 @@ from math import factorial
 
 from dish.util.math_util.special_functions import confluent_hypergeometric_f
 from dish.util.atomic_units import alpha, c
+from dish.util.radial.wave_function import RadialDiracWaveFunction
 
 
 def energy(n: int, kappa: int, Z: int, M: float = np.inf):
@@ -76,7 +77,8 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, M: float = np.inf):
     F2 = 0 if k-n == 0 else (k-n) * confluent_hypergeometric_f(k-n+1, 2*gamma+1, x)
     P = N_nkappa * np.sqrt(1+E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 + F2)
     Q = N_nkappa * np.sqrt(1-E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 - F2)
-    return np.stack((P, Q))
+    # return np.stack((P, Q))
+    return RadialDiracWaveFunction(r_grid=r, Psi=np.stack((P, Q)).T)
 
 
 if __name__ == "__main__":
