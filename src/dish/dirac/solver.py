@@ -1,37 +1,40 @@
 import time
+from os import cpu_count
 
 from dish.dirac.master import master
-from dish.util.atom import Nucleus
-from dish.util.misc import (
-    QuantumNumberSet,
-    find_suitable_number_of_integration_points_dirac,
-    parse_atomic_term_symbol
-)
+from dish.util.atom import Nucleus, QuantumNumberSet, parse_atomic_term_symbol
+from dish.util.misc import find_suitable_number_of_integration_points_dirac
 from dish.util.radial.grid import DistanceGrid
 from dish.util.radial.wave_function import RadialDiracWaveFunction
+from dish.util.misc import SolvingResult, SolvingParameters
 
-from typing import Union, Tuple
-from dataclasses import dataclass
+from typing import Union, Tuple, List, Dict
 
-@dataclass
-class SolvingParameters:
-    order_AM: int
-    order_indir: int
-    max_number_of_iterations: int
+from multiprocessing import Pool
 
-@dataclass(frozen=True)
-class SolvingResult:
-    state: QuantumNumberSet
-    nucleus: Nucleus
-    potential_model: str
-    r_grid: DistanceGrid
-    wave_function: RadialDiracWaveFunction
-    energy: float
-    energy_convergence: float
-    solving_parameters: SolvingParameters
-    number_of_iterations: int
-    solving_time: float
+import logging
+log = logging.getLogger(__name__)
 
+
+def construct_grid_from_dict(r_grid: dict, nucleus: Nucleus, state:QuantumNumberSet):
+    h = r_grid.get("h", 0.005)
+    r0 = r_grid.get("r0", 2e-6)
+    if r_grid.get("r_max") is not None:
+        return DistanceGrid(h, r0, r_max=r_grid.get("r_max"))
+    elif r_grid.get("N", "auto") == "auto":
+        N = find_suitable_number_of_integration_points_dirac(Z=nucleus.Z,
+                                                             M=nucleus.M,
+                                                             n=state.n,
+                                                             kappa=state.kappa,
+                                                             r_0=r0,
+                                                             h=h)
+        return DistanceGrid(h, r0, N)
+    else:
+        try:
+            N = int(r_grid['N'])
+        except Exception:
+            raise ValueError(f"Number of grid points 'N' must be an integer but is {type(r_grid['N'])}")
+        return DistanceGrid(h, r0, N)
 
 def solve(nucleus: Nucleus,
           state: Union[str, QuantumNumberSet, Tuple[int, int, float]],
@@ -71,24 +74,7 @@ def solve(nucleus: Nucleus,
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):
-        h = r_grid.get("h", 0.005)
-        r0 = r_grid.get("r0", 2e-6)
-        if r_grid.get("r_max") is not None:
-            r_grid = DistanceGrid(h, r0, r_max=r_grid.get("r_max"))
-        elif r_grid.get("N", "auto") == "auto":
-            N = find_suitable_number_of_integration_points_dirac(Z=nucleus.Z,
-                                                                 M=nucleus.M,
-                                                                 n=state.n,
-                                                                 kappa=state.kappa,
-                                                                 r_0=r0,
-                                                                 h=h)
-            r_grid = DistanceGrid(h, r0, N)
-        else:
-            try:
-                N = int(r_grid['N'])
-            except Exception:
-                raise ValueError(f"Number of grid points 'N' must be an integer but is {type(r_grid['N'])}")
-            r_grid = DistanceGrid(h, r0, N)
+        r_grid = construct_grid_from_dict(r_grid, nucleus, state)
 
     if potential_model.lower() in ["f", "fermi"]:
         potential_model = "Fermi"
@@ -131,6 +117,55 @@ def solve(nucleus: Nucleus,
     )
 
     return result
+
+
+def multiple_solve(nucleus: Nucleus,
+                   states: List[Union[str, QuantumNumberSet, Tuple[int, int, float]]],
+                   r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
+                   potential_model: str = "Fermi",
+                   E_guess: Union[float, str, List[float]] = "auto",
+                   order_AM: int = 9,  # order of the Adams-Moulton procedure
+                   order_indir: int = 7,  # order of the procedure tu
+                   max_number_of_iterations=20,
+                   num_processes: int = -1
+                   ) -> Dict[Union[str, QuantumNumberSet], SolvingResult]:
+
+    # construct DistanceGrid from parameter dict
+    if isinstance(r_grid, dict):
+        r_grid = construct_grid_from_dict(r_grid, nucleus, states[0])
+
+    if isinstance(E_guess, list):
+        if not len(E_guess) == len(states):
+            raise ValueError("'E_guess' must be a single entry of an array-like of the same length as 'states'.")
+    else:
+        E_guess = [E_guess] * len(states)
+
+    if num_processes < 1:
+        logging.info("automatically choose the optimal cpu count")
+        num_processes = cpu_count()
+    if num_processes > cpu_count():
+        logging.warning(f"Requested too many parallel processes. Limit to the available core count {cpu_count()}")
+        num_processes = cpu_count()
+
+    arguments = [(nucleus, states[i], r_grid, potential_model, E_guess[i],
+                  order_AM, order_indir, max_number_of_iterations)
+                 for i in range(len(states))]
+    with Pool(num_processes) as pool:
+
+        results: List[SolvingResult] = pool.starmap(solve, arguments)
+
+    return results
+    results_dict = {}
+    for s in states:
+        for r in results:
+            if r.state == s:
+                results_dict[s] = r
+                break
+
+    return results_dict
+
+
+
 
 # TODO: CLI using click
 # def cli():

@@ -14,7 +14,8 @@ class DistanceGrid:
 
         if (N is None and r_max is None) or (N is not None and r_max is not None):
             raise ValueError("Either 'N' or 'r_max' must be specified but not both.")
-
+        if N is not None and not isinstance(N, int):
+            ValueError(f"Number of grid points 'N' must be an integer but is {type(N)}")
         self._h = h
         self._r0 = r0
         if r_max is not None:
@@ -64,14 +65,16 @@ class DistanceGrid:
         return self._N
 
     @property
-    def rmax(self):
-        return self.r0 * (np.exp(self.N-1) - 1)
+    def r_max(self):
+        return self.r0 * (np.exp(self.h*(self.N-1)) - 1)
 
     def __eq__(self, other):
         if not isinstance(other, DistanceGrid):
             return False
         return np.allclose(np.array([self.r0, self.h, self.N]), np.array([other.r0, other.h, other.N]))
 
+    def __repr__(self):
+        return f"DistanceGrid(r0={self.r0}, h={self.h}, N={self.N}, r_max={self.r_max})"
 
 class RombergIntegrationGrid(DistanceGrid):
 
