@@ -1,4 +1,6 @@
 graft src
 
+include src/dish/util/numeric/adams_f.*
+
 include pyproject.toml
 include README.md

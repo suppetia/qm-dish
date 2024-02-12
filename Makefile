@@ -27,7 +27,7 @@ else
 	cd $(BUILD_DIR)/src/dish/util/numeric; \
 	$(PY) -m numpy.f2py -c adams_f.f90 -m adams_f -llapack --f90exec=$(FC) --f77exec=$(FC)
 endif
-	cp -u LICENSE MANIFEST.in pyproject.toml README.md $(BUILD_DIR)
+	cp LICENSE MANIFEST.in pyproject.toml README.md $(BUILD_DIR)
 	$(PY) -m build $(BUILD_DIR) --outdir $(BUILD_DIR)
 
 source_dir:
@@ -37,7 +37,7 @@ endif
 
 build_dir: source_dir
 	mkdir -p $(BUILD_DIR)
-	cp -ru $(SRC_DIR)/ $(BUILD_DIR)/
+	cp -R $(SRC_DIR)/ $(BUILD_DIR)/
 	rm -rf $$(find $(BUILD_DIR) -type d -name __pycache__)
 
 

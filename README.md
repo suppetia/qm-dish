@@ -53,7 +53,7 @@ python3 -m build dist --outdir dist
 On a Windows system:
 1. Make sure to have the following tools installed:
    1. A working [Python](https://www.python.org/) solution.
-   2. The following Python packages [pip](https://pypi.org/project/pip/), [build](https://pypi.org/project/build/)
+   2. The following Python packages [pip](https://pypi.org/project/pip/), [build](https://pypi.org/project/build/), [meson](https://pypi.org/project/meson/)
 2. Clone or download this repository.
 3. Change into the repositories directory and run 
    ```bash
