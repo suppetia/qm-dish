@@ -12,6 +12,7 @@ from dish.util.atomic_units import c, alpha
 from dish.util.math_util import count_nodes
 from dish.util.radial.wave_function import RadialDiracWaveFunction
 from dish.util.radial.grid import DistanceGrid
+from dish.util.radial.integration import integrate_on_grid
 
 
 def outer_classical_turning_point(V, W) -> int:
@@ -171,8 +172,9 @@ def master(n, l, j, Z, M, V,
     # all radial wavefunctions must be zero in the origin
     y = np.insert(y, obj=0, values=0, axis=0)
 
-    N = 1/np.sqrt(np.trapz((y[:, 0]**2+y[:, 1]**2) * r_grid.rp, dx=h))
+    # N = 1/np.sqrt(np.trapz((y[:, 0]**2+y[:, 1]**2) * r_grid.rp, dx=h))
     # N = 1/np.sqrt(simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h))
+    N = 1/np.sqrt(integrate_on_grid(y[:, 0]**2+y[:, 1]**2, grid=r_grid, suppress_warning=True))
 
     y *= N
 

@@ -76,6 +76,7 @@ class DistanceGrid:
     def __repr__(self):
         return f"DistanceGrid(r0={self.r0}, h={self.h}, N={self.N}, r_max={self.r_max})"
 
+
 class RombergIntegrationGrid(DistanceGrid):
 
     def __init__(self,

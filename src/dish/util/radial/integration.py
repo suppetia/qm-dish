@@ -10,11 +10,11 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def integrate_on_grid(y, grid: DistanceGrid):
+def integrate_on_grid(y, grid: DistanceGrid, suppress_warning=False):
     if isinstance(grid, RombergIntegrationGrid):
         return romb(y*grid.rp, dx=grid.h)
-
-    log.warning("Integration is performed on an arbitrary DistanceGrid. For better results use a RombergIntegrationGrid.")
+    if not suppress_warning:
+        log.warning("Integration is performed on an arbitrary DistanceGrid. For better results use a RombergIntegrationGrid.")
     return trapezoid(y*grid.rp, dx=grid.h)
 
 
@@ -36,7 +36,9 @@ def matrix_element(bra: RadialWaveFunction,
     assert bra.grid.N == operator.shape[0]
 
     new_ket = matmul_pointwise(operator, ket.Psi)
-    return radial_integral(np.sum(bra.Psi * new_ket, axis=1), grid=bra.grid)
+    bra_conj = bra.Psi.copy()
+    bra_conj[:, 0] *= -1
+    return integrate_on_grid(np.sum(bra_conj * new_ket, axis=1), grid=bra.grid)
 
 
 def mp_matrix_element(bra: RadialWaveFunction,
@@ -54,7 +56,9 @@ def mp_matrix_element(bra: RadialWaveFunction,
     assert bra.grid.N == operator.shape[0]
 
     integrand = np.zeros(bra.grid.N)
+    bra_ = bra.Psi.copy()
+    bra_[:, 0] *= -1
     for i in range(bra.grid.N):
-        integrand[i] = mp.fdot(bra.Psi[i], mp.matrix(operator[i, :, :]) * mp.matrix(ket.Psi[i]))
+        integrand[i] = mp.fdot(bra_[i], mp.matrix(operator[i, :, :]) * mp.matrix(ket.Psi[i]))
 
-    return radial_integral(integrand, grid=bra.grid)
+    return integrate_on_grid(integrand, grid=bra.grid)

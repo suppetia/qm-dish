@@ -164,8 +164,8 @@ To numerically solve the Dirac equation an [Adams-Moulton method](https://en.wik
 The parameters of the solving algorithm are chosen based on the state by default and can be adjusted by the user: 
 #### The Grid
 The radial grid on which the wave function is evaluated on is an exponential grid of the form
-$`r(n) = r_0 \cdot (\exp(h\cdot n)-1)`$.  
-This information is stored in a *DistanceGrid* object which can be constructed from the parameters *r0*, *h* and *N* which is the maximum number of *n* or $r_{max}$ which defines the region where the maximum *r* value is evaluated.
+$`r(t) = r_0 \cdot (\exp(h\cdot t)-1)`$ where $`t`$ is a linear grid from 0 to $`N`$.  
+This information is stored in a *DistanceGrid* object which can be constructed from the parameters *r0*, *h* and *N* or *r_max* which defines the region where the maximum *r* value is evaluated.
 It is recommended to regulate *N* using the other 3 parameters and not passing it explicitly.  
 It can be passed to the solve function via the parameter *r_grid*:
 ```python
@@ -182,6 +182,34 @@ result = solve(nucleus=nuc,
 > **Note**: The more *N* points the grid contains and therefore the smaller *r0* and *h* are chosen the more computation intensive is the solving process.
 > For *N* <= $10^5$ the Python version provides enough speed that the solving finishes in under a second of computation time on decent hardware but for larger *N* it is highly recommended to use the Fortran version which speeds up the main part of the solving process by one to two orders of magnitude.
 
+##### A better grid for integration purposes
+To calculate matrix elements using the wavefunctions one needs to solve a radial integral.
+Since the grid on which the wavefunction is evaluated is given due to the method how the wavefunction is found, 
+one can either integrate on the exponential grid `r` or on the linear grid `t` where the latter one is better 
+suited as the numerical methods to integrate on equidistant points are well understood. 
+On equidistant grids Newton-Cotes-formulas are use where the lowest order method, the so-called trapezoid rule,
+is the most efficient but also the most inaccurate.
+If possible use a *RombergIntegrationGrid* instead of a *DistanceGrid* since it enables to use Romberg's method
+for estimating the integral which is an improvement of the trapezoidal rule using Richardson extrapolation
+but therefore requires an equidistant grid with a number of points $`N = 2^k + 1`$ where $k$ is a positive integer.  
+One can either just construct a *RombergIntegrationGrid* (which is a subclass of *DistanceGrid*) directly
+```python
+from dish.util.radial.grid import RombergIntegrationGrid
+
+r_grid = RombergIntegrationGrid(h=1e-5, 
+                                r0=1e-8,
+                                k=15,
+                                # or N can be passed but needs to fulfill the requirement N = 2^k+1
+                                # N=2**15+1
+                                )
+```
+or a similar grid can be derived from a given DistanceGrid *grid*
+```python
+r_grid = RombergIntegrationGrid.construct_similar_grid_from_distance_grid(grid)
+```
+where the *h* parameter is altered so that *r_max* and *r0* are kept constant but there is the right number of points for Romberg integration.
+Note that this method will always create a grid where *h* is smaller (or equal) than in the original grid so that there are more or the same number of points.
+
 #### The Adams-Moulton method
 Adams-Moulton (AM) methods are a linear multistep method to solve systems of ordinary differential equations numerically on a finite grid.
 A multistep method of order *k* uses the information if the previous *k* points to determine the next point (for a detailed discussion see Chapter (???) of the underlying thesis).
@@ -197,4 +225,27 @@ result = solve(nucleus=nuc,
 ```
 Usually there is no need to modify this values but for some wavefunctions that oscillate quickly near the origin it might help to increase the order of the AM method.
 > **Note**: The higher *order_AM* the more compute intensive is the solving process.
+
+### Calculating Matrix Elements
+To calculate matrix elements of two states $`\psi`$ and $`\varphi`$ of a radial-symmetric operator $`\hat{O}(r)`$ one needs to calculate the integral
+$`\int_0^\infty \psi^T \hat{O} \phi \text{d}r`$ where $`\psi`$ and $`\phi`$ both are 2-component vectors containing the large component *f* and the small component *g*
+and $`\hat{O}`$ is a 2x2-Matrix.
+Using *dish* this can be archived by the following function
+```python
+from dish.util.radial.integration import matrix_element
+
+matrix_element(psi, op, phi)
+```
+where *psi* and *phi* must be *RadialWaveFunction* objects on the same grid of length $n$ and 
+*op* a numpy array of shape *(n, 2, 2)*.  
+This utilizes internally the function *radial_integral* which can be used to calculate more general radial integrals.
+The signature of the function looks like
+```python
+from dish.util.radial.integration import radial_integral
+
+radial_integral(y: numpy.ndarray,
+                grid: DistanceGrid = grid)
+```
+> **Note**: When given a *RombergIntegrationGrid* this uses Romberg's method and when a *DistanceGrid* is passed it falls back to the trapezoidal rule for integration.
+> Because of the higher accuracy of the first method it is highly encouraged to use a *RombergIntegrationGrid*.
 
