@@ -51,13 +51,13 @@ def find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r_0, h):
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
 
-    return int(N_max * 1.00) + 10  # *1.005 is just an arbitrary number to hold extra space
+    return N_max + 10  # +10 is just an arbitrary number from experience to hold extra space
 
 
 @dataclass
 class SolvingParameters:
     order_AM: int
-    order_indir: int
+    order_in: int
     max_number_of_iterations: int
 
 @dataclass(frozen=True)

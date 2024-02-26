@@ -41,21 +41,39 @@ class RadialWaveFunction:
         return self.Psi.__getitem__(item)
 
 
-# TODO:
-class RadialSchrödingerWaveFunction(RadialWaveFunction):
+class RadialSchrodingerWaveFunction(RadialWaveFunction):
+
+    def __init__(self, r_grid: Union[np.ndarray, DistanceGrid],
+                 Psi: np.ndarray,
+                 Psi_prime: np.ndarray):
+
+        self._psi_prime = Psi_prime
+        super().__init__(r_grid=r_grid, Psi=Psi)
+
+    @property
+    def Psi(self):
+        return self._psi
+
+    @property
+    def Psi_prime(self):
+        return self._psi_prime
+
+
     def interpolate_at(self, r: np.array):
         """
         interpolate the wave function at points r using a cubic spline
         :param r: np.array of points to interpolate on
         :return: interpolated wave_function
         """
+        if not isinstance(r, DistanceGrid):
+            r = construct_grid_from_points(r)
+        spline_psi = make_interp_spline(self.r, self.Psi, k=3)
+        return RadialSchrodingerWaveFunction(r, spline_psi(r.r))
 
-        return RadialSchrödingerWaveFunction(r,
-                                       np.array([
-                                           np.interp(r, self.r, self.f),
-                                           np.interp(r, self.r, self.g)
-                                       ]).T
-                                       )
+    def write_to_file(self, filename):
+        return np.savetxt(filename, np.array([self.r, self.Psi, self.Psi_prime]).T,
+                          header="r\tPsi\tPsi'", delimiter="\t")
+
 
 class RadialDiracWaveFunction(RadialWaveFunction):
     @property

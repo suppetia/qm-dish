@@ -1,8 +1,12 @@
 import numpy as np
 
-from dish.schrödinger import insch, outsch
-from dish.schrödinger.coulomb.analytical import energy
+from dish.schrodinger import insch, outsch
+from dish.schrodinger.coulomb.analytical import energy
 from dish.util.numeric.adams import adams
+
+from dish.util.radial.wave_function import RadialSchrodingerWaveFunction
+from dish.util.radial.grid import DistanceGrid
+from dish.util.radial.integration import integrate_on_grid
 
 from dish.util.math_util import count_nodes
 
@@ -23,14 +27,26 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
     effective_charge = charge + 1  # an e- in distance feels the effective charge
 
     if E_guess == "auto":
-        E_guess = energy(n, Z, M) * .95  # inject artificial error
+        E_guess = energy(n, Z, M)
+
+    if isinstance(r, DistanceGrid):
+        r_grid = r
+    else:
+        # TODO: refactor properly
+        if t is None or h is None:
+            raise ValueError("values for 'r', 't' and 'h' must be provided if r isn't a DistanceGrid")
+        # create a new Grid as a workaround
+        r_grid = DistanceGrid(h, r[-1] / (np.exp(t[-1]) - 1), len(r))
+
+    # leave out the first point as there will be divide by zero errors
+    V_ = V[1:]
+    r = r_grid.r[1:]
+    r_prime = r_grid.rp[1:]
+    h = r_grid.h
 
     # calculate/prepare outside the loop for speed improvements
-    #b = np.append([0], np.diff(r) / np.diff(t))
-    b = r[-1]/(np.exp(t[-1])-1)*np.exp(t)
-    # c = lambda E: -2 * b * (E - V - l * (l+1) / (2 * r ** 2))
-    def c(E):
-        return (-2 * b * (E - V - l * (l+1) / (2 * r ** 2)))
+    b = r_prime
+    c = lambda E: -2 * b * (E - V_ - l * (l+1) / (2 * r ** 2))
     G = np.zeros((len(b), 2, 2))
     G[:, 0, 1] = b
 
@@ -40,12 +56,14 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
     E_u = np.inf  # highest energy with n_r nodes
     E_l = -np.inf   # lowest energy with n_r nodes
 
+    energy_convergence = 0
+
     it = 0
     while it < max_number_of_iterations:
         it += 1
         # print("Iteration:", it)
 
-        a_c = outer_classical_turning_point(V, E_guess, l, r)
+        a_c = outer_classical_turning_point(V_, E_guess, l, r)
 
         y_start_out = np.array(
             outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z * mu / r,
@@ -85,47 +103,18 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
         y = np.append(y_out, y_in[1:], axis=0)
 
         num_nodes = count_nodes(y[:, 0])
-        # print(num_nodes)
-
-        # fig, ax = plt.subplots(nrows=2, num=0)
-        # ax[0].clear()
-        # ax[1].clear()
-        # ax[0].plot(r[:a_c+1], y_out[:, 0])
-        # ax[0].plot(r[a_c:], y_in[:, 0])
-        # ax[1].plot(r[:a_c+1], y_out[:, 1])
-        # ax[1].plot(r[a_c:], y_in[:, 1])
-        # y_out2 = adams.adams(order_adams, "out", y_start_out, G[:], h)
-        # y_in2 = adams.adams(order_adams, "out", y_start_in[::-1], G[::-1], h)[::-1]
-        # y_in2 *= y_out2[a_c, 0] / y_in2[a_c, 0]  # make R=y[:,0] continues
-        # ax[0].plot(r, y_out2[:, 0])
-        # ax[0].plot(r, y_in2[:, 0])
-        # ax[1].plot(r, y_out2[:, 1])
-        # ax[1].plot(r, y_in2[:, 1])
-        # ax[0].plot([r[a_c], r[a_c]], [-1, 1], "k")
-        # ax[1].plot([r[a_c], r[a_c]], [-1, 1], "k")
-        # ax[0].set_ylim(-1, 1)
-        # ax[1].set_ylim(-1, 1)
-        # fig.show()
-        # while not plt.waitforbuttonpress():
-        #     continue
 
         if num_nodes < n_r:
             E_l = max(E_l, E_guess)  # keep track of the lower bound of energy (greatest energy with too few nodes)
 
-            # if n_r - num_nodes > 5:  # if the guess is far off, increase the adjustment steps in energy
-            #     E_guess_new = E_guess * 0.5
-            # else:
             E_guess_new = E_guess * 0.9
         elif num_nodes > n_r:
             E_u = min(E_u, E_guess)  # keep track of the upper bound of energy (lowest energy with too many nodes)
-            # if num_nodes - n_r > 5:  # if the guess is far off, increase the adjustment steps in energy
-            #     E_guess_new = E_guess * 2
-            # else:
+
             E_guess_new = E_guess * 1.1
         else:
             # check if the first derivative is continuous
             # if this is fulfilled, we found the eigenfunction and therefore the eigenenergy
-            # print(y_out[-1, 1] - y_in[0, 1])
             if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-10):
                 break
 
@@ -136,16 +125,24 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
         elif E_guess_new > E_u:
             E_guess_new = (E_guess+E_u)/2
 
+        energy_convergence = abs(E_guess - E_guess_new)
         E_guess = E_guess_new
-        # print("new E_guess:", E_guess)
+    else:
+        it = -1
 
-    N = 1/np.sqrt(np.trapz(y[:,0]**2, x=r))
+    # all radial wavefunctions must be zero in the origin
+    y = np.insert(y, obj=0, values=0, axis=0)
 
-    return N * y, E_guess, a_c, it
+    # N = 1/np.sqrt(np.trapz(y[:,0]**2, x=r))
+    N = 1 / np.sqrt(integrate_on_grid(y[:, 0] ** 2 + y[:, 1] ** 2, grid=r_grid, suppress_warning=True))
+
+    y *= N
+
+    return RadialSchrodingerWaveFunction(r_grid, y[:, 0], y[:, 1]), E_guess, energy_convergence, a_c, it
 
 
 if __name__ == "__main__":
-    from util.misc import find_suitable_number_of_integration_points_schrodinger
+    from dish.util.misc import find_suitable_number_of_integration_points_schrodinger
     Z = 1
     n, l = 5,0#10, 3
     M = np.inf
@@ -165,16 +162,19 @@ if __name__ == "__main__":
 
     import time
     t_start = time.time()
-    R, E, a_c, num_iteration = master(n, l, Z, M, V, r, t, h,
+    R, E, E_convergence, a_c, num_iteration = master(n, l, Z, M, V, r, t, h,
                        order_adams = 11,
                        order_insch = 7,
-                       E_guess = "auto",
+                       E_guess = energy(n, Z, M) * 0.95,
                        max_number_of_iterations = 50
                        )
     print(f"finding eigenenergy and -function took {time.time()-t_start:.3f}s and {num_iteration} iterations")
 
+    R_ = R
+    R = np.stack([R_.Psi, R_.Psi_prime], axis=-1)
+
     import matplotlib.pyplot as plt
-    from schrödinger.coulomb.analytical import radial_function, energy
+    from dish.schrodinger.coulomb.analytical import radial_function
     R_func = radial_function(n, l, r, Z, M)
     E_analytical = energy(n, Z, M)
     print(f"analytical value of eigenenergy: {E_analytical}")

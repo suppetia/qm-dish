@@ -3,8 +3,7 @@ from os import cpu_count
 
 from dish.dirac.master import master
 from dish.util.atom import Nucleus, QuantumNumberSet, parse_atomic_term_symbol
-from dish.util.misc import find_suitable_number_of_integration_points_dirac
-from dish.util.radial.grid import DistanceGrid
+from dish.util.radial.grid import DistanceGrid, construct_grid_from_dict
 from dish.util.radial.wave_function import RadialDiracWaveFunction
 from dish.util.misc import SolvingResult, SolvingParameters
 
@@ -16,25 +15,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def construct_grid_from_dict(r_grid: dict, nucleus: Nucleus, state:QuantumNumberSet):
-    h = r_grid.get("h", 0.005)
-    r0 = r_grid.get("r0", 2e-6)
-    if r_grid.get("r_max") is not None:
-        return DistanceGrid(h, r0, r_max=r_grid.get("r_max"))
-    elif r_grid.get("N", "auto") == "auto":
-        N = find_suitable_number_of_integration_points_dirac(Z=nucleus.Z,
-                                                             M=nucleus.M,
-                                                             n=state.n,
-                                                             kappa=state.kappa,
-                                                             r_0=r0,
-                                                             h=h)
-        return DistanceGrid(h, r0, N)
-    else:
-        try:
-            N = int(r_grid['N'])
-        except Exception:
-            raise ValueError(f"Number of grid points 'N' must be an integer but is {type(r_grid['N'])}")
-        return DistanceGrid(h, r0, N)
 
 def solve(nucleus: Nucleus,
           state: Union[str, QuantumNumberSet, Tuple[int, int, float]],
@@ -74,7 +54,7 @@ def solve(nucleus: Nucleus,
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):
-        r_grid = construct_grid_from_dict(r_grid, nucleus, state)
+        r_grid = construct_grid_from_dict(r_grid, nucleus, state, relativistic=True)
 
     if potential_model.lower() in ["f", "fermi"]:
         potential_model = "Fermi"
@@ -128,7 +108,7 @@ def multiple_solve(nucleus: Nucleus,
                    order_indir: int = 7,  # order of the procedure tu
                    max_number_of_iterations=20,
                    num_processes: int = -1
-                   ) -> Dict[Union[str, QuantumNumberSet], SolvingResult]:
+                   ) -> List[SolvingResult]:
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):
@@ -155,14 +135,14 @@ def multiple_solve(nucleus: Nucleus,
         results: List[SolvingResult] = pool.starmap(solve, arguments)
 
     return results
-    results_dict = {}
-    for s in states:
-        for r in results:
-            if r.state == s:
-                results_dict[s] = r
-                break
-
-    return results_dict
+    # results_dict = {}
+    # for s in states:
+    #     for r in results:
+    #         if r.state == s:
+    #             results_dict[s] = r
+    #             break
+    #
+    # return results_dict
 
 
 

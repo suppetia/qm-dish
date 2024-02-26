@@ -35,9 +35,11 @@ def matrix_element(bra: RadialWaveFunction,
     assert bra.grid == ket.grid
     assert bra.grid.N == operator.shape[0]
 
-    new_ket = matmul_pointwise(operator, ket.Psi)
-    bra_conj = bra.Psi.copy()
-    bra_conj[:, 0] *= -1
+    ket = ket.Psi.astype(np.complex128)
+    ket[:, 0] *= 1j
+    new_ket = matmul_pointwise(operator, ket)
+    bra_conj = bra.Psi.astype(np.complex128)
+    bra_conj[:, 0] *= -1j
     return integrate_on_grid(np.sum(bra_conj * new_ket, axis=1), grid=bra.grid)
 
 
@@ -55,10 +57,12 @@ def mp_matrix_element(bra: RadialWaveFunction,
     assert bra.grid == ket.grid
     assert bra.grid.N == operator.shape[0]
 
-    integrand = np.zeros(bra.grid.N)
-    bra_ = bra.Psi.copy()
-    bra_[:, 0] *= -1
+    integrand = np.zeros(bra.grid.N, dtype=np.complex128)
+    ket = ket.Psi.astype(np.complex128)
+    ket[:, 0] *= 1j
+    bra_conj = bra.Psi.astype(np.complex128)
+    bra_conj[:, 0] *= -1j
     for i in range(bra.grid.N):
-        integrand[i] = mp.fdot(bra_[i], mp.matrix(operator[i, :, :]) * mp.matrix(ket.Psi[i]))
+        integrand[i] = mp.fdot(bra_conj[i], mp.matrix(operator[i, :, :]) * mp.matrix(ket[i]))
 
     return integrate_on_grid(integrand, grid=bra.grid)

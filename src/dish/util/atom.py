@@ -10,10 +10,15 @@ from dish.util.potential import FermiChargeDistribution, CoulombChargeDistributi
 
 @dataclass
 class Nucleus:
-    Z: int
+    Z: float
     M: float
     R0: float  # root-mean-square radius
     a: float = 2.3e-15/a_0 / (4*np.log(3))  # default value from Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7
+    charge: float = None  # usually just required by non-relativistic calculations, defaults to Z-1
+
+    def __post_init__(self):
+        if self.charge is None:
+            self.charge = self.Z - 1
 
     @property
     def mu(self):

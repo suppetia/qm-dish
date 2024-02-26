@@ -3,6 +3,7 @@ from scipy.optimize import curve_fit
 
 from typing import Union
 
+from dish.util.atom import Nucleus, QuantumNumberSet
 
 class DistanceGrid:
 
@@ -119,6 +120,46 @@ class RombergIntegrationGrid(DistanceGrid):
         h = np.log(last_r / r0 + 1) / (N-1)
 
         return cls(h=h, r0=grid.r0, k=k)
+
+
+def construct_grid_from_dict(r_grid: dict,
+                             nucleus: Nucleus,
+                             state: QuantumNumberSet,
+                             *, relativistic=True):
+    h = r_grid.get("h", 0.005)
+    r0 = r_grid.get("r0", 2e-6)
+    if r_grid.get("r_max") is not None:
+        return DistanceGrid(h, r0, r_max=r_grid.get("r_max"))
+    elif r_grid.get("N", "auto") == "auto":
+        if relativistic:
+            from dish.util.misc import find_suitable_number_of_integration_points_dirac
+
+            N = find_suitable_number_of_integration_points_dirac(Z=nucleus.Z,
+                                                                 M=nucleus.M,
+                                                                 n=state.n,
+                                                                 kappa=state.kappa,
+                                                                 r_0=r0,
+                                                                 h=h)
+        else:
+            from dish.util.misc import find_suitable_number_of_integration_points_schrodinger
+
+            N = find_suitable_number_of_integration_points_schrodinger(Z=nucleus.Z,
+                                                                       M=nucleus.M,
+                                                                       n=state.n,
+                                                                       l=state.l,
+                                                                       r_0=r0,
+                                                                       h=h)
+    else:
+        try:
+            N = int(r_grid['N'])
+        except Exception:
+            raise ValueError(f"Number of grid points 'N' must be an integer but is {type(r_grid['N'])}")
+
+    k = np.log2(N - 1)
+    if np.isclose(k - np.floor(k), 0):
+        return RombergIntegrationGrid(h, r0, N)
+    else:
+        return DistanceGrid(h, r0, N)
 
 
 def construct_grid_from_points(r: np.array) -> DistanceGrid:
