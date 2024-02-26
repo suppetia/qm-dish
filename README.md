@@ -144,12 +144,20 @@ After the solving process the wavefunction can be obtained from the *SolvingResu
 ```python
 Psi = result.wave_function
 ```
-The wavefunction is stored in a *RadialDiracWaveFunction* object which stores the array of points where the wavefunction is evaluated in the field *r*, the large component in the field *f* and the small component in the field *g*:
+##### The wavefunction
+has the form
+
+$$\phi_{\kappa, m}(\vec{r})  = \frac{1}{r} \begin{pmatrix} i f_\kappa (r) \Omega_{\kappa, m}(\hat{r}) \\\\ g_\kappa(r) \Omega_{-\kappa,m}(\hat{r}) \end{pmatrix}$$
+
+where $r$ is the radial part and $\hat{r}$ is the spherical part of the vector $\vec{r}$ and $\Omega_{\kappa, m}$ is a spherical spinor.
+It is stored in a *RadialDiracWaveFunction* object which stores the array of points where the wavefunction is evaluated in the field *r*, the large component $f_\kappa$ in the field *f* and the small component $g_\kappa$ in the field *g*:
 ```python
 Psi.r  # grid points -> stored in a numpy array
 Psi.f  # small component values at the grid points -> stored in a numpy array
 Psi.g  # large component values at the grid points -> stored in a numpy array
 ```
+> To allow further calculations (mainly the calculation of [matrix elements](#calculating-matrix-elements)) 
+> in opposite to literature $f$ and $g$ are stored like above (without the factor $\frac{1}{r}$) to minimize numerical error.
 
 The energy of the *state* is stored in the field *energy*:
 ```python
@@ -228,7 +236,7 @@ Usually there is no need to modify this values but for some wavefunctions that o
 
 ### Calculating Matrix Elements
 To calculate matrix elements of two states $`\psi`$ and $`\varphi`$ of a radial-symmetric operator $`\hat{O}(r)`$ one needs to calculate the integral
-$`\int_0^\infty \psi^T \hat{O} \phi \text{d}r`$ where $`\psi`$ and $`\phi`$ both are 2-component vectors containing the large component *f* and the small component *g*
+$`\int_0^\infty \psi^\dagger \hat{O} \phi r^2 \text{d}r`$ where $`\psi`$ and $`\phi`$ both are 2-component vectors containing the large component *f* and the small component *g*
 and $`\hat{O}`$ is a 2x2-Matrix.
 Using *dish* this can be archived by the following function
 ```python
@@ -238,14 +246,25 @@ matrix_element(psi, op, phi)
 ```
 where *psi* and *phi* must be *RadialWaveFunction* objects on the same grid of length $n$ and 
 *op* a numpy array of shape *(n, 2, 2)*.  
-This utilizes internally the function *radial_integral* which can be used to calculate more general radial integrals.
+> In a *RadialWaveFunction*-object $f_\kappa$ and $g_\kappa$ are stored as defined [above](#the-wavefunction)
+> and therefore are not multiplied by $\frac{1}{r}$ which minimizes the numerical error since for the radial integral it cancels out with the Jacobi-determinant.
+
+This utilizes internally the function *integrate_on_grid* which can be used to calculate more general radial integrals.
 The signature of the function looks like
 ```python
-from dish.util.radial.integration import radial_integral
+from dish.util.radial.integration import integrate_on_grid
 
-radial_integral(y: numpy.ndarray,
-                grid: DistanceGrid = grid)
+integrate_on_grid(y: numpy.ndarray,
+                  grid: DistanceGrid = grid)
 ```
-> **Note**: When given a *RombergIntegrationGrid* this uses Romberg's method and when a *DistanceGrid* is passed it falls back to the trapezoidal rule for integration.
+> **Notes**: 
+> 1. When given a *RombergIntegrationGrid* this uses Romberg's method and when a *DistanceGrid* is passed it falls back to the trapezoidal rule for integration.
 > Because of the higher accuracy of the first method it is highly encouraged to use a *RombergIntegrationGrid*.
-
+> 2. There also is a method `radial_integral` which provides the same functionality but already multiplies *y* with the Jacobi-determinant for convinience.  
+> Usually it should not be used with *RadialWaveFunction* to avoid the necessary division by $r$. 
+> ```python
+> from dish.util.radial.integration import radial_integral
+> 
+> radial_integral(y: numpy.ndarray,
+>                 grid: DistanceGrid = grid)
+> ```

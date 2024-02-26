@@ -24,7 +24,7 @@ build: build_dir
 ifdef MISSING_COMPILATION_DEPENDENCIES
 	@echo "'"$(MISSING_COMPILATION_DEPENDENCIES)"' is/are not installed. Install the dependencies to compile adams.f90 and significantly speed up the program"
 else
-	cd $(BUILD_DIR)/src/dish/util/numeric; \
+	cd $(BUILD_DIR)/dish/util/numeric; \
 	$(PY) -m numpy.f2py -c adams_f.f90 -m adams_f -llapack --f90exec=$(FC) --f77exec=$(FC)
 endif
 	cp LICENSE MANIFEST.in pyproject.toml README.md $(BUILD_DIR)
