@@ -45,8 +45,11 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
 
     def __init__(self, r_grid: Union[np.ndarray, DistanceGrid],
                  Psi: np.ndarray,
-                 Psi_prime: np.ndarray):
+                 Psi_prime: np.ndarray = None):
 
+        if Psi_prime is None:
+            temp_grid = DistanceGrid(r_grid.h, r_grid.r0, r_grid.N+1)
+            Psi_prime = np.gradient(Psi, temp_grid.r[1:] - r_grid.r)
         self._psi_prime = Psi_prime
         super().__init__(r_grid=r_grid, Psi=Psi)
 
