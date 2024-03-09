@@ -1,6 +1,7 @@
 import numpy as np
 # import yaml
 import re
+from typing import Union
 
 from dataclasses import dataclass
 
@@ -10,9 +11,19 @@ from dish.util.potential import FermiChargeDistribution, CoulombChargeDistributi
 
 @dataclass
 class Nucleus:
+    """
+    | Dataclass to store the properties of the nucleus.
+    | The potential for point-like, ball-like and Fermi charge distributions is provided through the :meth:`potential` method.
+
+    :param Z: number of protons in the nucleus == nuclear charge
+    :param M: mass of the nucleus.
+    :param R0: radius of the nucleus. For a Fermi charge distribution this is to the parameter *c*.
+    :param a: (optional) diffuseness parameter for a Fermi distribution. Defaults to :math:`2.3 \\text{fm} /a_0 / (4\cdot\ln(3))` as described in *Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7*.
+    :param charge: (optional) charge of the hydrogenic atom. Defaults to *Z-1*.
+    """
     Z: float
     M: float
-    R0: float  # root-mean-square radius
+    R0: float
     a: float = 2.3e-15/a_0 / (4*np.log(3))  # default value from Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7
     charge: float = None  # usually just required by non-relativistic calculations, defaults to Z-1
 
@@ -29,10 +40,16 @@ class Nucleus:
         # load from yaml file
         ...
 
-    def potential(self, r, model="Fermi"):
+    def potential(self, r: Union[float, np.ndarray], model="Fermi"):
+        """
+        :param r: point(s) where the value of the potential should be evaluated
+        :param model: (optional) alias for the type of the potential model. Choose from "Fermi", "ball-like", "point-like"=="Coulomb". Defaults to "Fermi".
+        :return: Values of the nucleus' potential in distance *r*
+        :rtype: float or np.ndarray, same as *r*
+        """
         if model.lower() in ["f", "fermi"]:
             return FermiPotential(self)(r)
-        elif model.lower() in ["u", "uniform", "ball", "uniformball"]:
+        elif model.lower() in ["u", "uniform", "ball", "ball-like", "balllike", "uniformball"]:
             return UniformBallPotential(self)(r)
         elif model.lower() in ["point", "point-like", "pointlike", "p", "coulomb", "c"]:
             return CoulombPotential(self)(r)
@@ -68,8 +85,18 @@ class Nucleus:
 
 
 class QuantumNumberSet:
+    """
+    A container class to store the quantum numbers n, l and j.
+    :math:`\kappa` is calculated for convenience.
 
-    def __init__(self, n, l, j):
+    :param n: principal quantum number
+    :param l: orbital angular momentum quantum number
+    :param j: (optional) total angular momentum quantum number. For non-relativistic calculations not defined.
+
+    """
+
+
+    def __init__(self, n, l, j=None):
         self._n = n
         self._l = l
         self._j = j
@@ -87,22 +114,31 @@ class QuantumNumberSet:
         return self._j
 
     def __iter__(self):
-        yield from [self.n, self.l, self.j]
+        if self.j is not None:
+            yield from [self.n, self.l, self.j]
+        else:
+            yield from [self.n, self.l]
 
     @property
     def kappa(self):
-        return int(pow(-1, int(self.j-self.l+1/2)) * (self.j+1/2))
+        if self.j is not None:
+            return int(pow(-1, int(self.j-self.l+1/2)) * (self.j+1/2))
+        return None
 
     def term_symbol(self):
         l_values = "spdfghiklmnoqrtuvwxyz"
-
-        j = str(self.j) if int(self.j) == self.j else f"{int(self.j*2)}/2"
+        if self.j is not None:
+            j = str(self.j) if int(self.j) == self.j else f"{int(self.j*2)}/2"
+        else:
+            j = ""
         if self.l >= len(l_values):
             raise ValueError(f"symbol undefined for l = {self.l}")
 
         return f"{self.n}{l_values[self.l]}{j}"
 
     def __repr__(self):
+        if self.j is None:
+            return f"QuantumNumberSet(n={self.n}, l={self.l} => state={self.term_symbol()})"
         return f"QuantumNumberSet(n={self.n}, l={self.l}, j={self.j}; kappa={self.kappa} => state={self.term_symbol()})"
 
     def __eq__(self, other):
@@ -112,24 +148,29 @@ class QuantumNumberSet:
             other = QuantumNumberSet(*other)
         elif not isinstance(other, QuantumNumberSet):
             return False
+        if self.j is None:
+            return self.n == other.n and self.l == other.l
         return self.n == other.n and self.l == other.l and self.j == other.j
 
 
 def parse_atomic_term_symbol(symbol: str) -> QuantumNumberSet:
     """
     Parse the atomic term symbol into quantum numbers.
-    :param symbol:
-        format '<n><l><j>',
-            where <n> is the integer value,
-            <l> can be either the spectroscopic symbol (s,p,d,...) or an integer in brackets ([1], [2], ...)
-            and <j> can be either an explicit integer/2 or +/- .
-        examples: "2s1/2" == "2[0]+", "15d3/2" == "15[2]-"
 
-    :return:
+    :param symbol: spectroscopic representation of the electronic state
+
+        format: '<n><l><j>',
+        where <n> is the integer value,
+        <l> can be either the spectroscopic symbol (s,p,d,...) or an integer in brackets ([1], [2], ...)
+        and <j> can be either an explicit integer/2 or +/- .
+
+        :Example: "2s1/2" == "2[0]+", "15d3/2" == "15[2]-"
+
+    :rtype: QuantumNumberSet
     """
     l_values = list("spdfghiklmnoqrtuvwxyz")
 
-    pattern = re.compile(rf"(?P<n>[0-9]+)(?P<l>[{''.join(l_values)}]|(\[\d+\]))\_?(?P<j>([0-9]+(\/2)?)|([\+\-]))", re.IGNORECASE)
+    pattern = re.compile(rf"(?P<n>[0-9]+)(?P<l>[{''.join(l_values)}]|(\[\d+\]))\_?(?P<j>([0-9]+(\/2)?)|([\+\-]))?", re.IGNORECASE)
 
     match = re.match(pattern, symbol)
     if match is None:
@@ -148,12 +189,14 @@ def parse_atomic_term_symbol(symbol: str) -> QuantumNumberSet:
             raise ValueError(f"invalid symbol '{l}' for orbital quantum number")
     if match.group("j") in ["+", "-"]:
         j = l + eval(f"{match.group('j')}.5")
+    elif match.group("j") is None:
+        j = None
     else:
         j = float(eval(match.group("j")))
     # check if the state is valid
     if l >= n:
         raise ValueError(f"invalid value for orbital momentum quantum number l: '{l}'. Valid range: 0-{n-1}")
-    if not (np.isclose(j, l+1/2) or np.isclose(j, l-1/2)):
+    if j is not None and not (np.isclose(j, l+1/2) or np.isclose(j, l-1/2)):
         raise ValueError(f"invalid value for total angular momentum number j: '{j}.\nValid values are {l-1/2} and {l+1/2}.")
     return QuantumNumberSet(n, l, j)
 
@@ -169,4 +212,6 @@ if __name__ == "__main__":
 
     print(parse_atomic_term_symbol(symbol) == symbol)
     print(QuantumNumberSet(n, l, j) == "1"+symbol)
+
+    print(parse_atomic_term_symbol("1s"))
 

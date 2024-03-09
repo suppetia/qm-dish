@@ -13,6 +13,7 @@ from dish.util.math_util import count_nodes
 from dish.util.radial.wave_function import RadialDiracWaveFunction
 from dish.util.radial.grid import DistanceGrid
 from dish.util.radial.integration import integrate_on_grid
+from dish.util.atom import QuantumNumberSet
 
 
 def outer_classical_turning_point(V, W) -> int:
@@ -178,7 +179,7 @@ def master(n, l, j, Z, M, V,
 
     y *= N
 
-    return RadialDiracWaveFunction(r_grid, y), W_guess, energy_convergence, a_c, it
+    return RadialDiracWaveFunction(r_grid, y, state=QuantumNumberSet(n, l, j)), W_guess, energy_convergence, a_c, it
 
 
 if __name__ == "__main__":

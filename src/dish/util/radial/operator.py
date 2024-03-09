@@ -64,7 +64,7 @@ class MatrixOperator(AbstractOperator):
         else:
             new_ket = matmul_pointwise(self.op, ket.Psi)
 
-        return type(ket)(ket.grid, new_ket)
+        return type(ket)(ket.grid, new_ket, state=ket.state)
 
 
 class BraOperator(AbstractOperator):
@@ -100,7 +100,7 @@ class SymbolicScalarOperator(AbstractOperator):
 
     def apply_on(self, ket: RadialWaveFunction) -> RadialWaveFunction:
         if isinstance(ket, RadialSchrodingerWaveFunction):
-            return RadialSchrodingerWaveFunction(r_grid=ket.grid, Psi=self.evaluate_on(ket, 1))
+            return RadialSchrodingerWaveFunction(r_grid=ket.grid, Psi=self.evaluate_on(ket, 1), state=ket.state)
         elif isinstance(ket, RadialDiracWaveFunction):
             return DiagonalOperator([self]*ket.Psi.shape[1]).apply_on(ket)
 
@@ -198,7 +198,7 @@ class SymbolicMatrixOperator(AbstractOperator):
         if dim_ket == 1:
             new_ket = new_ket.flatten()
 
-        return type(ket)(ket.grid, new_ket)
+        return type(ket)(ket.grid, new_ket, state=ket.state)
 
 
 class DiagonalOperator(SymbolicMatrixOperator):
@@ -237,6 +237,7 @@ class DifferentialOperator(SymbolicScalarOperator):
             r = ket.grid.r * np.nan_to_num(np.gradient(ket.Psi[:, dim-1]/ket.grid.r, temp_grid.r[1:] - ket.grid.r), nan=0)
         np.seterr(**old_settings)
         return r
+
 
 class _ScalarOperatorChain(_OperatorChain, SymbolicScalarOperator, ABC):
 
@@ -309,7 +310,7 @@ class _OperatorSum(_OperatorChain):
         for op in self.operator_list:
             new_ket_values += op.apply_on(ket).Psi
 
-        return type(ket)(r_grid=ket.grid, Psi=new_ket_values)
+        return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=ket.state)
 
     def __add__(self, other):
         if isinstance(other, AbstractOperator):
@@ -343,7 +344,7 @@ class _ScalarOperatorSum(_ScalarOperatorChain):
             for op in self.operator_list:
                 new_ket_values += op.apply_on(ket).Psi
 
-            return type(ket)(r_grid=ket.grid, Psi=new_ket_values)
+            return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=ket.state)
         return NotImplemented
 
     def __mul__(self, other: RadialWaveFunction):
@@ -351,15 +352,3 @@ class _ScalarOperatorSum(_ScalarOperatorChain):
             return self.apply_on(other)
 
         return NotImplemented
-
-# class RadialOperator:
-#
-#     def __init__(self,
-#                  op: Callable[[float], np.ndarray],
-#                  r_grid: DistanceGrid
-#                  ):
-#         # infer shape from a single function call
-#         op_shape = op(1).shape
-#         mat = np.empty((r_grid.N, *op_shape))
-
-

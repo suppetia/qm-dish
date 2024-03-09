@@ -9,6 +9,7 @@ from dish.util.radial.grid import DistanceGrid
 from dish.util.radial.integration import integrate_on_grid
 
 from dish.util.math_util import count_nodes
+from dish.util.atom import QuantumNumberSet
 
 from typing import Union
 
@@ -138,7 +139,7 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
 
     y *= N
 
-    return RadialSchrodingerWaveFunction(r_grid, y[:, 0], y[:, 1]), E_guess, energy_convergence, a_c, it
+    return RadialSchrodingerWaveFunction(r_grid, y[:, 0], state=QuantumNumberSet(n,l), Psi_prime=y[:, 1]), E_guess, energy_convergence, a_c, it
 
 
 if __name__ == "__main__":
