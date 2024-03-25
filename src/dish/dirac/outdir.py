@@ -1,6 +1,6 @@
 import numpy as np
 
-from dish.schrodinger.outsch import differentiation_coefficients_efficient
+from dish.util.numeric.lagrangian_differentiation import differentiation_coefficients_efficient
 from dish.util.atomic_units import alpha
 from dish.util.radial.grid import DistanceGrid
 
@@ -47,8 +47,8 @@ def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
 
 
 if __name__ == "__main__":
-    from dirac.coulomb.analytical import energy, radial_function
-    from util.atomic_units import c
+    from dish.dirac.coulomb.analytical import energy, radial_function
+    from dish.util.atomic_units import c
     print(c)
 
     M = np.inf
@@ -59,9 +59,8 @@ if __name__ == "__main__":
     N = 570
     h = 0.0005  # 0005 #0.00001
     r0 = 0.0005
-    t = np.arange(N) * h
-    r = r0 * (np.exp(t) - 1)
-    r[np.isclose(r, 0, atol=1e-15)] = 1e-15
+    r_grid = DistanceGrid(h=h, r0=r0, N=N)
+    r = r_grid.r
 
     V = - Z * 1/(1+1/M)/r
 
@@ -69,7 +68,7 @@ if __name__ == "__main__":
     print(W)
 
     order = 13
-    P_start, Q_start = outdir(order, Z, kappa, W, V, r, t)
+    P_start, Q_start = outdir(order, Z, kappa, W, V, r_grid)
 
     P, Q = radial_function(n=n, kappa=kappa, r=r, Z=Z, M=np.inf)
 

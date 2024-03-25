@@ -4,6 +4,7 @@ from math import factorial
 
 from dish.util.math_util.special_functions import confluent_hypergeometric_f
 from dish.util.atomic_units import alpha, c
+from dish.util.atom import QuantumNumberSet
 from dish.util.radial.wave_function import RadialDiracWaveFunction
 
 
@@ -38,7 +39,7 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, M: float = np.inf):
     """
     Radial component R_{n,l} of the analytical solution for the Schrödinger equation for a Coulomb-potential in atomic units.
     :param n: principal quantum number
-    :param kappa: ? quantum number
+    :param kappa: dirac quantum number
     :param r: distance from nucleus in a_0
     :param Z: nuclear charge in e
     :param M: nuclear mass in m_e. The default is np.inf
@@ -78,7 +79,7 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, M: float = np.inf):
     P = N_nkappa * np.sqrt(1+E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 + F2)
     Q = N_nkappa * np.sqrt(1-E/c**2) * np.exp(-x/2) * np.power(x, gamma) * (F1 - F2)
     # return np.stack((P, Q))
-    return RadialDiracWaveFunction(r_grid=r, Psi=np.stack((P, Q)).T)
+    return RadialDiracWaveFunction(r_grid=r, Psi=np.stack((P, Q)).T, state=QuantumNumberSet(n=n, kappa=kappa))
 
 
 if __name__ == "__main__":

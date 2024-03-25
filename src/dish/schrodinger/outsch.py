@@ -1,59 +1,6 @@
 import numpy as np
 
-from dish.util.math_util.taylor import sym_x, taylor_coefficients
-from dish.util.LUTs.outsch import taylor_coeffs
-
-coefficients_storage = {}  # if differentiation coefficients have been computed once, store them in a dict
-
-def differentiation_coefficients(order):
-    # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
-    if order > len(taylor_coeffs):
-        raise ValueError("order exceeded the stored taylor coefficients. Create a larger LUT to work with this order.")
-
-    k = order # alias to agree with naming in Johnson lecture
-    m = np.zeros((k+1, k+1), dtype=np.float64)
-    a = taylor_coeffs
-
-    for j in range(k+1):
-        # calculate the coeffs m[., .] of y in
-        # dy/dt[order-j] = sum_{i=0}^k a[j,i] del^i y[order] = sum_{i=0}^k m[order-j, i] y[i]
-
-        j_ = k - j  # shortcut
-
-        for i in range(k+1):
-            for l in range(i+1):
-                m[j_, k-l] += a[j, i] * (-1)**l * np.math.factorial(i)/(np.math.factorial(l)*np.math.factorial(i-l))
-
-    return m
-
-def differentiation_coefficients_efficient(order):
-    if order in coefficients_storage:  # if the coefficients have been computed once, load the values
-        return coefficients_storage[order]
-
-    # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
-    if order > len(taylor_coeffs):
-        raise ValueError("order exceeded the stored taylor coefficients. Create a larger LUT to work with this order.")
-
-    k = order  # alias to agree with naming in Johnson lecture
-    m = np.zeros((k+1, k+1), dtype=np.float64)
-    a = taylor_coeffs
-
-    for j in range(np.math.ceil((k+1)/2)):
-        # calculate the coeffs m[., .] of y in
-        # dy/dt[order-j] = sum_{i=0}^k a[j,i] del^i y[order] = sum_{i=0}^k m[order-j, i] y[i]
-
-        j_ = k - j  # shortcut
-
-        for i in range(k+1):
-            for l in range(i+1):
-                m[j_, k - l] += a[j, i] * (-1)**l * np.math.factorial(i)/(np.math.factorial(l)*np.math.factorial(i-l))
-
-        if j == j_:
-            continue
-        m[j] = - m[j_, ::-1]  # use symmetry
-
-    coefficients_storage[order] = m
-    return m
+from dish.util.numeric.lagrangian_differentiation import differentiation_coefficients_efficient
 
 
 def outsch(order, p0, q0, l, E, V, r, t):  # TODO: remove p0, q0 from parameters
@@ -108,7 +55,7 @@ if __name__ == "__main__":
     # t_efficient = timeit(lambda: differentiation_coefficients_efficient(order), number=number)
     # print(t_efficient)
 
-    from src.schrödinger.coulomb.analytical import energy, radial_function
+    from dish.schrodinger.coulomb.analytical import energy, radial_function
 
     N = 600
     h = 0.02

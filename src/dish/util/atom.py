@@ -95,11 +95,25 @@ class QuantumNumberSet:
 
     """
 
-
-    def __init__(self, n, l, j=None):
+    def __init__(self, n, l=None, j=None, *, kappa=None):
         self._n = n
-        self._l = l
+        if l is not None:
+            self._l = l
         self._j = j
+
+        if kappa is not None:
+            if kappa < 0:
+                j_ = abs(kappa) - .5
+                l_ = j_ - .5
+            else:
+                j_ = kappa - .5
+                l_ = j_ + .5
+            if l is not None and l != l_:
+                raise ValueError(f"'kappa' was specified and does not match with value passed to 'l'")
+            if j is not None and j != j_:
+                raise ValueError(f"'kappa' was specified and does not match with value passed to 'j'")
+            self._l = l_
+            self._j = j_
 
     @property
     def n(self):
