@@ -10,8 +10,8 @@ from dish.util.numeric.adams import adams
 
 from dish.util.atomic_units import c, alpha
 from dish.util.math_util import count_nodes
+from dish.util.radial.grid.grid import DistanceGrid
 from dish.util.radial.wave_function import RadialDiracWaveFunction
-from dish.util.radial.grid import DistanceGrid
 from dish.util.radial.integration import integrate_on_grid
 from dish.util.atom import QuantumNumberSet
 

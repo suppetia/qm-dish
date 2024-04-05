@@ -5,7 +5,7 @@ from dish.schrodinger.coulomb.analytical import energy
 from dish.util.numeric.adams import adams
 
 from dish.util.radial.wave_function import RadialSchrodingerWaveFunction
-from dish.util.radial.grid import DistanceGrid
+from dish.util.radial.grid.grid import DistanceGrid
 from dish.util.radial.integration import integrate_on_grid
 
 from dish.util.math_util import count_nodes

@@ -3,7 +3,8 @@ from os import cpu_count
 
 from dish.schrodinger.master import master
 from dish.util.atom import Nucleus, QuantumNumberSet, parse_atomic_term_symbol
-from dish.util.radial.grid import DistanceGrid, construct_grid_from_dict
+from dish.util.radial.grid.grid import DistanceGrid
+from dish.util.radial.grid.construct_grid import construct_grid_from_dict
 from dish.util.misc import SolvingResult, SolvingParameters
 
 from typing import Union, Tuple, List
@@ -54,17 +55,16 @@ def solve(nucleus: Nucleus,
     if isinstance(r_grid, dict):
         r_grid = construct_grid_from_dict(r_grid, nucleus, state, relativistic=False)
 
+    # evaluate the given potential model of the nucleus on the given grid
     if potential_model.lower() in ["f", "fermi"]:
         potential_model = "Fermi"
-        V = nucleus.FermiPotential(r_grid.r)
     elif potential_model.lower() in ["u", "uniform", "ball", "uniformball"]:
         potential_model = "uniform"
-        V = nucleus.UniformBallPotential(r_grid.r)
     elif potential_model.lower() in ["point", "point-like", "pointlike", "p", "coulomb", "c"]:
         potential_model = "point-like"
-        V = nucleus.CoulombPotential(r_grid.r)
     else:
         raise ValueError(f"'potential_model' must be either 'Fermi', 'uniform' or 'point-like' but is {potential_model}.")
+    V = nucleus.potential(r_grid.r, model=potential_model)
 
     t_start = time.perf_counter()
     Psi, E, dE, a_c, num_iteration = master(n=state.n,

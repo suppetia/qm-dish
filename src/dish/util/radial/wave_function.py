@@ -4,8 +4,8 @@ from scipy.interpolate import make_interp_spline
 from typing import Union
 from abc import ABC, abstractmethod
 
-from dish.util.radial.grid import DistanceGrid, construct_grid_from_points
-from dish.util.atom import QuantumNumberSet
+from dish.util.radial.grid.grid import DistanceGrid
+from dish.util.radial.grid.construct_grid import construct_grid_from_points
 
 
 class RadialWaveFunction(ABC):
@@ -20,7 +20,7 @@ class RadialWaveFunction(ABC):
     def __init__(self,
                  r_grid: Union[np.array, DistanceGrid],
                  Psi: np.array,
-                 state: QuantumNumberSet):
+                 state: "dish.util.atom.QuantumNumberSet"):
 
         if not isinstance(r_grid, DistanceGrid):
             r_grid = construct_grid_from_points(r_grid)
@@ -110,7 +110,7 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
 
     def __init__(self, r_grid: Union[np.ndarray, DistanceGrid],
                  Psi: np.ndarray,
-                 state: QuantumNumberSet,
+                 state: "dish.util.atom.QuantumNumberSet",
                  Psi_prime: np.ndarray = None):
 
         if Psi_prime is None:
@@ -172,8 +172,10 @@ class RadialDiracWaveFunction(RadialWaveFunction):
     Stores the following information:
     - r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.
     - Psi: The values of the radial wave function. A two-dimensional array.
-        - f: The large component.
-        - g: The small component.
+
+      - f: The large component.
+      - g: The small component.
+
     - state: The associated state as a dish.util.atom.QuantumNumberSet.
     """
     @property

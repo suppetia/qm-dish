@@ -2,7 +2,7 @@ from scipy.integrate import romb, trapezoid
 import numpy as np
 from mpmath import mp
 
-from dish.util.radial.grid import DistanceGrid, RombergIntegrationGrid
+from dish.util.radial.grid.grid import DistanceGrid, RombergIntegrationGrid
 from dish.util.radial.wave_function import RadialWaveFunction
 from dish.util.math_util.linear_algebra import matmul_pointwise
 
@@ -24,7 +24,7 @@ def radial_integral(y, grid:DistanceGrid):
 
 def matrix_element(bra: RadialWaveFunction,
                    operator: np.ndarray,
-                   ket: RadialWaveFunction) -> float:
+                   ket: RadialWaveFunction) -> complex:
     """
     calculate the matrix element <bra|operator|ket>
     :param bra: RadialWaveFunction
@@ -45,7 +45,7 @@ def matrix_element(bra: RadialWaveFunction,
 
 def mp_matrix_element(bra: RadialWaveFunction,
                       operator: np.ndarray,
-                      ket: RadialWaveFunction) -> float:
+                      ket: RadialWaveFunction) -> complex:
     """
     calculate the matrix element <bra|operator|ket>
         using arbitrary-precision floating-point arithmetic to calculate the integrand
