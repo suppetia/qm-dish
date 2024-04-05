@@ -27,6 +27,7 @@ def solve(nucleus: Nucleus,
           ) -> SolvingResult:
     """
     Solve the radial Dirac equation for Hydrogen-like atoms in state 'state'.
+
     :param nucleus: parameters of the nucleus
     :param state: electron state to find the wave function
     :param r_grid: grid on which the wave function is to be evaluated.
@@ -44,7 +45,8 @@ def solve(nucleus: Nucleus,
     :param max_number_of_iterations: number of iterations after which the solving routine will stop.
             The default is 20.
     :return:
-        The result of the solving routine 'master' as a 'SolvingResult'.
+        The result of the Dirac solving routine 'master' and additional information about the solving process.
+    :rtype: SolvingResult
     """
 
     if isinstance(state, str):
@@ -70,17 +72,16 @@ def solve(nucleus: Nucleus,
 
     t_start = time.perf_counter()
     Psi, E, dE, a_c, num_iteration = master(n=state.n,
-                                        l=state.l,
-                                        j=state.j,
-                                        Z=nucleus.Z,
-                                        M=nucleus.M,
-                                        V=V,
-                                        r=r_grid,
-                                        order_adams=order_AM,
-                                        order_indir=order_indir,
-                                        E_guess=E_guess,
-                                        max_number_of_iterations=max_number_of_iterations,
-                                        )
+                                            l=state.l,
+                                            j=state.j,
+                                            Z=nucleus.Z,
+                                            V=V,
+                                            r=r_grid,
+                                            order_adams=order_AM,
+                                            order_indir=order_indir,
+                                            E_guess=E_guess,
+                                            max_number_of_iterations=max_number_of_iterations,
+                                            )
     solving_time = time.perf_counter()-t_start
 
     result = SolvingResult(
@@ -105,10 +106,33 @@ def multiple_solve(nucleus: Nucleus,
                    potential_model: str = "Fermi",
                    E_guess: Union[float, str, List[float]] = "auto",
                    order_AM: int = 9,  # order of the Adams-Moulton procedure
-                   order_indir: int = 7,  # order of the procedure tu
+                   order_indir: int = 7,  # order of the procedure to guess the last few values
                    max_number_of_iterations=20,
                    num_processes: int = -1
                    ) -> List[SolvingResult]:
+    """
+    Solve the radial Dirac equation for multiple states in parallel using 'num_processes' processes.
+
+    :param nucleus: parameters of the nucleus
+    :param states: list electron state to find the wave function
+    :param r_grid: grid on which the wave functions are to be evaluated.
+            Can be constructed from dict.
+    :param potential_model: model of the charge distribution of the nucleus.
+            Either 'Fermi', 'uniform' (charged ball) or 'point-like'.
+            The default is 'Fermi'.
+    :param E_guess: initial guess for the energy of the state.
+            Can be 'auto' which will use the analytical value for a point-like nucleus.
+            The default is 'auto'.
+    :param order_AM: order of the Adams-Moulton procedure which is used to solve the differential equation.
+            The default is 9.
+    :param order_indir: order of the procedure which is used to find the most inner points of the wave function.
+            The default is 7.
+    :param max_number_of_iterations: number of iterations after which the solving routine will stop.
+            The default is 20.
+    :return:
+        The result of the Dirac solving routine 'master' and additional information about the solving process.
+    :rtype: SolvingResult
+    """
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):

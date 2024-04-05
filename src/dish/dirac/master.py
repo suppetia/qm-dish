@@ -2,7 +2,7 @@ import numpy as np
 
 from typing import Union
 
-from dish.dirac.coulomb.analytical import energy, radial_function
+from dish.dirac.coulomb.analytical import reduced_energy, radial_function
 
 from dish.dirac.outdir import outdir
 from dish.dirac.indir import indir
@@ -20,25 +20,23 @@ def outer_classical_turning_point(V, W) -> int:
     return int(np.argmin(np.abs(W-V)))
 
 
-def master(n, l, j, Z, M, V,
+def master(n, l, j, Z, V,
            r: Union[DistanceGrid, np.array],
            t: np.array = None,
            h: float = None,
            order_adams: int = 7,
            order_indir: int = 7,
-           E_guess: Union[float, str] = "auto",
+           E_guess: Union[float, str] = "auto",  # note that this actually means E-c^2
            max_number_of_iterations: int = 50):
 
-    mu = 1/(1+1/M)
 
     kappa = -l - 1 if np.isclose(j, l+1/2) else l
     k = abs(kappa)
 
-    gamma = np.sqrt(kappa**2-(alpha*Z*mu)**2)
+    gamma = np.sqrt(kappa**2-(alpha*Z)**2)
 
     if E_guess == "auto":
-        E_guess = energy(n, kappa, Z, M)
-        # E_guess = energy_schrodinger(n, Z, M) + c**2
+        E_guess = reduced_energy(n, kappa, Z)
 
     if isinstance(r, DistanceGrid):
         r_grid = r
@@ -76,9 +74,9 @@ def master(n, l, j, Z, M, V,
     W_l = -np.inf  # lowest energy with n_r nodes
 
     it = 0
-    W_guess = E_guess - c ** 2
+    W_guess = E_guess  # rename for alignment with notation in theory as this is W = E-c^2
 
-    energy_convergence = 0
+    energy_convergence = []
 
     while it < max_number_of_iterations:
         it += 1
@@ -92,7 +90,7 @@ def master(n, l, j, Z, M, V,
         # y_start_out = radial_function(n, kappa, r[:order_adams], Z, M).T
 
         y_start_out = np.array(
-            outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z * mu / r,
+            outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z / r,
                    r_grid=r_grid)
         ).T
         y_start_out[:, :] *= N  # the Q part is overestimated, to gain better assumption lower the initial values
@@ -134,8 +132,7 @@ def master(n, l, j, Z, M, V,
             if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-15):
                 break
 
-            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / np.trapz((y[:, 0]**2 + y[:, 1]**2)*r_prime, dx=h)
-            # W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h)
+            W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / integrate_on_grid(np.insert(y[:, 0]**2 + y[:, 1]**2, obj=0, values=0), grid=r_grid, suppress_warning=True)
 
             # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
             if np.isclose(W_guess-W_guess_new, 0, atol=1e-15):
@@ -145,7 +142,7 @@ def master(n, l, j, Z, M, V,
         elif W_guess_new > W_u:
             W_guess_new = (W_guess+W_u)/2
 
-        energy_convergence = abs(W_guess - W_guess_new)
+        energy_convergence.append(abs(W_guess - W_guess_new))
         W_guess = W_guess_new
 
         N = 1 / np.sqrt(np.trapz((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime, dx=h))
@@ -166,15 +163,9 @@ def master(n, l, j, Z, M, V,
                 np.diff(y[order_adams:num_points // 4, i]) / np.diff(r[order_adams:num_points // 4]))) + order_adams
             y[:dy_min, i] = r[:dy_min] / r[dy_min] * y[dy_min, i]
 
-    # #if np.isclose()
-    # dy_min = np.argmin(np.abs(np.diff(y[order_adams:num_points//4, 0])/np.diff(r[order_adams:num_points//4]))) + order_adams
-    # y[:dy_min, 0] = r[:dy_min]/r[dy_min] * y[dy_min, 0]
-
-    # all radial wavefunctions must be zero in the origin
+    # all radial wave functions must be zero in the origin, insert as this point was not used for calculations
     y = np.insert(y, obj=0, values=0, axis=0)
 
-    # N = 1/np.sqrt(np.trapz((y[:, 0]**2+y[:, 1]**2) * r_grid.rp, dx=h))
-    # N = 1/np.sqrt(simpson((y[:, 0] ** 2 + y[:, 1] ** 2) * r_prime,dx=h))
     N = 1/np.sqrt(integrate_on_grid(y[:, 0]**2+y[:, 1]**2, grid=r_grid, suppress_warning=True))
 
     y *= N

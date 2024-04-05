@@ -69,7 +69,7 @@ class SolvingResult:
     r_grid: DistanceGrid
     wave_function: RadialWaveFunction
     energy: float
-    energy_convergence: float
+    energy_convergence: list
     solving_parameters: SolvingParameters
     number_of_iterations: int
     solving_time: float

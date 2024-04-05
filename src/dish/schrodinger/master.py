@@ -18,13 +18,16 @@ def outer_classical_turning_point(V, E, l, r) -> int:
     return int(np.argmin(np.abs(E-(V+l*(l+1)/(2*r**2)))))
 
 
-def master(n, l, Z, M, V, r, t, h, charge=0,
+def master(n, l, Z, M, V, r,
+           t: np.ndarray = None, h: float = None,
+           charge: float = 0,
            order_adams: int = 7,
            order_insch: int = 7,
            E_guess: Union[float, str] = "auto",
            max_number_of_iterations: int = 50):
 
     mu = 1/(1+1/M)
+    V *= mu  # account for nuclear recoil
     effective_charge = charge + 1  # an e- in distance feels the effective charge
 
     if E_guess == "auto":
@@ -57,7 +60,7 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
     E_u = np.inf  # highest energy with n_r nodes
     E_l = -np.inf   # lowest energy with n_r nodes
 
-    energy_convergence = 0
+    energy_convergence = []
 
     it = 0
     while it < max_number_of_iterations:
@@ -68,8 +71,7 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
 
         y_start_out = np.array(
             outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z * mu / r,
-                          r=r[:a_c+1],
-                          t=t[:a_c+1])
+                          r_grid=r_grid)
             ).T
         y_start_in = np.array(insch.insch(order=order_insch, r=r[-order_adams:],
                                           mu=mu, l=l, E=E_guess, effective_charge=effective_charge)
@@ -126,7 +128,7 @@ def master(n, l, Z, M, V, r, t, h, charge=0,
         elif E_guess_new > E_u:
             E_guess_new = (E_guess+E_u)/2
 
-        energy_convergence = abs(E_guess - E_guess_new)
+        energy_convergence.append(abs(E_guess - E_guess_new))
         E_guess = E_guess_new
     else:
         it = -1

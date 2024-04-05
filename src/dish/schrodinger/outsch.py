@@ -3,12 +3,14 @@ import numpy as np
 from dish.util.numeric.lagrangian_differentiation import differentiation_coefficients_efficient
 
 
-def outsch(order, p0, q0, l, E, V, r, t):  # TODO: remove p0, q0 from parameters
+def outsch(order, p0, q0, l, E, V, r_grid):
     k = order
     m = differentiation_coefficients_efficient(k)
 
     # b = (np.diff(r)/np.diff(t))[:k]
-    b = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t[:k])
+    # b = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t[:k])
+    r = r_grid.r[1:k+1]
+    b = r_grid.rp[1:k+1]
     c = -2 * b * (E-V[:k])
     d = -2 * b * (l+1)/r[:k]
 
@@ -21,7 +23,7 @@ def outsch(order, p0, q0, l, E, V, r, t):  # TODO: remove p0, q0 from parameters
 
     A = np.empty((2*k, 2*k))
     A[:k, :k] = m[1:, 1:]
-    A[:k, k:] = - np.identity(k)*b  # TODO: check if this needs to be b or b[1:]
+    A[:k, k:] = - np.identity(k)*b
     # print(A)
     A[k:, k:] = m[1:, 1:] - np.identity(k)*d
     A[k:, :k] = - np.identity(k)*c

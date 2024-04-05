@@ -57,15 +57,17 @@ class Nucleus:
             raise ValueError(
                 f"'model' must be either 'Fermi', 'uniform' or 'point-like' but is {model}.")
 
-    def CoulombPotential(self, r):
-        return self.potential(r, model="Coulomb")
-    def FermiPotential(self, r):
-        return self.potential(r, model="Fermi")
-    def UniformBallPotential(self, r):
-        return self.potential(r, model="uniform")
+    @property
+    def CoulombPotential(self):
+        return CoulombPotential(self)
+    @property
+    def FermiPotential(self):
+        return FermiPotential(self)
+    @property
+    def UniformBallPotential(self):
+        return UniformBallPotential(self)
 
-
-    def charge_distribution(self, r, model):
+    def charge_distribution(self, r, model="Fermi"):
         if model.lower() in ["f", "fermi"]:
             return FermiChargeDistribution(self)(r)
         elif model.lower() in ["u", "uniform", "ball", "uniformball"]:
@@ -76,12 +78,17 @@ class Nucleus:
             raise ValueError(
                 f"'model' must be either 'Fermi', 'uniform' or 'point-like' but is {model}.")
 
-    def FermiChargeDistribution(self, r):
-        return self.charge_distribution(r, model="Fermi")
-    def CoulombChargeDistribution(self, r):
-        return self.charge_distribution(r, model="Coulomb")
-    def UniformBallChargeDistribution(self, r):
-        return self.charge_distribution(r, model="uniform")
+    @property
+    def FermiChargeDistribution(self):
+        return FermiChargeDistribution(self)
+
+    @property
+    def CoulombChargeDistribution(self):
+        return CoulombChargeDistribution(self)
+
+    @property
+    def UniformBallChargeDistribution(self):
+        return UniformBallChargeDistribution(self)
 
 
 class QuantumNumberSet:
