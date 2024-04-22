@@ -102,8 +102,9 @@ def convert_units(old_unit: Union[str, float],
                   old_unit_exp=1,
                   new_unit_exp=1):
     """
-    Convert 'value' in unit 'old_unit' to 'new_unit'.
-    ! YOU NEED TO ASSURE THAT THESE VALUES ARE OF THE SAME DIMENSION !
+    | Convert 'value' in unit 'old_unit' to 'new_unit'.
+    | ! You need to assure that these values are of the same dimension !
+
     :param old_unit: either the old units name or the conversion value into SI units
     :param new_unit: either the new units name or the conversion value into SI units
     :param value: value to convert. The default is 1 to just obtain the conversion factor.

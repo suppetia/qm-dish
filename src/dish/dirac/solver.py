@@ -21,6 +21,7 @@ def solve(nucleus: Nucleus,
           state: Union[str, QuantumNumberSet, Tuple[int, int, float]],
           r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
           potential_model: str = "Fermi",
+          m: float = 1,
           E_guess: Union[float, str] = "auto",
           order_AM: int = 9,  # order of the Adams-Moulton procedure
           order_indir: int = 7,  # order of the procedure tu
@@ -36,6 +37,8 @@ def solve(nucleus: Nucleus,
     :param potential_model: model of the charge distribution of the nucleus.
             Either 'Fermi', 'uniform' (charged ball) or 'point-like'.
             The default is 'Fermi'.
+    :param m: mass of the particle for which the SE is solved in m_e.
+            The default is 1 (for an electron).
     :param E_guess: initial guess for the energy of the state.
             Can be 'auto' which will use the analytical value for a point-like nucleus.
             The default is 'auto'.
@@ -77,6 +80,7 @@ def solve(nucleus: Nucleus,
                                             Z=nucleus.Z,
                                             V=V,
                                             r=r_grid,
+                                            m_particle=m,
                                             order_adams=order_AM,
                                             order_indir=order_indir,
                                             E_guess=E_guess,
@@ -88,6 +92,7 @@ def solve(nucleus: Nucleus,
         state=state,
         nucleus=nucleus,
         potential_model=potential_model,
+        m=m,
         r_grid=r_grid,
         wave_function=Psi,
         energy=E,
@@ -104,6 +109,7 @@ def multiple_solve(nucleus: Nucleus,
                    states: List[Union[str, QuantumNumberSet, Tuple[int, int, float]]],
                    r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
                    potential_model: str = "Fermi",
+                   m: float = 1,
                    E_guess: Union[float, str, List[float]] = "auto",
                    order_AM: int = 9,  # order of the Adams-Moulton procedure
                    order_indir: int = 7,  # order of the procedure to guess the last few values
@@ -120,6 +126,8 @@ def multiple_solve(nucleus: Nucleus,
     :param potential_model: model of the charge distribution of the nucleus.
             Either 'Fermi', 'uniform' (charged ball) or 'point-like'.
             The default is 'Fermi'.
+    :param m: mass of the particle for which the SE is solved in m_e.
+            The default is 1 (for an electron).
     :param E_guess: initial guess for the energy of the state.
             Can be 'auto' which will use the analytical value for a point-like nucleus.
             The default is 'auto'.
@@ -151,7 +159,7 @@ def multiple_solve(nucleus: Nucleus,
         logging.warning(f"Requested too many parallel processes. Limit to the available core count {cpu_count()}")
         num_processes = cpu_count()
 
-    arguments = [(nucleus, states[i], r_grid, potential_model, E_guess[i],
+    arguments = [(nucleus, states[i], r_grid, potential_model, m, E_guess[i],
                   order_AM, order_indir, max_number_of_iterations)
                  for i in range(len(states))]
     with Pool(num_processes) as pool:

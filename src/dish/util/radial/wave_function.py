@@ -113,6 +113,9 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
                  state: "dish.util.atom.QuantumNumberSet",
                  Psi_prime: np.ndarray = None):
 
+        if not isinstance(r_grid, DistanceGrid):
+            r_grid = construct_grid_from_points(r_grid)
+
         if Psi_prime is None:
             temp_grid = DistanceGrid(r_grid.h, r_grid.r0, r_grid.N+1)
             Psi_prime = np.gradient(Psi, temp_grid.r[1:] - r_grid.r)

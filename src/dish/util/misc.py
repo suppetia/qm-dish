@@ -46,7 +46,7 @@ def find_suitable_number_of_integration_points_dirac(Z, M, n, kappa, r_0, h):
     :return: N_max
     """
     r = np.logspace(-4, 4, num=300)
-    R = radial_f_dirac(n, kappa, r, Z, M).f
+    R = radial_f_dirac(n, kappa, r, Z).f
     last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-5)).reshape(-1))]
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
@@ -66,6 +66,7 @@ class SolvingResult:
     state: QuantumNumberSet
     nucleus: Nucleus
     potential_model: str
+    m: float
     r_grid: DistanceGrid
     wave_function: RadialWaveFunction
     energy: float

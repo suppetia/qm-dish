@@ -7,33 +7,33 @@ def generalized_prinzipal_quantum_number(n, k, gamma):
     return np.sqrt(n**2-2*(n-k)*(k-gamma))
 
 
-def indir(order, r, E, kappa, effective_charge):
+def indir(order, r, E, kappa, effective_charge, m_particle):
 
     if order < 1:
         raise ValueError("expansion order must be at least 1")
 
-    lambda_ = np.sqrt(c**2 - E**2/c**2)
+    lambda_ = np.sqrt((m_particle*c)**2 - E**2/c**2)
     sigma = E*effective_charge/(c**2*lambda_)
 
     def bk_list(k: int):
         if k == 1:
-            return [1, 1/(2*c) * (kappa * effective_charge/lambda_)]
+            return [1, 1/(2*c) * (kappa * effective_charge*m_particle/lambda_)]
         bks = bk_list(k-1)
         bk = 1/(2+k*lambda_) * (kappa**2 - (k - sigma)**2 - effective_charge**2/c**2) * bks[-1]
         bks.append(bk)
         return bks
 
     def ak_list(k: int, bks):
-        return [0] + [c/(k_*lambda_) * (kappa + (k_-sigma)*E/c**2 - effective_charge*lambda_/c**2) * bks[k_]
+        return [0] + [c/(k_*lambda_) * (kappa + (k_-sigma)*E/(m_particle*c**2) - effective_charge*lambda_/(m_particle*c**2)) * bks[k_]
                       for k_ in range(1, k+1)]
 
     b = bk_list(order)
     a = ak_list(order, b)
 
-    P = np.power(r, sigma) * np.exp(-lambda_ * r) * (np.sqrt((c**2+E)/(2*c**2)) * np.sum([a[k]/r**k for k in range(order+1)])
-                                                     + np.sqrt((c**2-E)/(2*c**2)) * np.sum([b[k]/r**k for k in range(1, order+1)]))
-    Q = np.power(r, sigma) * np.exp(-lambda_ * r) * (np.sqrt((c**2+E)/(2*c**2)) * np.sum([a[k]/r**k for k in range(order+1)])
-                                                     - np.sqrt((c**2-E)/(2*c**2)) * np.sum([b[k]/r**k for k in range(1, order+1)]))
+    P = np.power(r, sigma) * np.exp(-lambda_ * r) * (np.sqrt((m_particle*c**2+E)/(2*m_particle*c**2)) * np.sum([a[k]/r**k for k in range(order+1)])
+                                                     + np.sqrt((m_particle*c**2-E)/(2*m_particle*c**2)) * np.sum([b[k]/r**k for k in range(1, order+1)]))
+    Q = np.power(r, sigma) * np.exp(-lambda_ * r) * (np.sqrt((m_particle*c**2+E)/(2*m_particle*c**2)) * np.sum([a[k]/r**k for k in range(order+1)])
+                                                     - np.sqrt((m_particle*c**2-E)/(2*m_particle*c**2)) * np.sum([b[k]/r**k for k in range(1, order+1)]))
 
     return P, Q
 

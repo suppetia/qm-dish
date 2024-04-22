@@ -5,7 +5,7 @@ from dish.util.atomic_units import alpha
 from dish.util.radial.grid import DistanceGrid
 
 
-def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
+def outdir(order, Z, kappa, W, V, m_particle, r_grid: DistanceGrid):
     k = order
     m = differentiation_coefficients_efficient(k)
     gamma = np.sqrt(kappa**2 - (alpha*Z)**2)
@@ -16,7 +16,7 @@ def outdir(order, Z, kappa, W, V, r_grid: DistanceGrid):
     r_ = r[:k]
 
     a = -(gamma+kappa)*r_prime/r_
-    b = -alpha*(W-V[:k]+2/alpha**2)*r_prime
+    b = -alpha*(W-V[:k]+2*m_particle/alpha**2)*r_prime
     c = alpha*(W-V[:k])*r_prime
     d = -(gamma-kappa)*r_prime/r_
 

@@ -9,6 +9,7 @@ from dish.util.atomic_units import a_0
 from dish.util.potential import FermiPotential, CoulombPotential, UniformBallPotential
 from dish.util.potential import FermiChargeDistribution, CoulombChargeDistribution, UniformBallChargeDistribution
 
+
 @dataclass
 class Nucleus:
     """
@@ -67,7 +68,7 @@ class Nucleus:
     def UniformBallPotential(self):
         return UniformBallPotential(self)
 
-    def charge_distribution(self, r, model="Fermi"):
+    def charge_density(self, r, model="Fermi"):
         if model.lower() in ["f", "fermi"]:
             return FermiChargeDistribution(self)(r)
         elif model.lower() in ["u", "uniform", "ball", "uniformball"]:

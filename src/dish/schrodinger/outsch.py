@@ -3,7 +3,7 @@ import numpy as np
 from dish.util.numeric.lagrangian_differentiation import differentiation_coefficients_efficient
 
 
-def outsch(order, p0, q0, l, E, V, r_grid):
+def outsch(order, p0, q0, l, E, V, mu, r_grid):
     k = order
     m = differentiation_coefficients_efficient(k)
 
@@ -11,7 +11,7 @@ def outsch(order, p0, q0, l, E, V, r_grid):
     # b = r[-1] / (np.exp(t[-1]) - 1) * np.exp(t[:k])
     r = r_grid.r[1:k+1]
     b = r_grid.rp[1:k+1]
-    c = -2 * b * (E-V[:k])
+    c = -2 * b * (E-V[:k]) * mu
     d = -2 * b * (l+1)/r[:k]
 
     # construct a system of linear ODEs using matrix notation A*x=B where x = (p,q)

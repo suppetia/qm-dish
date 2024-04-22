@@ -19,13 +19,14 @@ def solve(nucleus: Nucleus,
           state: Union[str, QuantumNumberSet, Tuple[int, int, float]],
           r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
           potential_model: str = "Fermi",
+          m: float = 1,
           E_guess: Union[float, str] = "auto",
           order_AM: int = 9,  # order of the Adams-Moulton procedure
           order_insch: int = 7,  # order of the procedure tu
           max_number_of_iterations=20
           ) -> SolvingResult:
     """
-    Solve the radial Dirac equation for Hydrogen-like atoms in state 'state'.
+    Solve the radial Dirac equation for Hydrogen-like atoms for a particle in state 'state'.
     :param nucleus: parameters of the nucleus
     :param state: electron state to find the wave function
     :param r_grid: grid on which the wave function is to be evaluated.
@@ -33,6 +34,8 @@ def solve(nucleus: Nucleus,
     :param potential_model: model of the charge distribution of the nucleus.
             Either 'Fermi', 'uniform' (charged ball) or 'point-like'.
             The default is 'Fermi'.
+    :param m: mass of the particle for which the SE is solved in m_e.
+            The default is 1 (for an electron).
     :param E_guess: initial guess for the energy of the state.
             Can be 'auto' which will use the analytical value for a point-like nucleus.
             The default is 'auto'.
@@ -73,6 +76,7 @@ def solve(nucleus: Nucleus,
                                         M=nucleus.M,
                                         V=V,
                                         r=r_grid,
+                                        m_particle=m,
                                         order_adams=order_AM,
                                         order_insch=order_insch,
                                         E_guess=E_guess,
@@ -84,6 +88,7 @@ def solve(nucleus: Nucleus,
         state=state,
         nucleus=nucleus,
         potential_model=potential_model,
+        m=m,
         r_grid=r_grid,
         wave_function=Psi,
         energy=E,
@@ -100,6 +105,7 @@ def multiple_solve(nucleus: Nucleus,
                    states: List[Union[str, QuantumNumberSet, Tuple[int, int, float]]],
                    r_grid: Union[DistanceGrid, dict] = {"h": 0.005, "r0": 2e-6},
                    potential_model: str = "Fermi",
+                   m: float = 1,
                    E_guess: Union[float, str, List[float]] = "auto",
                    order_AM: int = 9,  # order of the Adams-Moulton procedure
                    order_insch: int = 7,  # order of the procedure tu
@@ -124,7 +130,7 @@ def multiple_solve(nucleus: Nucleus,
         logging.warning(f"Requested too many parallel processes. Limit to the available core count {cpu_count()}")
         num_processes = cpu_count()
 
-    arguments = [(nucleus, states[i], r_grid, potential_model, E_guess[i],
+    arguments = [(nucleus, states[i], r_grid, potential_model, m, E_guess[i],
                   order_AM, order_insch, max_number_of_iterations)
                  for i in range(len(states))]
     with Pool(num_processes) as pool:

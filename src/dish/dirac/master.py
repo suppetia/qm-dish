@@ -24,6 +24,7 @@ def master(n, l, j, Z, V,
            r: Union[DistanceGrid, np.array],
            t: np.array = None,
            h: float = None,
+           m_particle: float = 1,
            order_adams: int = 7,
            order_indir: int = 7,
            E_guess: Union[float, str] = "auto",  # note that this actually means E-c^2
@@ -36,7 +37,7 @@ def master(n, l, j, Z, V,
     gamma = np.sqrt(kappa**2-(alpha*Z)**2)
 
     if E_guess == "auto":
-        E_guess = reduced_energy(n, kappa, Z)
+        E_guess = reduced_energy(n, kappa, Z, m_particle)
 
     if isinstance(r, DistanceGrid):
         r_grid = r
@@ -54,7 +55,7 @@ def master(n, l, j, Z, V,
     h = r_grid.h
 
     a_mat = -r_prime * (kappa / r)
-    b_mat = lambda W: -alpha * r_prime * (W - V_ + 2 * c**2)
+    b_mat = lambda W: -alpha * r_prime * (W - V_ + 2 * m_particle*c**2)
     c_mat = lambda W: alpha * r_prime * (W - V_)
     d_mat = -a_mat
 
@@ -67,14 +68,14 @@ def master(n, l, j, Z, V,
     # generalized principal quantum number
     N = np.sqrt(n**2-2*(n-k)*(k-gamma))
     # effective charge
-    zeta = Z - N + 1
+    zeta = Z - N + 1 #TODO: check this
 
     # bounds of eigenenergy
     W_u = np.inf  # highest energy with n_r nodes
     W_l = -np.inf  # lowest energy with n_r nodes
 
     it = 0
-    W_guess = E_guess  # rename for alignment with notation in theory as this is W = E-c^2
+    W_guess = E_guess  # rename for alignment with notation in theory as this is W = E-mc^2
 
     energy_convergence = []
 
@@ -82,22 +83,24 @@ def master(n, l, j, Z, V,
         it += 1
 
         # print(W_guess)
-        E_guess = W_guess + c ** 2
+        E_guess = W_guess + m_particle*c ** 2
 
         a_c = outer_classical_turning_point(V_, W_guess)
         # print(a_c)
+        if r_grid.N - a_c < order_adams or a_c < order_adams:
+            raise ValueError("Could not solve the Dirac equation using the given parameters. Try to change the energy guess or the grid.")
 
         # y_start_out = radial_function(n, kappa, r[:order_adams], Z, M).T
 
         y_start_out = np.array(
-            outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z / r,
+            outdir(order=order_adams, Z=Z, kappa=kappa, W=W_guess, V=-Z / r, m_particle=m_particle,
                    r_grid=r_grid)
         ).T
         y_start_out[:, :] *= N  # the Q part is overestimated, to gain better assumption lower the initial values
 
         y_start_in = np.array(
             indir(order=order_indir, r=r[-order_adams:], E=E_guess, kappa=kappa,
-                  effective_charge=zeta)
+                  effective_charge=zeta, m_particle=m_particle)
         ).T
         # if all start values are zero, also the following integration using adams scheme will yield zero values
         # to handle this artificially create a small offset from zero
@@ -132,6 +135,9 @@ def master(n, l, j, Z, V,
             if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-15):
                 break
 
+            # rescale the wave function to ease numerical errors
+            # y /= np.sqrt(integrate_on_grid(np.insert(y[:, 0]**2 + y[:, 1]**2, obj=0, values=0), grid=r_grid, suppress_warning=True))
+
             W_guess_new = W_guess + c*(y_in[0, 1]-y_out[-1, 1])*y_out[-1, 0] / integrate_on_grid(np.insert(y[:, 0]**2 + y[:, 1]**2, obj=0, values=0), grid=r_grid, suppress_warning=True)
 
             # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
@@ -149,19 +155,13 @@ def master(n, l, j, Z, V,
     else:
         it = -1  # set it to -1 as a flag that the algorithm didn't converge
 
-    # the initial guesses from asymptotics may be not accurate and therefore lead to a bump in the Q component,
-    # use the analytical solution for the first points as an estimator to smoothen this component
-    # y_start = radial_function(n, kappa, r[:5 * order_adams], Z, M).T
-    # y_start *= y[5 * order_adams - 1] / y_start[-1]
-    # y[:len(y_start)] = y_start
-
-    # find value where derivative changes sign (after initial guess)
-    num_points = len(r)
-    for i in [0,1]:
-        if np.min(np.abs(np.diff(y[order_adams:num_points//4, i])/np.diff(r[order_adams:num_points//4]))) < 1e-4:
-            dy_min = np.argmin(np.abs(
-                np.diff(y[order_adams:num_points // 4, i]) / np.diff(r[order_adams:num_points // 4]))) + order_adams
-            y[:dy_min, i] = r[:dy_min] / r[dy_min] * y[dy_min, i]
+    # # find value where derivative changes sign (after initial guess)
+    # num_points = len(r)
+    # for i in [0,1]:
+    #     if np.min(np.abs(np.diff(y[order_adams:num_points//4, i])/np.diff(r[order_adams:num_points//4]))) < 1e-4:
+    #         dy_min = np.argmin(np.abs(
+    #             np.diff(y[order_adams:num_points // 4, i]) / np.diff(r[order_adams:num_points // 4]))) + order_adams
+    #         y[:dy_min, i] = r[:dy_min] / r[dy_min] * y[dy_min, i]
 
     # all radial wave functions must be zero in the origin, insert as this point was not used for calculations
     y = np.insert(y, obj=0, values=0, axis=0)

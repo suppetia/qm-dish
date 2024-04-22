@@ -14,24 +14,31 @@ from dish.util.atom import QuantumNumberSet
 from typing import Union
 
 
-def outer_classical_turning_point(V, E, l, r) -> int:
-    return int(np.argmin(np.abs(E-(V+l*(l+1)/(2*r**2)))))
+def outer_classical_turning_point(V, E) -> int:
+    return int(np.argmin(np.abs(E-V)))
 
+def _insert_zero_value(y, r, l):
+    if l > 0:
+        return np.insert(y, obj=0, values=0, axis=0)
+    # for s states the derivative is not zero in the origin
+    # therefore linearly extrapolate from the last two points: Q0 = -(Q2-Q1)/(r2-r1) * r1 + Q1
+    Q0 = (y[0, 1] - y[1, 1])/(r[1]-r[0]) * r[0] + y[0,1]
+    return np.insert(y, obj=0, values=[0, Q0], axis=0)
 
 def master(n, l, Z, M, V, r,
            t: np.ndarray = None, h: float = None,
+           m_particle: float = 1,
            charge: float = 0,
            order_adams: int = 7,
            order_insch: int = 7,
            E_guess: Union[float, str] = "auto",
            max_number_of_iterations: int = 50):
 
-    mu = 1/(1+1/M)
-    V *= mu  # account for nuclear recoil
+    mu = m_particle/(1+m_particle/M)
     effective_charge = charge + 1  # an e- in distance feels the effective charge
 
     if E_guess == "auto":
-        E_guess = energy(n, Z, M)
+        E_guess = energy(n, Z, M, m_particle)
 
     if isinstance(r, DistanceGrid):
         r_grid = r
@@ -50,7 +57,8 @@ def master(n, l, Z, M, V, r,
 
     # calculate/prepare outside the loop for speed improvements
     b = r_prime
-    c = lambda E: -2 * b * (E - V_ - l * (l+1) / (2 * r ** 2))
+    c = lambda E: -2 * b * (mu*(E - V_) - l * (l+1) / (2 * r ** 2))
+    # c = lambda E: -2 * b * (E - V_ - l * (l+1) / (2 * r ** 2))
     G = np.zeros((len(b), 2, 2))
     G[:, 0, 1] = b
 
@@ -67,10 +75,12 @@ def master(n, l, Z, M, V, r,
         it += 1
         # print("Iteration:", it)
 
-        a_c = outer_classical_turning_point(V_, E_guess, l, r)
+        a_c = outer_classical_turning_point(V_, E_guess)
+        if r_grid.N - a_c < order_adams or a_c < order_adams:
+            raise ValueError("Could not solve the Dirac equation using the given parameters. Try to change the energy guess or the grid.")
 
         y_start_out = np.array(
-            outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z * mu / r,
+            outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z / r, mu=mu,
                           r_grid=r_grid)
             ).T
         y_start_in = np.array(insch.insch(order=order_insch, r=r[-order_adams:],
@@ -80,28 +90,11 @@ def master(n, l, Z, M, V, r,
 
         G[:, 1, 0] = c(E_guess)  # for inward integration the sign of b and therefore G changes!
 
-        # # calculate in and out integration in the same step
-        # G_ = np.zeros((max(a_c+1, len(b)-a_c), 4, 4))
-        # G_[:a_c+1, :2, :2] = G[:a_c + 1]
-        # G_[-(len(G)-a_c):, 2:, 2:] = -G[a_c:]
-        # y_start = np.append(y_start_out, y_start_in, axis=1)
-
-        # with Pool(processes=2) as pool:
-        #     adams_out = pool.apply_async(adams, (order_adams, "out", y_start_out, G[:a_c+1], h))
-        #     adams_in = pool.apply_async(adams, (order_adams, "in", y_start_in, -G[a_c:], h))
-        #     pool.close()
-        #     pool.join()
-        #     y_out = adams_out.get()
-        #     y_in = adams_in.get()
-
-        # y_out = adams.adams_schrodinger(order_adams, "out", y_start_out, b[:a_c+1], c(E_guess)[:a_c+1], h)
-        # y_in = adams.adams_schrodinger(order_adams, "in", y_start_in, -b[a_c:], -c(E_guess)[a_c:], h)
         y_out = adams(order_adams, "out", y_start_out, G[:a_c+1], h)
         y_in = adams(order_adams, "in", y_start_in, -G[a_c:], h)
         y_in[np.isclose(y_in, 0, atol=1e-15)] = 0
 
         y_in *= y_out[-1, 0]/y_in[0, 0]  # make R=y[:,0] continuous
-        # y_out *= y_in[0, 0] / y_out[-1, 0]
 
         y = np.append(y_out, y_in[1:], axis=0)
 
@@ -118,11 +111,13 @@ def master(n, l, Z, M, V, r,
         else:
             # check if the first derivative is continuous
             # if this is fulfilled, we found the eigenfunction and therefore the eigenenergy
-            if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-10):
+            if np.isclose(y_out[-1, 1] - y_in[0, 1], 0, atol=1e-18):
                 break
 
-            E_guess_new = E_guess + (y_out[-1, 1]-y_in[0, 1])*y_out[-1, 0] / (2*np.trapz(y[:,0]**2, x=r))
-
+            E_guess_new = E_guess + (y_out[-1, 1]-y_in[0, 1])*y_out[-1, 0] / (2*mu*integrate_on_grid(np.insert(y[:, 0]**2, obj=0, values=0), grid=r_grid, suppress_warning=True))
+            # if the new guess does not differ from the old guess the eigenfunction is as good as it gets
+            if np.isclose(E_guess - E_guess_new, 0, atol=1e-12):
+                break
         if E_guess_new < E_l:
             E_guess_new = (E_guess+E_l)/2
         elif E_guess_new > E_u:
@@ -130,11 +125,12 @@ def master(n, l, Z, M, V, r,
 
         energy_convergence.append(abs(E_guess - E_guess_new))
         E_guess = E_guess_new
+        print(E_guess)
     else:
         it = -1
 
-    # all radial wavefunctions must be zero in the origin
-    y = np.insert(y, obj=0, values=0, axis=0)
+    # all radial wavefunctions must be zero in the origin, but the derivative for s states is different
+    y = _insert_zero_value(y, r, l)
 
     # N = 1/np.sqrt(np.trapz(y[:,0]**2, x=r))
     N = 1 / np.sqrt(integrate_on_grid(y[:, 0] ** 2 + y[:, 1] ** 2, grid=r_grid, suppress_warning=True))
