@@ -7,7 +7,7 @@ class DistanceGrid:
     """
     Class to hold the information about the grid and the grid points itself.
     The grid is constructed lazily, i.e. the grid points are calculated the first time they are required.
-    The grid has the form :math:`r(t) = r0 * \\left(\\e{t} - 1\\right)` where :math:`t(i) = i*h` is a linear grid with ``N`` points.
+    The grid has the form :math:`r(t) = r0 \\cdot \\left(\\exp{t} - 1\\right)` where :math:`t(i) = i\\cdot h` is a linear grid with ``N`` points.
     The number of values ``N`` can be constructed from the maximal r value ``r_max``.
     """
 
@@ -86,7 +86,7 @@ class RombergIntegrationGrid(DistanceGrid):
     """
     Class to hold the information about the grid and the grid points itself.
     The grid is constructed lazily, i.e. the grid points are calculated the first time they are required.
-    The grid has the form :math:`r(t) = r0 * \\left(\\e{t} - 1\\right)` where :math:`t(i) = i*h` is a linear grid with ``N`` points.
+    The grid has the form :math:`r(t) = r0 \\cdot \\left(\\exp{t} - 1\\right)` where :math:`t(i) = i \\cdot h` is a linear grid with ``N`` points.
 
     The number of grid points ``N`` needs to be of the form :math:`N = 2^k + 1` where k is a positive integer.
     By using this number of grid points this grid is suited to perform Romberg integration on it which yields more accurate results than the naive trapezoidal rule.

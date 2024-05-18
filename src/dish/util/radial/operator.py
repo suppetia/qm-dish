@@ -87,7 +87,7 @@ class BraOperator(AbstractOperator):
             if not isinstance(self._ket, RadialSchrodingerWaveFunction):
                 raise ValueError("Ket must be a RadialSchrodingerWaveFunction but is of type RadialDiracWaveFunction")
             bra_conj = self._ket.Psi
-            return integrate_on_grid(np.sum(bra_conj * ket.Psi), grid=self._ket.grid)
+            return integrate_on_grid(bra_conj * ket.Psi, grid=self._ket.grid)
 
         return NotImplemented
 
@@ -138,15 +138,19 @@ class ProjectionOperator(SymbolicScalarOperator):
 
 class RadialOperator(SymbolicScalarOperator):
 
-    def __init__(self, radial_func: Callable[[np.ndarray, ...], np.ndarray], /, fargs: set = (), nan_to_num=np.nan):
+    def __init__(self, radial_func: Callable[[np.ndarray, ...], np.ndarray], /, fargs: set = (), nan_to_num=np.nan, inf_to_num=None):
 
         self.radial_func = radial_func
         self._fargs = fargs
         self._nan_to_num = nan_to_num
+        self._inf_to_num = inf_to_num
 
     def evaluate_on(self, ket: RadialWaveFunction, dim: int) -> np.ndarray:
 
-        values = np.nan_to_num(self.radial_func(ket.grid.r, *self._fargs), nan=self._nan_to_num)
+        values = np.nan_to_num(self.radial_func(ket.grid.r, *self._fargs),
+                               nan=self._nan_to_num,
+                               posinf=self._inf_to_num,
+                               neginf=-self._inf_to_num if self._inf_to_num is not None else None)
         return values * ProjectionOperator().evaluate_on(ket, dim=dim)
 
 

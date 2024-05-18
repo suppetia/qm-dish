@@ -7,6 +7,7 @@ from dish.util.radial.grid.grid import DistanceGrid, RombergIntegrationGrid
 
 def construct_grid_from_dict(r_grid: dict,
                              nucleus: "dish.util.atom.Nucleus",
+                             m_particle: float,
                              state: "dish.util.atom.QuantumNumberSet",
                              *, relativistic=True):
     """
@@ -15,6 +16,7 @@ def construct_grid_from_dict(r_grid: dict,
     If ``N = "auto"`` the number is derived from the ``state`` as a suited value from the analytic solution.
     :param r_grid: parameter dict to construct the grid from
     :param nucleus: The nucleus for which the radial SE/DE should be solved. Only actually required if ``N = "auto"``.
+    :param m_particle: mass of the particle for which the SE/DE is solved
     :param state:
     :param relativistic:
     :return:
@@ -28,7 +30,7 @@ def construct_grid_from_dict(r_grid: dict,
             from dish.util.misc import find_suitable_number_of_integration_points_dirac
 
             N = find_suitable_number_of_integration_points_dirac(Z=nucleus.Z,
-                                                                 M=nucleus.M,
+                                                                 m_particle=m_particle,
                                                                  n=state.n,
                                                                  kappa=state.kappa,
                                                                  r_0=r0,
@@ -38,6 +40,7 @@ def construct_grid_from_dict(r_grid: dict,
 
             N = find_suitable_number_of_integration_points_schrodinger(Z=nucleus.Z,
                                                                        M=nucleus.M,
+                                                                       m_particle=m_particle,
                                                                        n=state.n,
                                                                        l=state.l,
                                                                        r_0=r0,
@@ -64,11 +67,11 @@ def construct_grid_from_points(r: np.array) -> DistanceGrid:
     # construct the grid parameters from fitting a few points
     num_fit_points = min(30, len(r))
     fit_pts = np.arange(num_fit_points, dtype=np.int64)*N//num_fit_points
-    popt, pcov = curve_fit(grid_func, fit_pts, r[fit_pts], p0=[1e-5, 1e-8])
+    popt, pcov = curve_fit(grid_func, fit_pts, r[fit_pts], p0=[1e-5, 1e-3])
     threshold = 1e-10
     if (pcov > threshold).any():
-        for r0 in [1e-5, 1e-7, 1e-9, 1e-11]:
-            for h in [1e-9, 1e-7, 1e-5, 1e-3, 1e-1]:
+        for r0 in [1e-3, 1e-5, 1e-7, 1e-9]:
+            for h in [1e-1, 1e-3, 1e-5, 1e-7, 1e-9]:
                 popt, pcov = curve_fit(grid_func, fit_pts, r[fit_pts], p0=[r0, h])
                 if not (pcov > threshold).any():
                     break

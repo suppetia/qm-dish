@@ -41,24 +41,18 @@ subroutine adams(y, g, coeffs_am, h, k, num_points, dim)
     integer :: ipiv(dim) ! pivot indices defining the permutation matrix P (see dgesv docs)
     integer :: info
 
-    !print*, coeffs_am(:)
-
     do i = 1, k
         f(i, :) = matmul(g(i, :, :), y(i, :))
-        !print*, f(i, :)
     end do
 
     do n = k + 1, num_points
         call set_eye(M, dim)
         M = M - h * real(coeffs_am(k+2), dp) / coeffs_am(1) * g(n,:,:)
-        !print *, M
         scaled_summed_f = 0.0_dp
         do i = 1, k
             scaled_summed_f = scaled_summed_f + coeffs_am(i+1) * f(n-k+i-1, :)
         end do
-        !print*, f(1:n, :)
-        !print*, scaled_summed_f
-        !exit
+
         b = y(n-1, :) + h/coeffs_am(1) * scaled_summed_f
         call dgesv(dim, 1, M, dim, ipiv, b, dim, info)
         if (info.ne.0) then
@@ -66,7 +60,6 @@ subroutine adams(y, g, coeffs_am, h, k, num_points, dim)
         end if
         y(n, :) = b
         f(n, :) = matmul(g(n, :,:), y(n, :))
-        !print*, y(n, :)
 
     end do
 

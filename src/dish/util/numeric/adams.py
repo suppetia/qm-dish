@@ -10,8 +10,12 @@ except ModuleNotFoundError:
     _NO_FORTRAN = True
     print("for improved speeds compile the Fortran-version of adams")
 
+# cache coefficients
+coefficients_storage = {}
 
 def adams_moulton_coefficients(order) -> np.ndarray:
+    if order in coefficients_storage:
+        return coefficients_storage[order]
     # load taylor coefficients from the taylor expansion of - sym_x/sp.log(1-sym_x) where sym_x(f[x]) = f[x] - f[x-1]
     if order > len(AM_taylor_coeffs):
         raise ValueError("order exceeded the stored taylor coefficients. Create a larger LUT to work with this order.")
@@ -25,6 +29,7 @@ def adams_moulton_coefficients(order) -> np.ndarray:
                                       for k in range(1, n+1)], dtype=np.int64)
         AM_coeffs[:n+1] += AM_taylor_coeffs[n, 0]*(D // AM_taylor_coeffs[n, 1]) * f_nk_coeffs
 
+    coefficients_storage[order] = np.append([D], AM_coeffs[::-1])
     return np.append([D], AM_coeffs[::-1])
 
 
@@ -69,7 +74,17 @@ def adams_schrodinger(k: int, direction: str, y_start: np.array, b: np.array, c:
         return y
 
 
-def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
+def adams(k: int, direction: str, y_start: np.ndarray, G: np.ndarray, h: float):
+    """
+    Use the Adams-Moulton method of order k+1 to solve the ODE :math:`\\frac{dy}{dt} = G(t)y(t)`.
+
+    :param k: number of required points for the k+1 AM method
+    :param direction: whether to integrate outwards ("out") or inwards ("in")
+    :param y_start: the starting values required for the AM method. dimensions: k x n
+    :param G: transformation matrix which defines the system of linear ODEs. dimension: l x n x n
+    :param h: the step width of the integration
+    :return: inferred values from the system of ODEs. dimensions: l x n
+    """
     if direction.lower() not in ["in", "out"]:
         raise ValueError(f"integration direction must be 'in' or 'out'")
 
@@ -108,8 +123,21 @@ def adams(k: int, direction: str, y_start: np.array, G: np.array, h: float):
         return y
 
 
+adams_python = adams
+
 if not _NO_FORTRAN:
-    def adams_f(k: int, direction: str, y_start: np.array, G: np.array, h: float):
+    def adams_f(k: int, direction: str, y_start: np.ndarray, G: np.ndarray, h: float):
+        """
+        Use the Adams-Moulton method of order k+1 to solve the ODE :math:`\\frac{dy}{dt} = G(t)y(t)`.
+        This method wraps the implementation if Fortran and overrides the implementation in Python if the Fortran code was compiled.
+
+        :param k: number of required points for the k+1 AM method
+        :param direction: whether to integrate outwards ("out") or inwards ("in")
+        :param y_start: the starting values required for the AM method. dimensions: k x n
+        :param G: transformation matrix which defines the system of linear ODEs. dimension: l x n x n
+        :param h: the step width of the integration
+        :return: inferred values from the system of ODEs. dimensions: l x n
+        """
         if direction.lower() not in ["in", "out"]:
             raise ValueError(f"integration direction must be 'in' or 'out'")
 
@@ -143,7 +171,7 @@ if not _NO_FORTRAN:
 
 
 if __name__ == "__main__":
-    N = 10000
+    N = 100000
     h = 0.0001  # 0.02
     r0 = 1  # 0.0005
     t = (np.arange(N) + 1) * h
@@ -169,13 +197,17 @@ if __name__ == "__main__":
     t_start = time.perf_counter()
     y = adams(k, "out", y_start, G, h)
     t_end = time.perf_counter()
-    print(f"ellapsed time (adams): {t_end-t_start}s")
+    t1 = t_end-t_start
+    print(f"ellapsed time (adams): {t1}s")
 
     t_start = time.perf_counter()
     y2 = adams_f(k, "out", y_start, G, h)
     t_end = time.perf_counter()
-    print(f"ellapsed time (adams_f): {t_end-t_start}s")
+    t2 = t_end-t_start
+    print(f"ellapsed time (adams_f): {t2}s")
     print(np.allclose(y[~np.isnan(y)], y2[~np.isnan(y2)]))
+
+    print(t1/t2)
 
     # print(y1)
     # print(y2)

@@ -61,7 +61,7 @@ class FermiPotential(PotentialModel):
         if isinstance(r, DistanceGrid):
             r = r.r
         return - fermi.potential(Z=self.nucleus.Z,
-                                 c=self.nucleus.R0,
+                                 c=self.nucleus.c,
                                  a=self.nucleus.a,
                                  r=r)
 
@@ -70,14 +70,15 @@ class FermiChargeDistribution(ChargeDistribution):
 
     @property
     def R_rms(self):
-        # approximation given by Gustavson & M°artensson-Pendrill 1998
-        return np.sqrt(3/5 * self.nucleus.R0**2 + 7/5 * np.pi**2 * self.nucleus.a**2)
+        # # approximation given by Gustavson & M°artensson-Pendrill 1998
+        # return np.sqrt(3/5 * self.nucleus.R0**2 + 7/5 * np.pi**2 * self.nucleus.a**2)
+        return fermi.R_rms(self.nucleus.c, self.nucleus.a)
 
     def __call__(self, r: Union[np.ndarray, DistanceGrid]):
         if isinstance(r, DistanceGrid):
             r = r.r
         return fermi.fermi_charge_distribution(self.nucleus.Z,
-                                               self.nucleus.R0,
+                                               self.nucleus.c,
                                                self.nucleus.a,
                                                r)
 
@@ -87,7 +88,6 @@ class UniformBallPotential(PotentialModel):
     def __call__(self, r: Union[np.ndarray, DistanceGrid]):
         if isinstance(r, DistanceGrid):
             r = r.r
-        # TODO: verify calculation
         # Zatsarinny and Froese Fischer, Computer Physics Communication 202 (2016), pp.287-303
         R = self.nucleus.R0
         return - np.select(condlist=[r < R, r >= R],

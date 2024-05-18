@@ -1,3 +1,10 @@
+import importlib.metadata
+try:
+    __version__ = importlib.metadata.version("qm-dish")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "failed to fetch version"
+
+
 import dish.util
 import dish.dirac
 import dish.schrodinger

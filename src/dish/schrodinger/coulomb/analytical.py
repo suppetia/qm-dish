@@ -4,9 +4,12 @@ import math
 from dish.util.math_util.special_functions import confluent_hypergeometric_f, spherical_harmonic
 from dish.util.radial.wave_function import RadialSchrodingerWaveFunction
 from dish.util.atom import QuantumNumberSet
+from dish.util.radial.grid.grid import DistanceGrid
+
+from typing import Union
 
 
-def radial_function(n: int, l: int, r: np.ndarray, Z: int, M: float = np.inf, m_particle: float = 1):
+def radial_function(n: int, l: int, r: Union[DistanceGrid, np.ndarray], Z: int, M: float = np.inf, m_particle: float = 1):
     """
     Radial component R_{n,l} of the analytical solution for the Schrödinger equation for a Coulomb-potential in atomic units.
     :param n: principal quantum number
@@ -16,6 +19,10 @@ def radial_function(n: int, l: int, r: np.ndarray, Z: int, M: float = np.inf, m_
     :param M: nuclear mass in m_e. The default is np.inf
     :param m_particle: mass of the particle for which the SE is solved in m_e. The default is 1 (for an electron).
     """
+    r_grid = r
+    if isinstance(r, DistanceGrid):
+        r = r_grid.r
+
     if n <= 0:
         raise ValueError(f"Principal quantum number's allowed values are n=1,2,3,... but is '{n}'.")
     if not (0 <= l < n):
@@ -30,7 +37,7 @@ def radial_function(n: int, l: int, r: np.ndarray, Z: int, M: float = np.inf, m_
 
     r_ = Z*mu*r/n
     R = normalization_factor * (2*r_)**(l+1) * np.exp(-r_) * confluent_hypergeometric_f(-n+l+1, 2*l+2, 2*r_)
-    return RadialSchrodingerWaveFunction(r_grid=r, state=QuantumNumberSet(n=n, l=l), Psi=R)
+    return RadialSchrodingerWaveFunction(r_grid=r_grid, state=QuantumNumberSet(n=n, l=l), Psi=R)
 
 
 def R(n: int, l: int, r: np.ndarray, Z: int, M: float, m_particle: float):

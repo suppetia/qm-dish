@@ -15,17 +15,17 @@ class _MultiprecisionUnits:  # multiprecision units
     # speed of light
     c_0 = mp.mpf("299792458")  # in m s^-1
     # vacuum permittivity
-    epsilon_0 = mp.mpf("8.8541878128e-12")  # in F m^-1 = A s V^-1 m^-1
+    epsilon_0 = mp.mpf("8.8541878128")*mp.mpf("1e-12")  # in F m^-1 = A s V^-1 m^-1
     # atomic mass unit
-    u = mp.mpf("1.66053906660e-27")  # in kg
+    u = mp.mpf("1.66053906660")*mp.mpf("1e-27")  # in kg
 
     # ------------------ coherent units ------------------------------
     # reduced Planck constant / atomic unit of action
-    hbar = mp.mpf("1.054571817e-34")  # in J s = kg m^2 s^-1
+    hbar = mp.mpf("1.054571817")*mp.mpf("1e-34")  # in J s = kg m^2 s^-1
     # elementary charge / atomic unit of charge
-    e = mp.mpf("1.602176634e-19")  # in C = A s
+    e = mp.mpf("1.602176634")*mp.mpf("1e-19")  # in C = A s
     # electron rest mass / atomic unit of mass
-    m_e = mp.mpf("9.1093837915e-31")  # in kg
+    m_e = mp.mpf("9.1093837915")*mp.mpf("1e-31")  # in kg
 
     @property
     def k_e(self):
@@ -123,6 +123,9 @@ def convert_units(old_unit: Union[str, float],
              "u": mpu.u,
              # SI units
              "m": 1, "kg": 1, "J": 1, "C": 1,
+             # frequently used units with prefixes
+             "fm": mp.mpf(1e-15),
+             "keV": mp.mpf(1e3), "MeV": mp.mpf(1e6)
              }
     exponent_pattern = re.compile(r"(?P<u>\w+)(\^\(?(?P<e>-?\d+(\.\d+)?(/\d+)?)\)?)?", re.IGNORECASE)
     if isinstance(old_unit, str):

@@ -77,7 +77,7 @@ def master(n, l, Z, M, V, r,
 
         a_c = outer_classical_turning_point(V_, E_guess)
         if r_grid.N - a_c < order_adams or a_c < order_adams:
-            raise ValueError("Could not solve the Dirac equation using the given parameters. Try to change the energy guess or the grid.")
+            raise ValueError(f"Could not solve the Schrödinger equation for n={n}, l={l} using the given parameters. Try to change the energy guess or the grid.")
 
         y_start_out = np.array(
             outsch.outsch(order=order_adams, p0=1, q0=-Z * mu / (l + 1), l=l, E=E_guess, V=-Z / r, mu=mu,
@@ -125,7 +125,7 @@ def master(n, l, Z, M, V, r,
 
         energy_convergence.append(abs(E_guess - E_guess_new))
         E_guess = E_guess_new
-        print(E_guess)
+        # print(E_guess)
     else:
         it = -1
 
@@ -133,7 +133,7 @@ def master(n, l, Z, M, V, r,
     y = _insert_zero_value(y, r, l)
 
     # N = 1/np.sqrt(np.trapz(y[:,0]**2, x=r))
-    N = 1 / np.sqrt(integrate_on_grid(y[:, 0] ** 2 + y[:, 1] ** 2, grid=r_grid, suppress_warning=True))
+    N = 1 / np.sqrt(integrate_on_grid(y[:, 0] ** 2, grid=r_grid, suppress_warning=True))
 
     y *= N
 

@@ -23,7 +23,7 @@ def solve(nucleus: Nucleus,
           potential_model: str = "Fermi",
           m: float = 1,
           E_guess: Union[float, str] = "auto",
-          order_AM: int = 9,  # order of the Adams-Moulton procedure
+          order_AM: int = 5,  # order of the Adams-Moulton procedure
           order_indir: int = 7,  # order of the procedure tu
           max_number_of_iterations=20
           ) -> SolvingResult:
@@ -43,7 +43,7 @@ def solve(nucleus: Nucleus,
             Can be 'auto' which will use the analytical value for a point-like nucleus.
             The default is 'auto'.
     :param order_AM: order of the Adams-Moulton procedure which is used to solve the differential equation.
-            The default is 9.
+            The default is 5.
     :param order_indir: order of the procedure which is used to find the most inner points of the wave function.
             The default is 7.
     :param max_number_of_iterations: number of iterations after which the solving routine will stop.
@@ -60,7 +60,7 @@ def solve(nucleus: Nucleus,
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):
-        r_grid = construct_grid_from_dict(r_grid, nucleus, state, relativistic=True)
+        r_grid = construct_grid_from_dict(r_grid, nucleus, m_particle=m, state=state, relativistic=True)
 
     # evaluate the given potential model of the nucleus on the given grid
     if potential_model.lower() in ["f", "fermi"]:
@@ -132,7 +132,7 @@ def multiple_solve(nucleus: Nucleus,
             Can be 'auto' which will use the analytical value for a point-like nucleus.
             The default is 'auto'.
     :param order_AM: order of the Adams-Moulton procedure which is used to solve the differential equation.
-            The default is 9.
+            The default is 5.
     :param order_indir: order of the procedure which is used to find the most inner points of the wave function.
             The default is 7.
     :param max_number_of_iterations: number of iterations after which the solving routine will stop.

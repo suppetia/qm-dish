@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.interpolate import PchipInterpolator
+import mpmath as mp
 
 
 def S(k, mu, order=50):
@@ -43,6 +43,28 @@ def potential(Z, c, a, r):
     V[mask] = Z / (N * r[mask]) * (1 + (np.pi / mu) ** 2 - 3 * (a ** 2 * r[mask] / c ** 3) * P2[mask] + 6 / mu ** 3 * (S3 - P3[mask]))
 
     return V
+
+
+def R_rms(c,a):
+    # see thesis appendix
+    return float(mp.sqrt(12*a**2 * mp.polylog(5, -mp.exp(c/a)) / mp.polylog(3, -mp.exp(c/a))))
+
+
+def find_fermi_c_parameter(Rrms, a, eps=1e-13, num_it=10):
+    # from approximation given by Gustavson & M°artensson-Pendrill 1998
+    c_sr = 5 / 3 * (Rrms ** 2 - 7 / 5 * np.pi ** 2 * a ** 2)
+    # for small nuclei the Fermi model does not correspondent with the R_rms and therefore can't be used
+    # return nan in this case
+    if c_sr >= 0:
+        # use a simple root finding algorithm to refine the result
+        c = np.sqrt(c_sr)
+        for _ in range(num_it):
+            diff = R_rms(c, a) - Rrms
+            if abs(diff) < eps:
+                break
+            c -= diff
+        return c
+    return np.nan
 
 
 if __name__ == "__main__":

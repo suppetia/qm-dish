@@ -6,6 +6,7 @@ from typing import Union
 from dataclasses import dataclass
 
 from dish.util.atomic_units import a_0
+from dish.util.potential import fermi
 from dish.util.potential import FermiPotential, CoulombPotential, UniformBallPotential
 from dish.util.potential import FermiChargeDistribution, CoulombChargeDistribution, UniformBallChargeDistribution
 
@@ -17,29 +18,52 @@ class Nucleus:
     | The potential for point-like, ball-like and Fermi charge distributions is provided through the :meth:`potential` method.
 
     :param Z: number of protons in the nucleus == nuclear charge
-    :param M: mass of the nucleus.
-    :param R0: radius of the nucleus. For a Fermi charge distribution this is to the parameter *c*.
+    :param M: (optional) mass of the nucleus.
+    :param R_rms: (optional) root mean squared charge radius of the nucleus. If this is specified
+    :param R0: (optional) radius of a homogeneously charged sphere. Usually calculated from R_rms.
+    :param c: (optional) Fermi charge distribution parameter *c*. Usually calculated from the R_rms.
     :param a: (optional) diffuseness parameter for a Fermi distribution. Defaults to :math:`2.3 \\text{fm} /a_0 / (4\cdot\ln(3))` as described in *Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7*.
-    :param charge: (optional) charge of the hydrogenic atom. Defaults to *Z-1*.
+    :param system_charge: (optional) charge of the hydrogenic atom. Defaults to *Z-1*.
     """
     Z: float
-    M: float
-    R0: float
+    M: float = np.inf
+    R_rms: float = None
+    R0: float = None
+    c: float = None
     a: float = 2.3e-15/a_0 / (4*np.log(3))  # default value from Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7
-    charge: float = None  # usually just required by non-relativistic calculations, defaults to Z-1
+    system_charge: float = None  # usually just required by non-relativistic calculations, defaults to Z-1
 
     def __post_init__(self):
-        if self.charge is None:
-            self.charge = self.Z - 1
+        if self.system_charge is None:
+            self.system_charge = self.Z - 1
+        if sum([int(x is not None) for x in (self.R_rms, self.R0, self.c)]) > 1:
+            raise ValueError("Either 'R_rms', 'c' or 'R0' can be specified but not more than one. "
+                             "The others are calculated if possible.")
+        if self.R_rms is not None:
+            c = fermi.find_fermi_c_parameter(self.R_rms, self.a)
+            if not np.isnan(c):
+                self.c = c
+            self.R0 = self.R_rms * np.sqrt(5/3)
+
+        if self.c is not None:
+            self.R_rms = fermi.R_rms(self.c, self.a)
+            self.R0 = self.R_rms * np.sqrt(5/3)
+
+        if self.R0 is not None:
+            self.R_rms = self.R0 * np.sqrt(3/5)
+
+            c = fermi.find_fermi_c_parameter(self.R_rms, self.a)
+            if not np.isnan(c):
+                self.c = c
 
     @property
     def mu(self):
         return 1/(1+1/self.M)
 
-    @classmethod
-    def construct_from_name(cls, name):
-        # load from yaml file
-        ...
+    # @classmethod
+    # def construct_from_name(cls, name):
+    #     # load from yaml file
+    #     ...
 
     def potential(self, r: Union[float, np.ndarray], model="Fermi"):
         """
@@ -49,8 +73,12 @@ class Nucleus:
         :rtype: float or np.ndarray, same as *r*
         """
         if model.lower() in ["f", "fermi"]:
+            if self.c is None:
+                raise ValueError("No valid parameter 'c' for the Fermi charge density distribution provided.")
             return FermiPotential(self)(r)
         elif model.lower() in ["u", "uniform", "ball", "ball-like", "balllike", "uniformball"]:
+            if self.R0 is None:
+                raise ValueError("No valid parameter 'R0' for the uniform charge distribution provided.")
             return UniformBallPotential(self)(r)
         elif model.lower() in ["point", "point-like", "pointlike", "p", "coulomb", "c"]:
             return CoulombPotential(self)(r)
@@ -63,15 +91,23 @@ class Nucleus:
         return CoulombPotential(self)
     @property
     def FermiPotential(self):
+        if self.c is None:
+            raise ValueError("No valid parameter 'c' for the Fermi charge density distribution provided.")
         return FermiPotential(self)
     @property
     def UniformBallPotential(self):
+        if self.R0 is None:
+            raise ValueError("No valid parameter 'R0' for the uniform charge distribution provided.")
         return UniformBallPotential(self)
 
     def charge_density(self, r, model="Fermi"):
         if model.lower() in ["f", "fermi"]:
+            if self.c is None:
+                raise ValueError("No valid parameter 'c' for the Fermi charge density distribution provided.")
             return FermiChargeDistribution(self)(r)
         elif model.lower() in ["u", "uniform", "ball", "uniformball"]:
+            if self.R0 is None:
+                raise ValueError("No valid parameter 'R0' for the uniform charge distribution provided.")
             return UniformBallChargeDistribution(self)(r)
         elif model.lower() in ["point", "point-like", "pointlike", "p", "coulomb", "c"]:
             return CoulombChargeDistribution(self)(r)
@@ -81,6 +117,8 @@ class Nucleus:
 
     @property
     def FermiChargeDistribution(self):
+        if self.c is None:
+            raise ValueError("No valid parameter 'c' for the Fermi charge density distribution provided.")
         return FermiChargeDistribution(self)
 
     @property
@@ -89,6 +127,8 @@ class Nucleus:
 
     @property
     def UniformBallChargeDistribution(self):
+        if self.R0 is None:
+            raise ValueError("No valid parameter 'R0' for the uniform charge distribution provided.")
         return UniformBallChargeDistribution(self)
 
 
@@ -236,4 +276,13 @@ if __name__ == "__main__":
     print(QuantumNumberSet(n, l, j) == "1"+symbol)
 
     print(parse_atomic_term_symbol("1s"))
+
+    from dish.util.atomic_units import convert_units
+
+    print(Nucleus(Z=1, R_rms=convert_units("fm", "a_0", .8783)).c)
+    print(Nucleus(Z=1, R_rms=convert_units("fm", "a_0", .8783)).R0)
+    print(Nucleus(Z=1, R_rms=convert_units("fm", "a_0", 5.8571)).c)
+    print(Nucleus(Z=1, R_rms=convert_units("fm", "a_0", 5.8571)).R0)
+    print(Nucleus(Z=1).c)
+    print(Nucleus(Z=1).R0)
 

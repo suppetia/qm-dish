@@ -6,6 +6,9 @@ from dish.util.math_util.special_functions import confluent_hypergeometric_f
 from dish.util.atomic_units import alpha, c
 from dish.util.atom import QuantumNumberSet
 from dish.util.radial.wave_function import RadialDiracWaveFunction
+from dish.util.radial.grid.grid import DistanceGrid
+
+from typing import Union
 
 
 def energy(n: int, kappa: int, Z: int, m_particle: float = 1):
@@ -32,7 +35,7 @@ def reduced_energy(n: int, kappa: int, Z: int, m_particle: float = 1):
     """
     return energy(n,kappa,Z, m_particle) - m_particle* c**2
 
-def radial_function(n: int, kappa: int, r: np.array, Z: int, m_particle: float = 1):
+def radial_function(n: int, kappa: int, r: Union[DistanceGrid, np.ndarray], Z: int, m_particle: float = 1):
     """
     Radial component R_{n,l} of the analytical solution for the Dirac equation for a Coulomb-potential in atomic units.
     :param n: principal quantum number
@@ -41,6 +44,10 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, m_particle: float =
     :param Z: nuclear charge in e
     :param m_particle: mass of the particle in m_e
     """
+
+    r_grid = r
+    if isinstance(r, DistanceGrid):
+        r = r_grid.r
 
     if n <= 0:
         raise ValueError(f"Principal quantum number's allowed values are n=1,2,3,... but is '{n}'.")
@@ -72,7 +79,7 @@ def radial_function(n: int, kappa: int, r: np.array, Z: int, m_particle: float =
     F2 = 0 if k-n == 0 else (k-n) * confluent_hypergeometric_f(k-n+1, 2*gamma+1, x)
     P = N_nkappa * np.sqrt(1+E/(m_particle*c**2)) * np.exp(-x/2) * np.power(x, gamma) * (F1 + F2)
     Q = N_nkappa * np.sqrt(1-E/(m_particle*c**2)) * np.exp(-x/2) * np.power(x, gamma) * (F1 - F2)
-    return RadialDiracWaveFunction(r_grid=r, Psi=np.stack((P, Q)).T, state=QuantumNumberSet(n=n, kappa=kappa))
+    return RadialDiracWaveFunction(r_grid=r_grid, Psi=np.stack((P, Q)).T, state=QuantumNumberSet(n=n, kappa=kappa))
 
 
 if __name__ == "__main__":
