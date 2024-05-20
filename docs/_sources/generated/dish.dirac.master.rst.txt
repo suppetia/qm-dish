@@ -1,0 +1,30 @@
+﻿dish.dirac.master
+=================
+
+.. automodule:: dish.dirac.master
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      master
+      outer_classical_turning_point
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qm-dish"
-version = "0.0.1"
+version = "0.1.0"
 authors = [{name = "Christopher Mertens", email="suppetia@gmx.net"}]
 description = "lightweight DIrac Solver for Hydrogen-like systems"
 readme = "README.md"

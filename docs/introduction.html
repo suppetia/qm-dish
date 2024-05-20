@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction into dish &mdash; dish 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=01f34227"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            dish
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction into dish</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hartree-atomic-units">Hartree Atomic Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-hydrogen-like-system">Defining the Hydrogen-like System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-grid">Defining the Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-electronic-states">Defining Electronic States</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-the-states-energy-and-wave-function">Finding the states energy and wave function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#converting-values-to-atomic-units">Converting values to atomic units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculation-of-matrix-elements">Calculation of Matrix Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-high-level-interface-for-operators">A High-level Interface for Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#non-relativistic-calculations">Non-relativistic Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions-classes-used-in-this-introduction">Functions/Classes used in this introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.ChargeDistribution"><code class="docutils literal notranslate"><span class="pre">ChargeDistribution</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.CoulombChargeDistribution"><code class="docutils literal notranslate"><span class="pre">CoulombChargeDistribution</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.CoulombPotential"><code class="docutils literal notranslate"><span class="pre">CoulombPotential</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.FermiChargeDistribution"><code class="docutils literal notranslate"><span class="pre">FermiChargeDistribution</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.FermiPotential"><code class="docutils literal notranslate"><span class="pre">FermiPotential</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.PotentialModel"><code class="docutils literal notranslate"><span class="pre">PotentialModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.UniformBallChargeDistribution"><code class="docutils literal notranslate"><span class="pre">UniformBallChargeDistribution</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.UniformBallPotential"><code class="docutils literal notranslate"><span class="pre">UniformBallPotential</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dish.util.radial.wave_function.RadialDiracWaveFunction"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dish</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction into dish</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction-into-dish">
+<h1>Introduction into dish<a class="headerlink" href="#introduction-into-dish" title="Link to this heading"></a></h1>
+<p><em>dish</em> is a lightweight solver the Schrödinger and Dirac equation for hydrogenic systems.
+It allows to find the energy and the wave function for states in these systems and provides a framework to calculate some basic matrix elements.</p>
+<p>While <em>dish</em> is capable of both relativistic and non-relativistic calculations, the main use case are computations in the relativistic framework and therefore the focus of this documentation will be on these.
+Working with non-relativistic wave functions will in the most cases work as a drop-in replacement (except for the mismatch in dimensions), but nevertheless the api is discussed in the <a class="reference internal" href="#label-nonrelativisticcalculations"><span class="std std-ref">last section</span></a>.</p>
+<section id="hartree-atomic-units">
+<h2>Hartree Atomic Units<a class="headerlink" href="#hartree-atomic-units" title="Link to this heading"></a></h2>
+<p>All calculations are performed internally dimensionless in <a class="reference external" href="https://en.wikipedia.org/wiki/Hartree_atomic_units">Hartree atomic units</a>.
+All classes and functions therefore expect values in atomic units.
+<em>dish</em> provides a utility function <a class="reference internal" href="quickstart.html#dish.util.atomic_units.convert_units" title="dish.util.atomic_units.convert_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atomic_units.convert_units()</span></code></a> to convert from and to atomic units.
+More information <a class="reference internal" href="#label-convertunits"><span class="std std-ref">below</span></a>.</p>
+</section>
+<section id="defining-the-hydrogen-like-system">
+<h2>Defining the Hydrogen-like System<a class="headerlink" href="#defining-the-hydrogen-like-system" title="Link to this heading"></a></h2>
+<p>The hydrogenic system is defined by the properties of the nucleus and the model used to describe its potential.
+There are three potential models implemented:</p>
+<ol class="arabic simple">
+<li><p>A point-like nucleus, which results in a pure Coulomb potential.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\rho(r) = Z\delta(r)\]</div>
+<ol class="arabic simple" start="2">
+<li><p>A ball-like nucleus, which is modeled by a homogeneously charged sphere.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\rho(r) = \begin{cases}\rho_0 &amp;, r \le R_0\\ 0 &amp;, r &gt; R_0\end{cases}\end{split}\]</div>
+<ol class="arabic simple" start="3">
+<li><p>A nucleus with a charge density distribution described by a Fermi distribution:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\rho(r) = \frac{\rho_0}{1+\exp((r-c)/a)}\]</div>
+<p>To store the information about the nucleus a <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>-object is used:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">Nucleus</span>
+
+<span class="n">nuc</span> <span class="o">=</span> <span class="n">Nucleus</span><span class="p">(</span><span class="n">Z</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">R_rms</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">R0</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">c</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">system_charge</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The parameters are:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Z</span></code>: The number of protons which is the nuclear charge.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">M</span></code>: The mass of the nucleus. This is used to take in account for nuclear recoil for non-relativistic calculations. Use <em>numpy.inf</em> to have a static nucleus.</p></li>
+<li><p>The radius of the charge distribution (not defined for point-like model <span class="math notranslate nohighlight">\(\rho(r) = Z\delta(r)\)</span> and therefore optional):
+It can be passed either via the root-mean-square radius <span class="math notranslate nohighlight">\(R_\text{rms} = \sqrt{\langle r^2\rangle}\)</span> via the parameter <code class="docutils literal notranslate"><span class="pre">R_rms</span></code> or via model specific parameters:</p>
+<ol class="arabic simple" start="2">
+<li><p>For a homogeneously charged sphere the radius <span class="math notranslate nohighlight">\(R_0\)</span> can be passed via the parameter <code class="docutils literal notranslate"><span class="pre">R0</span></code>.</p></li>
+<li><p>For a Fermi charge distribution the Fermi parameter <span class="math notranslate nohighlight">\(c\)</span> be be passed by the correspondingly named parameter <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+</ol>
+<p>Either <code class="docutils literal notranslate"><span class="pre">R_rms</span></code>, <code class="docutils literal notranslate"><span class="pre">R0</span></code> or <code class="docutils literal notranslate"><span class="pre">c</span></code> can be given (but not more than one) and the other parameters are calculated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For small values of <span class="math notranslate nohighlight">\(R_{\text{rms}}\)</span> value the Fermi model is not applicable with the default value of <span class="math notranslate nohighlight">\(a\)</span>.
+If <span class="math notranslate nohighlight">\(c\)</span> can’t be calculated from <span class="math notranslate nohighlight">\(R_0\)</span> or <span class="math notranslate nohighlight">\(R_rms\)</span> an error will be thrown if a Fermi-like model is requested.</p>
+</div>
+</li>
+<li><p>(optional) <code class="docutils literal notranslate"><span class="pre">a</span></code>: To specify the Fermi distribution this <em>diffuseness</em> parameter is required.
+It defaults to <span class="math notranslate nohighlight">\(2.3 \text{fm} /a_0 / (4\cdot\ln(3))\)</span> as described in <em>Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7</em></p></li>
+<li><p>(optional) <code class="docutils literal notranslate"><span class="pre">system_charge</span></code>: The charge of the hydrogenic system. This defaults to <code class="docutils literal notranslate"><span class="pre">Z-1</span></code>.</p></li>
+</ul>
+<p>The charge density and the potential can be evaluated at specific points by calling</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rho</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">charge_density</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="o">|</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="o">|</span><span class="n">Distancegrid</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span><span class="nb">str</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">)</span>
+
+<span class="n">V</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">potential</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="o">|</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="o">|</span><span class="n">Distancegrid</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span><span class="nb">str</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>To the argument <code class="docutils literal notranslate"><span class="pre">r</span></code> a <em>float</em>, <em>numpy.ndarray</em> of floats or a <code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.grid.DistanceGrid</span></code> should be passed to evaluate the charge density or potential at the given points.
+The argument <code class="docutils literal notranslate"><span class="pre">model</span></code> is optional and expects a <em>string</em> that specifies, which model for the nucleus should be used.
+Valid options are (case-insensitive):</p>
+<ol class="arabic simple">
+<li><p>For a point-like nuclear model: “point”, “point-like”, “pointlike”, “p”, “coulomb”, “c”</p></li>
+<li><p>For a homogeneously charged sphere: “u”, “uniform”, “ball”, “uniformball”</p></li>
+<li><p>For a Fermi charge distribution: “f”, “fermi”</p></li>
+</ol>
+<p>The potential models and their charge distributions are implemented in <a class="reference internal" href="#module-dish.util.potential" title="dish.util.potential"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dish.util.potential</span></code></a>.
+To each model there are corresponding classes for the potential and the charge density distribution,
+which are subclasses of <a class="reference internal" href="#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a> respectively.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is easily extendable to a custom potential by implementing a subclass of <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>
+and overriding the <code class="xref py py-meth docutils literal notranslate"><span class="pre">potential()</span></code> (and optionally the <code class="xref py py-meth docutils literal notranslate"><span class="pre">charge_density()</span></code>) method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">Nucleus</span>
+
+<span class="k">class</span> <span class="nc">MyCustomNucleus</span><span class="p">(</span><span class="n">Nucleus</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;my-custom-model-name&quot;</span><span class="p">:</span>
+            <span class="c1"># my implementation</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">potential</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">charge_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;my-custom-model-name&quot;</span><span class="p">:</span>
+            <span class="c1"># my implementation</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">charge_density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your nuclear model might be useful for others, you are very welcome to submit a pull-request and implement subclasses
+of <a class="reference internal" href="#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a>
+and their respective calls in <code class="xref py py-meth docutils literal notranslate"><span class="pre">Nucleus.potential()</span></code>/<code class="xref py py-meth docutils literal notranslate"><span class="pre">Nucleus.charge_density()</span></code>.</p>
+</div>
+</section>
+<section id="defining-the-grid">
+<h2>Defining the Grid<a class="headerlink" href="#defining-the-grid" title="Link to this heading"></a></h2>
+<p>All operations are performed on a finite grid of the form</p>
+<div class="math notranslate nohighlight">
+\[r(t) = r_0 \cdot (\exp(h\cdot t)-1)\]</div>
+<p>where <span class="math notranslate nohighlight">\(t\)</span> is a linear grid</p>
+<div class="math notranslate nohighlight">
+\[t(i) = i \cdot h\,, \quad i = 0,\dots,N-1 \,.\]</div>
+<p>The grid is therefore defined by the parameters <span class="math notranslate nohighlight">\(r_0, h, N\)</span>,
+and is implemented as the class <a class="reference internal" href="quickstart.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.DistanceGrid</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.grid.grid</span> <span class="kn">import</span> <span class="n">DistanceGrid</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">DistanceGrid</span><span class="p">(</span><span class="n">r0</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">DistanceGrid</span><span class="p">(</span><span class="n">r0</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">r_max</span><span class="p">:</span><span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using the latter method and passing a maximal radial distance <span class="math notranslate nohighlight">\(N\)</span> is calculated automatically.</p>
+<p>A special grid that is better suited if you want to <a class="reference internal" href="#label-matrixelements"><span class="std std-ref">calculate matrix elements</span></a> of later
+or calculate any other integral using wave functions from <em>dish</em> is a <a class="reference internal" href="quickstart.html#dish.util.radial.grid.RombergIntegrationGrid" title="dish.util.radial.grid.grid.RombergIntegrationGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.RombergIntegrationGrid</span></code></a>.
+This has essentially the same structure but the number of grid points is <span class="math notranslate nohighlight">\(N = 2^k + 1\)</span> for a positive integer <span class="math notranslate nohighlight">\(k\)</span>.
+This makes integration using <a class="reference external" href="https://en.wikipedia.org/wiki/Romberg's_method">Romberg’s method</a> possible which yields higher precession most of the times.
+(See chapter ??? of the underlying thesis for more details.)</p>
+<p>It can be constructed by passing <code class="docutils literal notranslate"><span class="pre">N</span></code> or <code class="docutils literal notranslate"><span class="pre">k</span></code> or from a <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceGrid</span></code> by increasing the number of points by lowering <code class="docutils literal notranslate"><span class="pre">h</span></code> until the condition is met.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.grid.grid</span> <span class="kn">import</span> <span class="n">RombergIntegrationGrid</span>
+
+<span class="n">r_grid</span> <span class="o">=</span> <span class="n">RombergIntegrationGrid</span><span class="p">(</span><span class="n">r0</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">r_grid</span> <span class="o">=</span> <span class="n">RombergIntegrationGrid</span><span class="p">(</span><span class="n">r0</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">r_grid</span> <span class="o">=</span> <span class="n">RombergIntegrationGrid</span><span class="o">.</span><span class="n">construct_similar_grid_from_distance_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span><span class="n">DistanceGrid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The actual values of the exponential grid <span class="math notranslate nohighlight">\(r[i]\)</span> and the linear grid <span class="math notranslate nohighlight">\(t[i]\)</span> can be accessed using</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r_grid</span><span class="o">.</span><span class="n">r</span>  <span class="c1"># exponential grid</span>
+<span class="n">r_grid</span><span class="o">.</span><span class="n">t</span>  <span class="c1"># linear grid</span>
+<span class="n">r_grid</span><span class="o">.</span><span class="n">rp</span> <span class="c1"># == r_prime = dr/dt</span>
+</pre></div>
+</div>
+</section>
+<section id="defining-electronic-states">
+<h2>Defining Electronic States<a class="headerlink" href="#defining-electronic-states" title="Link to this heading"></a></h2>
+<p>An electronic state in a hydrogenic system is defined by the four quantum numbers <span class="math notranslate nohighlight">\(n,l,j\)</span> and <span class="math notranslate nohighlight">\(m\)</span>.
+The orbital angular projection quantum number <span class="math notranslate nohighlight">\(m\)</span> is important only for the spherical part of the wave function.
+The radial part of the wave function is therefore defined by <span class="math notranslate nohighlight">\(n,l,j\)</span>.
+To store these values use an instance of <a class="reference internal" href="quickstart.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.QuantumNumberSet</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">QuantumNumberSet</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">QuantumNumberSet</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">QuantumNumberSet</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">kappa</span><span class="p">:</span><span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is common to combine <span class="math notranslate nohighlight">\(l\)</span> and <span class="math notranslate nohighlight">\(j\)</span> into the Dirac quantum number <span class="math notranslate nohighlight">\(\kappa = \mp (j+\frac{1}{2}), \text{for } j = l \pm \frac{1}{2}\)</span>.
+One can access this as an attribute <code class="docutils literal notranslate"><span class="pre">state.kappa</span></code>.</p>
+<p>Usually a state is written not in terms of <span class="math notranslate nohighlight">\(n,l,j\)</span> but in spectroscopic notation using a term symbol,
+e.g. <span class="math notranslate nohighlight">\(1s_{\frac{1}{2}}\)</span> instead of <span class="math notranslate nohighlight">\((n,l,j) = (1,0,\frac{1}{2})\)</span> or <span class="math notranslate nohighlight">\(4d_{\frac{3}{2}}\)</span> instead of <span class="math notranslate nohighlight">\((4,2,\frac{3}{2})\)</span>.
+Since for a hydrogenic system just <span class="math notranslate nohighlight">\(j = l \pm \frac{1}{2}\)</span> are possible also a <span class="math notranslate nohighlight">\(+\)</span> or <span class="math notranslate nohighlight">\(-\)</span> are common,
+e.g. <span class="math notranslate nohighlight">\(1s+ = 1s_{\frac{1}{2}}\)</span> or <span class="math notranslate nohighlight">\(4d- = 4d_{\frac{3}{2}}\)</span>.</p>
+<p>Both versions can be parsed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumNumberSet</span></code> using <a class="reference internal" href="quickstart.html#dish.util.atom.parse_atomic_term_symbol" title="dish.util.atom.parse_atomic_term_symbol"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atom.parse_atomic_term_symbol()</span></code></a>.
+Alternatively the notation <code class="docutils literal notranslate"><span class="pre">&quot;n[l]j&quot;</span></code> can be used, which is especially useful for higher <span class="math notranslate nohighlight">\(l\)</span>, or any combination of these versions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">parse_atomic_term_symbol</span>
+
+<span class="n">state</span><span class="p">:</span> <span class="n">QuantumNumberSet</span> <span class="o">=</span> <span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="n">state_repr</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span>
+<span class="c1"># e.g.</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;1s+&quot;</span><span class="p">)</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;4d3/2&quot;</span><span class="p">)</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;4[2]-&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Even through for <span class="math notranslate nohighlight">\(s\)</span>-states only <span class="math notranslate nohighlight">\(\text{n}s_{\frac{1}{2}}\)</span> exists
+and <span class="math notranslate nohighlight">\(\text{n}s_{-\frac{1}{2}}\)</span> does not, it is required to specify the states as
+<code class="docutils literal notranslate"><span class="pre">&quot;&lt;n&gt;s+&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;&lt;n&gt;s1/2&quot;</span></code> to distinguish it from <a class="reference internal" href="#label-nonrelativisticcalculations"><span class="std std-ref">non-relativistic states</span></a>.</p>
+</div>
+<p>Having defined the system, the grid and the state one can perform the calculation to find the electronic wave function and the states energy.</p>
+</section>
+<section id="finding-the-states-energy-and-wave-function">
+<h2>Finding the states energy and wave function<a class="headerlink" href="#finding-the-states-energy-and-wave-function" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.schrodinger.solver</span> <span class="kn">import</span> <span class="n">solve</span>
+<span class="kn">from</span> <span class="nn">dish.dirac.solver</span> <span class="kn">import</span> <span class="n">solve</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">nucleus</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Nucleus</span><span class="p">,</span>
+               <span class="n">state</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">QuantumNumberSet</span><span class="p">,</span>
+               <span class="n">r_grid</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">radial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">DistanceGrid</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">potential_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;Fermi&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">E_guess</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;auto&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">9</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_indir</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">max_number_of_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">20</span><span class="o">&gt;</span>
+              <span class="p">)</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">energy</span>  <span class="c1"># actually E-c^2</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">wave_function</span>  <span class="c1"># RadialDiracWaveFunction</span>
+
+<span class="n">wf</span><span class="o">.</span><span class="n">f</span>        <span class="c1"># large component</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">g</span>        <span class="c1"># small component</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">r_grid</span>   <span class="c1"># grid</span>
+
+
+<span class="kn">from</span> <span class="nn">dish.dirac.solver</span> <span class="kn">import</span> <span class="n">solve</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">nucleus</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Nucleus</span><span class="p">,</span>
+               <span class="n">state</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">QuantumNumberSet</span><span class="p">,</span>
+               <span class="n">r_grid</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">radial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">DistanceGrid</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">potential_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;Fermi&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">E_guess</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;auto&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">9</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_indir</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">max_number_of_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">20</span><span class="o">&gt;</span>
+              <span class="p">)</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">energy</span>  <span class="c1"># actually E-c^2</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">wave_function</span>  <span class="c1"># RadialSchrodingerWaveFunction</span>
+
+<span class="n">wf</span><span class="o">.</span><span class="n">R</span>        <span class="c1"># radial function</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">Q</span>        <span class="c1"># dR/dr</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">r_grid</span>   <span class="c1"># grid</span>
+</pre></div>
+</div>
+</section>
+<section id="converting-values-to-atomic-units">
+<span id="label-convertunits"></span><h2>Converting values to atomic units<a class="headerlink" href="#converting-values-to-atomic-units" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atomic_units</span> <span class="kn">import</span> <span class="n">convert_units</span>
+
+<span class="n">convert_units</span><span class="p">(</span><span class="n">old_unit</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="nb">float</span><span class="p">,</span>
+              <span class="n">new_unit</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="nb">float</span><span class="p">,</span>
+              <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mf">1.</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">old_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">new_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
+             <span class="p">)</span>
+
+<span class="c1"># e.g.</span>
+<span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;m_e&quot;</span><span class="p">)</span>
+<span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
+<span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
+<span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;m^2&quot;</span><span class="p">,</span> <span class="s2">&quot;a_0^2&quot;</span><span class="p">)</span>
+<span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;a_0&quot;</span><span class="p">,</span> <span class="n">old_unit_exp</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">new_unit_exp</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="math notranslate nohighlight">
+\[\mathrm{new\_value} = \frac{\left(\mathrm{value} \cdot \mathrm{new\_unit}\right)^\mathrm{old\_unit\_exp}}{\mathrm{new\_unit}^\mathrm{new\_unit\_exp}}\]</div>
+</section>
+<section id="calculation-of-matrix-elements">
+<span id="label-matrixelements"></span><h2>Calculation of Matrix Elements<a class="headerlink" href="#calculation-of-matrix-elements" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.integration</span> <span class="kn">import</span> <span class="n">integrate_on_grid</span>
+
+<span class="n">integrate_on_grid</span><span class="p">(</span><span class="n">y</span><span class="p">:</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">grid</span><span class="p">:</span><span class="n">DistanceGrid</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\langle n_1 \kappa_1\mid O\mid n_2 \kappa_2\rangle = \int_0^\infty y(r) dr\\
+\langle n_1 \kappa_1\mid \gamma_5 \mid n_2\kappa_2 \rangle = i \int_0^\infty (-f_1 g_2 + g_1 f_2) d r\end{aligned}\end{align} \]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf1</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">wave_function</span>
+<span class="n">wf2</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">wave_function</span>
+
+<span class="c1"># assure wf1 and wf2 are evaluated on the same grid</span>
+<span class="n">integrate_on_grid</span><span class="p">(</span><span class="o">-</span><span class="n">wf1</span><span class="o">.</span><span class="n">f</span><span class="o">*</span><span class="n">wf2</span><span class="o">.</span><span class="n">g</span> <span class="o">+</span> <span class="n">wf1</span><span class="o">.</span><span class="n">g</span> <span class="o">*</span> <span class="n">wf2</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">wf1</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">SymbolicMatrixOperator</span>
+
+<span class="n">y_5</span> <span class="o">=</span> <span class="n">SymbolicMatrixOperator</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">y_5</span> <span class="o">*</span> <span class="n">wf2</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">RadialOperator</span>
+
+<span class="n">r_hat</span> <span class="o">=</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span>
+
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_hat</span> <span class="o">*</span> <span class="n">wf2</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">RadialOperator</span><span class="p">,</span> <span class="n">SymbolicMatrixOperator</span>
+
+<span class="n">r_hat</span> <span class="o">=</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span>
+
+<span class="n">O</span> <span class="o">=</span> <span class="n">SymbolicMatrixOperator</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="n">r_hat</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="o">*</span><span class="n">r_hat</span><span class="p">,</span> <span class="n">r_hat</span><span class="o">*</span><span class="n">r_hat</span><span class="p">]])</span>
+
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">O</span> <span class="o">*</span> <span class="n">wf2</span>
+</pre></div>
+</div>
+</section>
+<section id="a-high-level-interface-for-operators">
+<h2>A High-level Interface for Operators<a class="headerlink" href="#a-high-level-interface-for-operators" title="Link to this heading"></a></h2>
+</section>
+<section id="non-relativistic-calculations">
+<span id="label-nonrelativisticcalculations"></span><h2>Non-relativistic Calculations<a class="headerlink" href="#non-relativistic-calculations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>electronic state</p></li>
+</ul>
+</section>
+<section id="functions-classes-used-in-this-introduction">
+<h2>Functions/Classes used in this introduction<a class="headerlink" href="#functions-classes-used-in-this-introduction" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.atom.</span></span><span class="sig-name descname"><span class="pre">Nucleus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_rms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9.890591475522296e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><div class="line-block">
+<div class="line">Dataclass to store the properties of the nucleus.</div>
+<div class="line">The potential for point-like, ball-like and Fermi charge distributions is provided through the <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus.potential" title="dish.util.atom.Nucleus.potential"><code class="xref py py-meth docutils literal notranslate"><span class="pre">potential()</span></code></a> method.</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Z</strong> – number of protons in the nucleus == nuclear charge</p></li>
+<li><p><strong>M</strong> – (optional) mass of the nucleus.</p></li>
+<li><p><strong>R_rms</strong> – (optional) root mean squared charge radius of the nucleus. If this is specified</p></li>
+<li><p><strong>R0</strong> – (optional) radius of a homogeneously charged sphere. Usually calculated from R_rms.</p></li>
+<li><p><strong>c</strong> – (optional) Fermi charge distribution parameter <em>c</em>. Usually calculated from the R_rms.</p></li>
+<li><p><strong>a</strong> – (optional) diffuseness parameter for a Fermi distribution. Defaults to <span class="math notranslate nohighlight">\(2.3 \text{fm} /a_0 / (4\cdot\ln(3))\)</span> as described in <em>Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7</em>.</p></li>
+<li><p><strong>system_charge</strong> – (optional) charge of the hydrogenic atom. Defaults to <em>Z-1</em>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class" id="module-dish.util.potential">
+<dt class="sig sig-object py" id="dish.util.potential.ChargeDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">ChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.ChargeDistribution" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.CoulombChargeDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.CoulombChargeDistribution" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.CoulombPotential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.CoulombPotential" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.FermiChargeDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.FermiChargeDistribution" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.FermiPotential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.FermiPotential" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.PotentialModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">PotentialModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.PotentialModel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.UniformBallChargeDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.UniformBallChargeDistribution" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.potential.UniformBallPotential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.UniformBallPotential" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dish.util.radial.wave_function.RadialDiracWaveFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.wave_function.</span></span><span class="sig-name descname"><span class="pre">RadialDiracWaveFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="quickstart.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">dish.util.atom.QuantumNumberSet</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.radial.wave_function.RadialDiracWaveFunction" title="Link to this definition"></a></dt>
+<dd><p>Class to store relativistic wave functions for a specific state that solves the radial Dirac equation.
+Stores the following information:
+- r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.
+- Psi: The values of the radial wave function. A two-dimensional array.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>f: The large component.</p></li>
+<li><p>g: The small component.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>state: The associated state as a dish.util.atom.QuantumNumberSet.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Christopher Mertens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
