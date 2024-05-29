@@ -67,6 +67,16 @@ class MatrixOperator(AbstractOperator):
         return type(ket)(ket.grid, new_ket, state=ket.state)
 
 
+class ScalarOperator(MatrixOperator):
+    def __init__(self,
+                 operator_array: np.ndarray,
+                 grid: DistanceGrid):
+        if not len(operator_array.shape) == 1:
+            raise ValueError(f"A ScalarOperator is represented as scalar values on a grid stored in an one-dimensional array, but the array is {len(operator_array.shape)}-dimensional.")
+        assert len(operator_array) == grid.N
+        super().__init__(operator_array, grid)
+
+
 class BraOperator(AbstractOperator):
 
     def __init__(self, ket: RadialWaveFunction):
@@ -81,7 +91,7 @@ class BraOperator(AbstractOperator):
             bra_conj = self._ket.Psi.astype(np.complex128)
             bra_conj[:, 0] *= -1j
             ket = ket.Psi.astype(np.complex128)
-            # ket[:, 0] *= 1j
+            ket[:, 0] *= 1j
             return integrate_on_grid(np.sum(bra_conj * ket, axis=1), grid=self._ket.grid)
         elif isinstance(self._ket, RadialSchrodingerWaveFunction):
             if not isinstance(self._ket, RadialSchrodingerWaveFunction):
@@ -100,7 +110,7 @@ class SymbolicScalarOperator(AbstractOperator):
 
     def apply_on(self, ket: RadialWaveFunction) -> RadialWaveFunction:
         if isinstance(ket, RadialSchrodingerWaveFunction):
-            return RadialSchrodingerWaveFunction(r_grid=ket.grid, Psi=self.evaluate_on(ket, 1), state=ket.state)
+            return RadialSchrodingerWaveFunction(r_grid=ket.grid, Psi=self.evaluate_on(ket, 1), state=None)
         elif isinstance(ket, RadialDiracWaveFunction):
             return DiagonalOperator([self]*ket.Psi.shape[1]).apply_on(ket)
 
@@ -132,7 +142,7 @@ class ProjectionOperator(SymbolicScalarOperator):
         if dim_ket == 1:
             return ket.Psi
         if dim == 1:
-            return (ket.Psi[:, 0]).astype(np.complex128) * 1j
+            return (ket.Psi[:, 0]).astype(np.complex128)
         return ket.Psi[:, dim - 1]
 
 
@@ -165,12 +175,6 @@ class SymbolicMatrixOperator(AbstractOperator):
             # assert the types of the entries are valid
             for j in range(self.dim):
                 if not isinstance(mat[i][j], (SymbolicScalarOperator, numbers.Number)):
-                    # TODO: handle operator chain
-                    # if isinstance(mat[i][j], _OperatorSum):
-                    #     for op in mat[i][j].operator_list:
-                    #         if not isinstance(op, SymbolicScalarOperator):
-                    #             raise ValueError(f"entries of SymbolicMatrixOperator must be either of type SymbolicScalarOperator or a number but one is of type {type(op)}")
-                    #     continue
                     raise ValueError(f"entries of SymbolicMatrixOperator must be either of type SymbolicScalarOperator or a number but one is of type {type(mat[i][j])}")
 
         self.mat = np.array(mat, dtype="object")
@@ -202,7 +206,7 @@ class SymbolicMatrixOperator(AbstractOperator):
         if dim_ket == 1:
             new_ket = new_ket.flatten()
 
-        return type(ket)(ket.grid, new_ket, state=ket.state)
+        return type(ket)(ket.grid, new_ket, state=None)
 
 
 class DiagonalOperator(SymbolicMatrixOperator):
@@ -228,7 +232,7 @@ class DifferentialOperator(SymbolicScalarOperator):
     def evaluate_on(self, ket: RadialWaveFunction, dim: int) -> np.ndarray:
         dim_ket = 1 if len(ket.Psi.shape) == 1 else ket.Psi.shape[-1]
         if not 0 < dim <= dim_ket:
-            raise ValueError(f"Dimension mismatch: trying to apply operator on dimension {dim} but the wavefunction has {dim_ket} dimensions")
+            raise ValueError(f"Dimension mismatch: trying to apply operator on dimension {dim} but the wave function has {dim_ket} dimensions")
 
         temp_grid = DistanceGrid(ket.grid.h, ket.grid.r0, ket.grid.N + 1)
 
@@ -274,12 +278,12 @@ class _ScalarOperatorProduct(_ScalarOperatorChain):
 
     def evaluate_on(self, ket: RadialWaveFunction, dim: int) -> np.ndarray:
         if isinstance(ket, RadialSchrodingerWaveFunction):
-            res = RadialSchrodingerWaveFunction(ket.grid, ket.Psi.copy(), ket.Psi_prime.copy())
+            res = RadialSchrodingerWaveFunction(ket.grid, ket.Psi.copy(), state=None, Psi_prime=ket.Psi_prime.copy())
             for op in reversed(self.operator_list):
                 res.Psi[:] = op.evaluate_on(res, dim=dim)
             return res.Psi
         elif isinstance(ket, RadialDiracWaveFunction):
-            res = RadialDiracWaveFunction(ket.grid, ket.Psi.copy().astype(np.complex128))
+            res = RadialDiracWaveFunction(ket.grid, ket.Psi.copy().astype(np.complex128), state=None)
             for op in reversed(self.operator_list):
                 res.Psi[:, dim-1] = op.evaluate_on(res, dim=dim)
             return res.Psi[:, dim-1]
@@ -314,7 +318,7 @@ class _OperatorSum(_OperatorChain):
         for op in self.operator_list:
             new_ket_values += op.apply_on(ket).Psi
 
-        return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=ket.state)
+        return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=None)
 
     def __add__(self, other):
         if isinstance(other, AbstractOperator):
@@ -348,7 +352,7 @@ class _ScalarOperatorSum(_ScalarOperatorChain):
             for op in self.operator_list:
                 new_ket_values += op.apply_on(ket).Psi
 
-            return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=ket.state)
+            return type(ket)(r_grid=ket.grid, Psi=new_ket_values, state=None)
         return NotImplemented
 
     def __mul__(self, other: RadialWaveFunction):

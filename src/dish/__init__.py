@@ -10,8 +10,9 @@ import dish.dirac
 import dish.schrodinger
 
 from dish.util.atom import Nucleus, parse_atomic_term_symbol, QuantumNumberSet
-from dish.util.radial.grid import DistanceGrid, RombergIntegrationGrid
+from dish.util.radial.grid.grid import DistanceGrid, RombergIntegrationGrid
 from dish.util.atomic_units import convert_units
+from dish.util.radial.wave_function import RadialDiracWaveFunction, RadialSchrodingerWaveFunction
 
 from dish.dirac.solver import solve
 from dish.util.radial.integration import (
@@ -19,6 +20,19 @@ from dish.util.radial.integration import (
     radial_integral,
     matrix_element,
     mp_matrix_element
+)
+
+from dish.util.radial.operator import (
+    BraOperator,
+    SymbolicScalarOperator,
+    SymbolicMatrixOperator,
+    RadialOperator,
+    ProjectionOperator,
+    DiagonalOperator,
+    UnityOperator,
+    MatrixOperator,
+    ScalarOperator,
+    DifferentialOperator
 )
 
 import logging

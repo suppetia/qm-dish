@@ -51,21 +51,25 @@ class RadialWaveFunction(ABC):
         """
         return self._psi
 
-    @property
-    def state(self):
+    def _get_state(self):
+        if self._state is None:
+            raise ValueError("'state' of this wave function is not defined. Probably the wave function is a result of an operator applied and therefore not neccessarily an energy eigenfunction.")
         return self._state
     @property
+    def state(self):
+        return self._state  # this might return None
+    @property
     def n(self):
-        return self._state.n
+        return self._get_state().n
     @property
     def l(self):
-        return self._state.l
+        return self._get_state().l
     @property
     def j(self):
-        return self._state.j
+        return self._get_state().j
     @property
     def kappa(self):
-        return self._state.kappa
+        return self._get_state().kappa
 
     def __getitem__(self, item):
         return self.Psi.__getitem__(item)
@@ -168,6 +172,17 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
         return np.savetxt(filename, np.array([self.r, self.Psi, self.Psi_prime]).T,
                           header="r\tPsi\tPsi'", delimiter="\t")
 
+    def __add__(self, other):
+        if not isinstance(other, RadialSchrodingerWaveFunction):
+            return NotImplemented
+        if not self.grid == other.grid:
+            raise ValueError("wave functions to add must be defined on the same grid")
+
+        return RadialSchrodingerWaveFunction(r_grid=self.grid,
+                                             Psi=self.R + other.R,
+                                             Psi_prime=self.Q + other.Q,
+                                             state=None)
+
 
 class RadialDiracWaveFunction(RadialWaveFunction):
     """
@@ -235,3 +250,13 @@ class RadialDiracWaveFunction(RadialWaveFunction):
         """
         return np.savetxt(filename, np.array([self.r, self.f, self.g]).T,
                           header="r\tf\tg", delimiter="\t")
+
+    def __add__(self, other):
+        if not isinstance(other, RadialDiracWaveFunction):
+            return NotImplemented
+        if not self.grid == other.grid:
+            raise ValueError("wave functions to add must be defined on the same grid")
+
+        return RadialDiracWaveFunction(r_grid=self.grid,
+                                       Psi=self._psi + other._psi,
+                                       state=None)

@@ -88,7 +88,7 @@ def master(n, l, j, Z, V,
         a_c = outer_classical_turning_point(V_, W_guess)
         # print(a_c)
         if r_grid.N - a_c < order_adams or a_c < order_adams:
-            raise ValueError("Could not solve the Dirac equation using the given parameters. Try to change the energy guess or the grid.")
+            raise ValueError(f"Could not solve the Dirac equation for n={n}, l={l}, j={j} using the given parameters. Try to change the energy guess or the grid.")
 
         # y_start_out = radial_function(n, kappa, r[:order_adams], Z, M).T
 

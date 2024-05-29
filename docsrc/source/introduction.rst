@@ -127,7 +127,7 @@ All operations are performed on a finite grid of the form
 
 .. math::
 
-   r(t) = r_0 \cdot (\exp(h\cdot t)-1)
+   r(t) = r_0 \cdot (\mathrm{e}^{t}-1)\,,
 
 where :math:`t` is a linear grid
 
@@ -151,7 +151,7 @@ Using the latter method and passing a maximal radial distance :math:`N` is calcu
 
 A special grid that is better suited if you want to :ref:`calculate matrix elements <label-MatrixElements>` of later
 or calculate any other integral using wave functions from *dish* is a :class:`dish.util.radial.grid.grid.RombergIntegrationGrid`.
-This has essentially the same structure but the number of grid points is :math:`N = 2^k + 1` for a positive integer :math:`k`.
+It has essentially the same structure but the number of grid points is :math:`N = 2^k + 1` for a positive integer :math:`k`.
 This makes integration using `Romberg's method`_ possible which yields higher precession most of the times.
 (See chapter ??? of the underlying thesis for more details.)
 
@@ -237,8 +237,8 @@ Finding the states energy and wave function
                   r_grid: dish.util.radial.grid.grid.DistanceGrid = <optional:dict(r0=1e-6, h=1e-4)>,
                   potential_model: str = <optional:"Fermi">,
                   E_guess: float = <optional:"auto">,
-                  order_AM: int = <optional:9>,
-                  order_indir: int = <optional:7>,
+                  order_AM: int = <optional:5>,
+                  order_insch: int = <optional:7>,
                   max_number_of_iterations: int = <optional:20>
                  )
 
@@ -257,7 +257,7 @@ Finding the states energy and wave function
                   r_grid: dish.util.radial.grid.grid.DistanceGrid = <optional:dict(r0=1e-6, h=1e-4)>,
                   potential_model: str = <optional:"Fermi">,
                   E_guess: float = <optional:"auto">,
-                  order_AM: int = <optional:9>,
+                  order_AM: int = <optional:5>,
                   order_indir: int = <optional:7>,
                   max_number_of_iterations: int = <optional:20>
                  )
