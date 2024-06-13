@@ -26,7 +26,7 @@ def find_suitable_number_of_integration_points_schrodinger(Z, M, m_particle, n, 
     """
     r = np.logspace(-2, 5, num=100)
     R = radial_f_schrodinger(n, l, r, Z, M, m_particle)
-    last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-10)).reshape(-1))]
+    last_significant_r = r[np.max(np.argwhere(~np.isclose(R.R, 0, atol=1e-10)).reshape(-1))]
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
 
@@ -48,7 +48,7 @@ def find_suitable_number_of_integration_points_dirac(Z, m_particle, n, kappa, r_
     """
     r = np.logspace(-4, 4, num=300)
     R = radial_f_dirac(n, kappa, r, Z, m_particle=m_particle).f
-    last_significant_r = r[np.max(np.argwhere(~np.isclose(R, 0, atol=1e-10)).reshape(-1))]
+    last_significant_r = r[np.max(np.argwhere(~np.isclose(R.f, 0, atol=1e-10)).reshape(-1))]
 
     N_max = int(np.floor(np.log(last_significant_r/r_0 + 1)/h)) - 1
 

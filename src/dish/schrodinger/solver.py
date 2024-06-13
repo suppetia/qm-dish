@@ -56,7 +56,7 @@ def solve(nucleus: Nucleus,
 
     # construct DistanceGrid from parameter dict
     if isinstance(r_grid, dict):
-        r_grid = construct_grid_from_dict(r_grid, nucleus, state, relativistic=False)
+        r_grid = construct_grid_from_dict(r_grid, nucleus, m, state, relativistic=False)
 
     # evaluate the given potential model of the nucleus on the given grid
     if potential_model.lower() in ["f", "fermi"]:

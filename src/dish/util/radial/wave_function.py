@@ -154,7 +154,7 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
         return RadialSchrodingerWaveFunction(r,
                                              spline_psi(r.r),
                                              state=self.state,
-                                             Psi_prime=spline_psi.derivative()(r))
+                                             Psi_prime=spline_psi.derivative()(r.r))
 
     def interpolate_values(self, r: Union[np.ndarray, DistanceGrid]):
         """

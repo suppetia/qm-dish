@@ -163,11 +163,11 @@ class QuantumNumberSet:
             self._l = l_
             self._j = j_
 
-        if n <= 0:
+        if self.n <= 0:
             raise ValueError(f"bound states are not defined for n<=0 but n={n} was given")
-        if l < 0:
+        if self.l < 0:
             raise ValueError(f"bound states are not defined for l<0 but l={l} was given")
-        if j < 0:
+        if self.j is not None and self.j < 0:
             raise ValueError(f"bound states are not defined for j<0 but j={j} was given")
     @property
     def n(self):
