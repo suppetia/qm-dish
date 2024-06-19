@@ -17,6 +17,8 @@ help:
 github: no-jekyll
 	@make html
 	@cp -a "$(BUILDDIR)/html/." ../docs
+	@make latexpdf
+	@cp -a "$(BUILDDIR)/latex/dish.pdf" ../manual_dish.pdf
 
 no-jekyll:
 	touch ../docs/.nojekyll
