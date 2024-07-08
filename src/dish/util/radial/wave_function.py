@@ -106,6 +106,7 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
     """
     Class to store non-relativistic wave functions for a specific state that solves the radial Schrödinger equation.
     Stores the following information:
+
     - r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.
     - Psi: The values of the radial wave function.
     - Psi_prime: The values of the derivative of the radial wave function.
@@ -145,6 +146,7 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
     def interpolate_at(self, r: Union[np.ndarray, DistanceGrid]):
         """
         interpolate the wave function at points r using a cubic spline
+
         :param r: np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on
         :return: interpolated wave_function
         """
@@ -160,6 +162,7 @@ class RadialSchrodingerWaveFunction(RadialWaveFunction):
         """
         Interpolate the wave function at points r using a cubic spline.
         Use this method to interpolate on arbitrary grid points.
+
         :param r: np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on
         :return: the values of the interpolated wave function and it's derivative
         """
@@ -188,6 +191,7 @@ class RadialDiracWaveFunction(RadialWaveFunction):
     """
     Class to store relativistic wave functions for a specific state that solves the radial Dirac equation.
     Stores the following information:
+
     - r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.
     - Psi: The values of the radial wave function. A two-dimensional array.
 
@@ -217,6 +221,7 @@ class RadialDiracWaveFunction(RadialWaveFunction):
         """
         Interpolate the wave function at a DistanceGrid r using a cubic spline.
         Use this method to interpolate on arbitrary grid points.
+
         :param r: np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on
         :return: interpolated wave_function
         """
@@ -234,6 +239,7 @@ class RadialDiracWaveFunction(RadialWaveFunction):
     def interpolate_values(self, r: Union[np.ndarray, DistanceGrid]):
         """
         interpolate the wave function at points r using a cubic spline
+
         :param r: np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on
         :return: the values of the interpolated wave function
         """
@@ -246,6 +252,7 @@ class RadialDiracWaveFunction(RadialWaveFunction):
     def write_to_file(self, filename):
         """
         store the values of the radial wave function in a comma separated file
+
         :param filename: name of the file
         """
         return np.savetxt(filename, np.array([self.r, self.f, self.g]).T,

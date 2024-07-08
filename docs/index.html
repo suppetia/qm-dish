@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="_static/dish.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -44,7 +45,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Welcome to dish’s documentation!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
@@ -95,7 +99,9 @@
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
 <p>To set your system up to work with <em>dish</em> see <a class="reference internal" href="setup.html"><span class="doc">Setup</span></a>.</p>
 <p>For a short introduction covering the most basic features see <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
-<p>For further information see the <a class="reference internal" href="introduction.html"><span class="doc">Introduction into dish</span></a> or read the <a class="reference internal" href="api.html"><span class="doc">API</span></a> documentation.</p>
+<p>For further information see the <a class="reference internal" href="introduction.html"><span class="doc">Introduction into dish</span></a> or get some inspiration from the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a>.</p>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -116,21 +122,73 @@
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#defining-the-grid">Defining the Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#defining-electronic-states">Defining Electronic States</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#finding-the-states-energy-and-wave-function">Finding the states energy and wave function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#wave-functions">Wave Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#converting-values-to-atomic-units">Converting values to atomic units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#calculation-of-matrix-elements">Calculation of Matrix Elements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#a-high-level-interface-for-operators">A High-level Interface for Operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#non-relativistic-calculations">Non-relativistic Calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html#functions-classes-used-in-this-introduction">Functions/Classes used in this introduction</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#simple-plotting-of-wave-functions">Simple Plotting of wave functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#operator-interface">Operator Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#implementation-of-a-custom-potential">Implementation of a Custom Potential</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/dish.dirac.master.html">dish.dirac.master</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/dish.util.radial.wave_function.html">dish.util.radial.wave_function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.dirac.solver.solve"><code class="docutils literal notranslate"><span class="pre">solve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.schrodinger.solver.solve"><code class="docutils literal notranslate"><span class="pre">solve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.atomic_units.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.atom.Nucleus"><code class="docutils literal notranslate"><span class="pre">Nucleus</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.atom.Nucleus.potential"><code class="docutils literal notranslate"><span class="pre">Nucleus.potential()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.ChargeDistribution"><code class="docutils literal notranslate"><span class="pre">ChargeDistribution</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.CoulombChargeDistribution"><code class="docutils literal notranslate"><span class="pre">CoulombChargeDistribution</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.CoulombPotential"><code class="docutils literal notranslate"><span class="pre">CoulombPotential</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.FermiChargeDistribution"><code class="docutils literal notranslate"><span class="pre">FermiChargeDistribution</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.FermiPotential"><code class="docutils literal notranslate"><span class="pre">FermiPotential</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.PotentialModel"><code class="docutils literal notranslate"><span class="pre">PotentialModel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.UniformBallChargeDistribution"><code class="docutils literal notranslate"><span class="pre">UniformBallChargeDistribution</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.potential.UniformBallPotential"><code class="docutils literal notranslate"><span class="pre">UniformBallPotential</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet"><code class="docutils literal notranslate"><span class="pre">QuantumNumberSet</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.atom.parse_atomic_term_symbol"><code class="docutils literal notranslate"><span class="pre">parse_atomic_term_symbol()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.misc.SolvingResult"><code class="docutils literal notranslate"><span class="pre">SolvingResult</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid"><code class="docutils literal notranslate"><span class="pre">DistanceGrid</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.grid.RombergIntegrationGrid"><code class="docutils literal notranslate"><span class="pre">RombergIntegrationGrid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.grid.RombergIntegrationGrid.construct_similar_grid_from_distance_grid"><code class="docutils literal notranslate"><span class="pre">RombergIntegrationGrid.construct_similar_grid_from_distance_grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.f"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction.f</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.g"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction.g</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.interpolate_at"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction.interpolate_at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.interpolate_values"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction.interpolate_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.write_to_file"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction.write_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction"><code class="docutils literal notranslate"><span class="pre">RadialSchrodingerWaveFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.Psi"><code class="docutils literal notranslate"><span class="pre">RadialSchrodingerWaveFunction.Psi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.interpolate_at"><code class="docutils literal notranslate"><span class="pre">RadialSchrodingerWaveFunction.interpolate_at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.interpolate_values"><code class="docutils literal notranslate"><span class="pre">RadialSchrodingerWaveFunction.interpolate_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.write_to_file"><code class="docutils literal notranslate"><span class="pre">RadialSchrodingerWaveFunction.write_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.AbstractOperator"><code class="docutils literal notranslate"><span class="pre">AbstractOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.BraOperator"><code class="docutils literal notranslate"><span class="pre">BraOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.DiagonalOperator"><code class="docutils literal notranslate"><span class="pre">DiagonalOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.DifferentialOperator"><code class="docutils literal notranslate"><span class="pre">DifferentialOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.MatrixOperator"><code class="docutils literal notranslate"><span class="pre">MatrixOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.ProjectionOperator"><code class="docutils literal notranslate"><span class="pre">ProjectionOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.RadialOperator"><code class="docutils literal notranslate"><span class="pre">RadialOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.ScalarOperator"><code class="docutils literal notranslate"><span class="pre">ScalarOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicMatrixOperator"><code class="docutils literal notranslate"><span class="pre">SymbolicMatrixOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicScalarOperator"><code class="docutils literal notranslate"><span class="pre">SymbolicScalarOperator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dish.util.radial.operator.UnityOperator"><code class="docutils literal notranslate"><span class="pre">UnityOperator</span></code></a></li>
 </ul>
 </li>
 </ul>

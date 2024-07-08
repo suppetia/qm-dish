@@ -76,7 +76,7 @@ class Nucleus:
             if self.c is None:
                 raise ValueError("No valid parameter 'c' for the Fermi charge density distribution provided.")
             return FermiPotential(self)(r)
-        elif model.lower() in ["u", "uniform", "ball", "ball-like", "balllike", "uniformball"]:
+        elif model.lower() in ["u", "uniform", "ball", "ball-like", "balllike", "uniformball", "sphere", "sphere-like", "s"]:
             if self.R0 is None:
                 raise ValueError("No valid parameter 'R0' for the uniform charge distribution provided.")
             return UniformBallPotential(self)(r)
@@ -84,7 +84,7 @@ class Nucleus:
             return CoulombPotential(self)(r)
         else:
             raise ValueError(
-                f"'model' must be either 'Fermi', 'uniform' or 'point-like' but is {model}.")
+                f"'model' must be either 'Fermi', 'uniform/sphere' or 'point-like' but is {model}.")
 
     @property
     def CoulombPotential(self):

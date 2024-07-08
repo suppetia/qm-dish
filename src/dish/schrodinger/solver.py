@@ -27,6 +27,7 @@ def solve(nucleus: Nucleus,
           ) -> SolvingResult:
     """
     Solve the radial Dirac equation for Hydrogen-like atoms for a particle in state 'state'.
+
     :param nucleus: parameters of the nucleus
     :param state: electron state to find the wave function
     :param r_grid: grid on which the wave function is to be evaluated.
@@ -47,6 +48,7 @@ def solve(nucleus: Nucleus,
             The default is 20.
     :return:
         The result of the solving routine 'master' as a 'SolvingResult'.
+    :rtype: SolvingResult
     """
 
     if isinstance(state, str):

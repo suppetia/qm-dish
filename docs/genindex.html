@@ -8,6 +8,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="_static/dish.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -41,7 +42,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to dish’s documentation!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
@@ -79,9 +83,13 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#C"><strong>C</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
@@ -89,20 +97,39 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.operator.AbstractOperator">AbstractOperator (class in dish.util.radial.operator)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.operator.BraOperator">BraOperator (class in dish.util.radial.operator)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.ChargeDistribution">ChargeDistribution (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.potential.ChargeDistribution">ChargeDistribution (class in dish.util.potential)</a>
 </li>
-      <li><a href="quickstart.html#dish.util.atomic_units.convert_units">convert_units() (in module dish.util.atomic_units)</a>
+      <li><a href="api.html#dish.util.radial.grid.RombergIntegrationGrid.construct_similar_grid_from_distance_grid">construct_similar_grid_from_distance_grid() (dish.util.radial.grid.RombergIntegrationGrid class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.CoulombChargeDistribution">CoulombChargeDistribution (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.atomic_units.convert_units">convert_units() (in module dish.util.atomic_units)</a>
 </li>
-      <li><a href="introduction.html#dish.util.potential.CoulombPotential">CoulombPotential (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.potential.CoulombChargeDistribution">CoulombChargeDistribution (class in dish.util.potential)</a>
+</li>
+      <li><a href="api.html#dish.util.potential.CoulombPotential">CoulombPotential (class in dish.util.potential)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -110,30 +137,27 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    dish.dirac.master
-
-      <ul>
-        <li><a href="generated/dish.dirac.master.html#module-dish.dirac.master">module</a>
+      <li><a href="api.html#dish.util.radial.operator.DiagonalOperator">DiagonalOperator (class in dish.util.radial.operator)</a>
 </li>
-      </ul></li>
+      <li><a href="api.html#dish.util.radial.operator.DifferentialOperator">DifferentialOperator (class in dish.util.radial.operator)</a>
+</li>
       <li>
     dish.util.potential
 
       <ul>
-        <li><a href="introduction.html#module-dish.util.potential">module</a>
+        <li><a href="api.html#module-dish.util.potential">module</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    dish.util.radial.wave_function
+    dish.util.radial.operator
 
       <ul>
-        <li><a href="generated/dish.util.radial.wave_function.html#module-dish.util.radial.wave_function">module</a>
+        <li><a href="api.html#module-dish.util.radial.operator">module</a>
 </li>
       </ul></li>
-      <li><a href="quickstart.html#dish.util.radial.grid.DistanceGrid">DistanceGrid (class in dish.util.radial.grid)</a>
+      <li><a href="api.html#dish.util.radial.grid.DistanceGrid">DistanceGrid (class in dish.util.radial.grid)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -141,27 +165,57 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.FermiChargeDistribution">FermiChargeDistribution (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.f">f (dish.util.radial.wave_function.RadialDiracWaveFunction property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.FermiPotential">FermiPotential (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.potential.FermiChargeDistribution">FermiChargeDistribution (class in dish.util.potential)</a>
 </li>
+      <li><a href="api.html#dish.util.potential.FermiPotential">FermiPotential (class in dish.util.potential)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.g">g (dish.util.radial.wave_function.RadialDiracWaveFunction property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.interpolate_at">interpolate_at() (dish.util.radial.wave_function.RadialDiracWaveFunction method)</a>
+
+      <ul>
+        <li><a href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.interpolate_at">(dish.util.radial.wave_function.RadialSchrodingerWaveFunction method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.interpolate_values">interpolate_values() (dish.util.radial.wave_function.RadialDiracWaveFunction method)</a>
+
+      <ul>
+        <li><a href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.interpolate_values">(dish.util.radial.wave_function.RadialSchrodingerWaveFunction method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.operator.MatrixOperator">MatrixOperator (class in dish.util.radial.operator)</a>
+</li>
       <li>
     module
 
       <ul>
-        <li><a href="generated/dish.dirac.master.html#module-dish.dirac.master">dish.dirac.master</a>
+        <li><a href="api.html#module-dish.util.potential">dish.util.potential</a>
 </li>
-        <li><a href="introduction.html#module-dish.util.potential">dish.util.potential</a>
-</li>
-        <li><a href="generated/dish.util.radial.wave_function.html#module-dish.util.radial.wave_function">dish.util.radial.wave_function</a>
+        <li><a href="api.html#module-dish.util.radial.operator">dish.util.radial.operator</a>
 </li>
       </ul></li>
   </ul></td>
@@ -170,7 +224,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.atom.Nucleus">Nucleus (class in dish.util.atom)</a>
+      <li><a href="api.html#dish.util.atom.Nucleus">Nucleus (class in dish.util.atom)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -178,13 +232,17 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.atom.parse_atomic_term_symbol">parse_atomic_term_symbol() (in module dish.util.atom)</a>
+      <li><a href="api.html#dish.util.atom.parse_atomic_term_symbol">parse_atomic_term_symbol() (in module dish.util.atom)</a>
+</li>
+      <li><a href="api.html#dish.util.atom.Nucleus.potential">potential() (dish.util.atom.Nucleus method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.atom.Nucleus.potential">potential() (dish.util.atom.Nucleus method)</a>
+      <li><a href="api.html#dish.util.potential.PotentialModel">PotentialModel (class in dish.util.potential)</a>
 </li>
-      <li><a href="introduction.html#dish.util.potential.PotentialModel">PotentialModel (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.radial.operator.ProjectionOperator">ProjectionOperator (class in dish.util.radial.operator)</a>
+</li>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.Psi">Psi (dish.util.radial.wave_function.RadialSchrodingerWaveFunction property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -192,7 +250,7 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.atom.QuantumNumberSet">QuantumNumberSet (class in dish.util.atom)</a>
+      <li><a href="api.html#dish.util.atom.QuantumNumberSet">QuantumNumberSet (class in dish.util.atom)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -200,11 +258,15 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.radial.wave_function.RadialDiracWaveFunction">RadialDiracWaveFunction (class in dish.util.radial.wave_function)</a>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction">RadialDiracWaveFunction (class in dish.util.radial.wave_function)</a>
+</li>
+      <li><a href="api.html#dish.util.radial.operator.RadialOperator">RadialOperator (class in dish.util.radial.operator)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.radial.grid.RombergIntegrationGrid">RombergIntegrationGrid (class in dish.util.radial.grid)</a>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction">RadialSchrodingerWaveFunction (class in dish.util.radial.wave_function)</a>
+</li>
+      <li><a href="api.html#dish.util.radial.grid.RombergIntegrationGrid">RombergIntegrationGrid (class in dish.util.radial.grid)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -212,11 +274,21 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.dirac.solver.solve">solve() (in module dish.dirac.solver)</a>
+      <li><a href="api.html#dish.util.radial.operator.ScalarOperator">ScalarOperator (class in dish.util.radial.operator)</a>
 </li>
+      <li><a href="api.html#dish.dirac.solver.solve">solve() (in module dish.dirac.solver)</a>
+
+      <ul>
+        <li><a href="api.html#dish.schrodinger.solver.solve">(in module dish.schrodinger.solver)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="quickstart.html#dish.util.misc.SolvingResult">SolvingResult (class in dish.util.misc)</a>
+      <li><a href="api.html#dish.util.misc.SolvingResult">SolvingResult (class in dish.util.misc)</a>
+</li>
+      <li><a href="api.html#dish.util.radial.operator.SymbolicMatrixOperator">SymbolicMatrixOperator (class in dish.util.radial.operator)</a>
+</li>
+      <li><a href="api.html#dish.util.radial.operator.SymbolicScalarOperator">SymbolicScalarOperator (class in dish.util.radial.operator)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -224,12 +296,26 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.UniformBallChargeDistribution">UniformBallChargeDistribution (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.potential.UniformBallChargeDistribution">UniformBallChargeDistribution (class in dish.util.potential)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="introduction.html#dish.util.potential.UniformBallPotential">UniformBallPotential (class in dish.util.potential)</a>
+      <li><a href="api.html#dish.util.potential.UniformBallPotential">UniformBallPotential (class in dish.util.potential)</a>
 </li>
+      <li><a href="api.html#dish.util.radial.operator.UnityOperator">UnityOperator (class in dish.util.radial.operator)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction.write_to_file">write_to_file() (dish.util.radial.wave_function.RadialDiracWaveFunction method)</a>
+
+      <ul>
+        <li><a href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction.write_to_file">(dish.util.radial.wave_function.RadialSchrodingerWaveFunction method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

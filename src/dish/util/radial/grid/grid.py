@@ -120,8 +120,9 @@ class RombergIntegrationGrid(DistanceGrid):
         """
         Construct a RombergIntegrationGrid from a DistanceGrid.
         The number of points is increased to the next integer k so that :math:`N = 2^k + 1` is fulfilled by decreasing the value of ``h``.
-        :param grid:
-        :return:
+
+        :param grid: DistanceGrid
+        :return: RombergIntegrationGrid similar to grid
         """
         if isinstance(grid, DistanceGrid):
             # test for Romberg integration

@@ -1,4 +1,4 @@
-# QM-DISH
+# QM-DISH <img src="./docsrc/source/dish_icon.png" alt="dish logo" height="50"/>
 A Lightweight **DI**rac **S**olver for **H**ydrogen-like Systems
 
 ## What is *dish*?
@@ -94,19 +94,25 @@ The freshly built package and the required dependencies will be installed.
 > ! You need to assure that *old_unit* and *new_unit* have the same dimension as there are no checks performed!  
 > *old_unit* and *new_unit* can be either numerical values or strings for the most common units (e.g. "E_h", "eV", "J").
 
-
-To calculate electronic states of a Hydrogen-like system first the properties of the nucleus need to be specified.  
+To calculate electronic states of a Hydrogen-like system first the properties of the :class:`Nucleus <dish.util.atom.Nucleus>` need to be specified.
 *dish* has build-in support for either a point-like nucleus (a pure Coulomb potential), a homogeneously charged ball-like nucleus or a nucleus which charge is described by a Fermi distribution:
-$`\rho(r) = \rho_0/(1+\exp((r-c)/a))`$  
+
+$`\rho(r) = \frac{\rho_0}{1+\exp((r-c)/a)}`$
+
 Therefore, to following properties need to be specified:
-1. The nuclear charge *Ze* passed to the parameter `Z`.
-2. The mass of the nucleus `M`. To perform calculations with a fixed core this can be set to *numpy.inf* .
-3. The radius of the charge distribution `R0`. 
-   1. For a point-like model this is irrelevant and can be set to 0.
-   2. For a ball-like model the radius *r* of the sphere is $`r = R0`$ 
-   3. For a Fermi-charge-distribution $`c = R0`$
-4. (Optional and only necessary for a Fermi model) The _diffuseness_ parameter `a`. 
-   > *a* defaults to $2.3 \text{fm} /a_0 / (4\cdot\ln(3))$ as described in *Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7*
+1. The nuclear charge *Ze* passed to the parameter ``Z``.
+2. The mass of the nucleus ``M``. To perform calculations with a fixed core this can be set to *numpy.inf* .
+3. Parameters of the charge distribution.
+   The radius can be either given as the root mean squared radius $`R_\text{rms} \sqrt{\langle r^2 \rangle}`$ via the parameter ``R_rms``,
+   for a ball-like model as the radius $`R_0`$ via the parameter ``R0``
+   or for a Fermi charge density distribution as the parameter $`c`$ via the constructor parameter of the same name.
+
+   If a value is passed to one of the three parameters the others are calculated if possible.
+   For a point-like model this must not be passed.
+
+   For a Fermi model also the *diffuseness* parameter $`a`$ is required.
+   It can be passed explicitly to the constructor via the parameter ``a`` but defaults
+   to $`2.3 \text{fm} /a_0 / (4\cdot\ln(3))`$ as this is a good approximation for most stable nuclei (*Parpia and Mohanty, Phys.Rev.A, 46 (1992), Number 7*).
 
 An example for Ca19+ looks like:
 
@@ -222,7 +228,7 @@ Note that this method will always create a grid where *h* is smaller (or equal) 
 
 #### The Adams-Moulton method
 Adams-Moulton (AM) methods are a linear multistep method to solve systems of ordinary differential equations numerically on a finite grid.
-A multistep method of order *k* uses the information if the previous *k* points to determine the next point (for a detailed discussion see Chapter (???) of the underlying thesis).
+A multistep method of order *k* uses the information if the previous *k* points to determine the next point (for a detailed discussion see chapter 3.3 of the underlying thesis).
 Therefore, the AM method requires *k* initial values. In the algorithm the AM method is used from the most inner points in the outward direction and inwards from the most outer points.  
 The initial values are calculated from asymptotic considerations. The order of the method to retrieve the initial values for the inward integration can be specified by the parameter *order_indir*.
 The order of the AM itself can be set via *order_AM*.  
@@ -242,16 +248,21 @@ $`\int_0^\infty \psi^\dagger \hat{O} \phi r^2 \text{d}r`$ where $`\psi`$ and $`\
 and $`\hat{O}`$ is a 2x2-Matrix.
 Using *dish* this can be archived by the following function
 ```python
-from dish.util.radial.integration import matrix_element
+from dish.util.radial.operator import (
+    BraOperator,
+    SymbolicMatrixOperator
+)
+O = SymbolicMatrixOperator([[<some>, <matrix>],[<entries>, <...>]])
+BraOperator(psi) * O * phi
 
-matrix_element(psi, op, phi)
 ```
-where *psi* and *phi* must be *RadialWaveFunction* objects on the same grid of length $n$ and 
-*op* a numpy array of shape *(n, 2, 2)*.  
+where `psi` and `phi` must be `RadialWaveFunction` objects on the same grid.  
 > In a *RadialWaveFunction*-object $f_\kappa$ and $g_\kappa$ are stored as defined [above](#the-wavefunction)
 > and therefore are not multiplied by $\frac{1}{r}$ which minimizes the numerical error since for the radial integral it cancels out with the Jacobi-determinant.
 
-This utilizes internally the function *integrate_on_grid* which can be used to calculate more general radial integrals.
+For more details on this symbolic operator interface refer to the [documentation](https://suppetia.github.io/qm-dish/).
+
+Internally, this interface utilizes the function `integrate_on_grid()` which can be used to calculate more general radial integrals.
 The signature of the function looks like
 ```python
 from dish.util.radial.integration import integrate_on_grid
@@ -259,14 +270,6 @@ from dish.util.radial.integration import integrate_on_grid
 integrate_on_grid(y: numpy.ndarray,
                   grid: DistanceGrid = grid)
 ```
-> **Notes**: 
-> 1. When given a *RombergIntegrationGrid* this uses Romberg's method and when a *DistanceGrid* is passed it falls back to the trapezoidal rule for integration.
+> **Note**: 
+> When given a *RombergIntegrationGrid* this uses Romberg's method and when a *DistanceGrid* is passed it falls back to the trapezoidal rule for integration.
 > Because of the higher accuracy of the first method it is highly encouraged to use a *RombergIntegrationGrid*.
-> 2. There also is a method `radial_integral` which provides the same functionality but already multiplies *y* with the Jacobi-determinant for convinience.  
-> Usually it should not be used with *RadialWaveFunction* to avoid the necessary division by $r$. 
-> ```python
-> from dish.util.radial.integration import radial_integral
-> 
-> radial_integral(y: numpy.ndarray,
->                 grid: DistanceGrid = grid)
-> ```

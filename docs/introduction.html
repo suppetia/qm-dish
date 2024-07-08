@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="_static/dish.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -45,7 +46,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to dish’s documentation!</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
@@ -55,22 +59,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#defining-the-grid">Defining the Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-electronic-states">Defining Electronic States</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#finding-the-states-energy-and-wave-function">Finding the states energy and wave function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wave-functions">Wave Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#converting-values-to-atomic-units">Converting values to atomic units</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calculation-of-matrix-elements">Calculation of Matrix Elements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#a-high-level-interface-for-operators">A High-level Interface for Operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#non-relativistic-calculations">Non-relativistic Calculations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#functions-classes-used-in-this-introduction">Functions/Classes used in this introduction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.ChargeDistribution"><code class="docutils literal notranslate"><span class="pre">ChargeDistribution</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.CoulombChargeDistribution"><code class="docutils literal notranslate"><span class="pre">CoulombChargeDistribution</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.CoulombPotential"><code class="docutils literal notranslate"><span class="pre">CoulombPotential</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.FermiChargeDistribution"><code class="docutils literal notranslate"><span class="pre">FermiChargeDistribution</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.FermiPotential"><code class="docutils literal notranslate"><span class="pre">FermiPotential</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.PotentialModel"><code class="docutils literal notranslate"><span class="pre">PotentialModel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.UniformBallChargeDistribution"><code class="docutils literal notranslate"><span class="pre">UniformBallChargeDistribution</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.potential.UniformBallPotential"><code class="docutils literal notranslate"><span class="pre">UniformBallPotential</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dish.util.radial.wave_function.RadialDiracWaveFunction"><code class="docutils literal notranslate"><span class="pre">RadialDiracWaveFunction</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculation-of-matrix-elements">Calculation of Matrix Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-high-level-interface-for-operators">A High-level Interface for Operators</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#non-relativistic-calculations">Non-relativistic Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions-classes-used-in-this-introduction">Functions/Classes used in this introduction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -113,7 +109,7 @@ Working with non-relativistic wave functions will in the most cases work as a dr
 <h2>Hartree Atomic Units<a class="headerlink" href="#hartree-atomic-units" title="Link to this heading"></a></h2>
 <p>All calculations are performed internally dimensionless in <a class="reference external" href="https://en.wikipedia.org/wiki/Hartree_atomic_units">Hartree atomic units</a>.
 All classes and functions therefore expect values in atomic units.
-<em>dish</em> provides a utility function <a class="reference internal" href="quickstart.html#dish.util.atomic_units.convert_units" title="dish.util.atomic_units.convert_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atomic_units.convert_units()</span></code></a> to convert from and to atomic units.
+<em>dish</em> provides a utility function <a class="reference internal" href="api.html#dish.util.atomic_units.convert_units" title="dish.util.atomic_units.convert_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atomic_units.convert_units()</span></code></a> to convert from and to atomic units.
 More information <a class="reference internal" href="#label-convertunits"><span class="std std-ref">below</span></a>.</p>
 </section>
 <section id="defining-the-hydrogen-like-system">
@@ -135,7 +131,7 @@ There are three potential models implemented:</p>
 </ol>
 <div class="math notranslate nohighlight">
 \[\rho(r) = \frac{\rho_0}{1+\exp((r-c)/a)}\]</div>
-<p>To store the information about the nucleus a <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>-object is used:</p>
+<p>To store the information about the nucleus a <a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>-object is used:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">Nucleus</span>
 
 <span class="n">nuc</span> <span class="o">=</span> <span class="n">Nucleus</span><span class="p">(</span><span class="n">Z</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span><span class="nb">float</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">,</span>
@@ -148,7 +144,7 @@ There are three potential models implemented:</p>
 <p>The parameters are:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Z</span></code>: The number of protons which is the nuclear charge.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">M</span></code>: The mass of the nucleus. This is used to take in account for nuclear recoil for non-relativistic calculations. Use <em>numpy.inf</em> to have a static nucleus.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">M</span></code>: The mass of the nucleus. This is used to take in account for nuclear recoil for non-relativistic calculations. Use <em>numpy.inf</em> to have a static nucleus. (This is the default value.)</p></li>
 <li><p>The radius of the charge distribution (not defined for point-like model <span class="math notranslate nohighlight">\(\rho(r) = Z\delta(r)\)</span> and therefore optional):
 It can be passed either via the root-mean-square radius <span class="math notranslate nohighlight">\(R_\text{rms} = \sqrt{\langle r^2\rangle}\)</span> via the parameter <code class="docutils literal notranslate"><span class="pre">R_rms</span></code> or via model specific parameters:</p>
 <ol class="arabic simple" start="2">
@@ -172,7 +168,7 @@ It defaults to <span class="math notranslate nohighlight">\(2.3 \text{fm} /a_0 /
 <span class="n">V</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">potential</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="o">|</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="o">|</span><span class="n">Distancegrid</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span><span class="nb">str</span><span class="o">=&lt;</span><span class="n">optional</span><span class="o">&gt;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>To the argument <code class="docutils literal notranslate"><span class="pre">r</span></code> a <em>float</em>, <em>numpy.ndarray</em> of floats or a <code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.grid.DistanceGrid</span></code> should be passed to evaluate the charge density or potential at the given points.
+<p>To the argument <code class="docutils literal notranslate"><span class="pre">r</span></code> a <em>float</em>, <em>numpy.ndarray</em> of floats or a <a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.DistanceGrid</span></code></a> should be passed to evaluate the charge density or potential at the given points.
 The argument <code class="docutils literal notranslate"><span class="pre">model</span></code> is optional and expects a <em>string</em> that specifies, which model for the nucleus should be used.
 Valid options are (case-insensitive):</p>
 <ol class="arabic simple">
@@ -180,12 +176,12 @@ Valid options are (case-insensitive):</p>
 <li><p>For a homogeneously charged sphere: “u”, “uniform”, “ball”, “uniformball”</p></li>
 <li><p>For a Fermi charge distribution: “f”, “fermi”</p></li>
 </ol>
-<p>The potential models and their charge distributions are implemented in <a class="reference internal" href="#module-dish.util.potential" title="dish.util.potential"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dish.util.potential</span></code></a>.
+<p>The potential models and their charge distributions are implemented in <a class="reference internal" href="api.html#module-dish.util.potential" title="dish.util.potential"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dish.util.potential</span></code></a>.
 To each model there are corresponding classes for the potential and the charge density distribution,
-which are subclasses of <a class="reference internal" href="#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a> respectively.</p>
+which are subclasses of <a class="reference internal" href="api.html#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="api.html#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a> respectively.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It is easily extendable to a custom potential by implementing a subclass of <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>
+<p>It is easily extendable to a custom potential by implementing a subclass of <a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a>
 and overriding the <code class="xref py py-meth docutils literal notranslate"><span class="pre">potential()</span></code> (and optionally the <code class="xref py py-meth docutils literal notranslate"><span class="pre">charge_density()</span></code>) method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">Nucleus</span>
 
@@ -207,20 +203,21 @@ and overriding the <code class="xref py py-meth docutils literal notranslate"><s
 </pre></div>
 </div>
 <p>If your nuclear model might be useful for others, you are very welcome to submit a pull-request and implement subclasses
-of <a class="reference internal" href="#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a>
+of <a class="reference internal" href="api.html#dish.util.potential.PotentialModel" title="dish.util.potential.PotentialModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.PotentialModel</span></code></a> and <a class="reference internal" href="api.html#dish.util.potential.ChargeDistribution" title="dish.util.potential.ChargeDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.potential.ChargeDistribution</span></code></a>
 and their respective calls in <code class="xref py py-meth docutils literal notranslate"><span class="pre">Nucleus.potential()</span></code>/<code class="xref py py-meth docutils literal notranslate"><span class="pre">Nucleus.charge_density()</span></code>.</p>
+<p>An example implementation of a Yukawa potential is shown in the <a class="reference internal" href="examples.html#label-examplesyukawa"><span class="std std-ref">examples section</span></a>.</p>
 </div>
 </section>
 <section id="defining-the-grid">
 <h2>Defining the Grid<a class="headerlink" href="#defining-the-grid" title="Link to this heading"></a></h2>
 <p>All operations are performed on a finite grid of the form</p>
 <div class="math notranslate nohighlight">
-\[r(t) = r_0 \cdot (\exp(h\cdot t)-1)\]</div>
+\[r(t) = r_0 \cdot (\mathrm{e}^{t}-1)\,,\]</div>
 <p>where <span class="math notranslate nohighlight">\(t\)</span> is a linear grid</p>
 <div class="math notranslate nohighlight">
 \[t(i) = i \cdot h\,, \quad i = 0,\dots,N-1 \,.\]</div>
 <p>The grid is therefore defined by the parameters <span class="math notranslate nohighlight">\(r_0, h, N\)</span>,
-and is implemented as the class <a class="reference internal" href="quickstart.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.DistanceGrid</span></code></a>.</p>
+and is implemented as the class <a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.DistanceGrid</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.grid.grid</span> <span class="kn">import</span> <span class="n">DistanceGrid</span>
 
 <span class="n">grid</span> <span class="o">=</span> <span class="n">DistanceGrid</span><span class="p">(</span><span class="n">r0</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span>
@@ -230,10 +227,10 @@ and is implemented as the class <a class="reference internal" href="quickstart.h
 </div>
 <p>Using the latter method and passing a maximal radial distance <span class="math notranslate nohighlight">\(N\)</span> is calculated automatically.</p>
 <p>A special grid that is better suited if you want to <a class="reference internal" href="#label-matrixelements"><span class="std std-ref">calculate matrix elements</span></a> of later
-or calculate any other integral using wave functions from <em>dish</em> is a <a class="reference internal" href="quickstart.html#dish.util.radial.grid.RombergIntegrationGrid" title="dish.util.radial.grid.grid.RombergIntegrationGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.RombergIntegrationGrid</span></code></a>.
-This has essentially the same structure but the number of grid points is <span class="math notranslate nohighlight">\(N = 2^k + 1\)</span> for a positive integer <span class="math notranslate nohighlight">\(k\)</span>.
+or calculate any other integral using wave functions from <em>dish</em> is a <a class="reference internal" href="api.html#dish.util.radial.grid.RombergIntegrationGrid" title="dish.util.radial.grid.grid.RombergIntegrationGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.grid.grid.RombergIntegrationGrid</span></code></a>.
+It has essentially the same structure but the number of grid points is <span class="math notranslate nohighlight">\(N = 2^k + 1\)</span> for a positive integer <span class="math notranslate nohighlight">\(k\)</span>.
 This makes integration using <a class="reference external" href="https://en.wikipedia.org/wiki/Romberg's_method">Romberg’s method</a> possible which yields higher precession most of the times.
-(See chapter ??? of the underlying thesis for more details.)</p>
+(See chapter 3.7 of the underlying thesis for more details.)</p>
 <p>It can be constructed by passing <code class="docutils literal notranslate"><span class="pre">N</span></code> or <code class="docutils literal notranslate"><span class="pre">k</span></code> or from a <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceGrid</span></code> by increasing the number of points by lowering <code class="docutils literal notranslate"><span class="pre">h</span></code> until the condition is met.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.grid.grid</span> <span class="kn">import</span> <span class="n">RombergIntegrationGrid</span>
 
@@ -255,7 +252,7 @@ This makes integration using <a class="reference external" href="https://en.wiki
 <p>An electronic state in a hydrogenic system is defined by the four quantum numbers <span class="math notranslate nohighlight">\(n,l,j\)</span> and <span class="math notranslate nohighlight">\(m\)</span>.
 The orbital angular projection quantum number <span class="math notranslate nohighlight">\(m\)</span> is important only for the spherical part of the wave function.
 The radial part of the wave function is therefore defined by <span class="math notranslate nohighlight">\(n,l,j\)</span>.
-To store these values use an instance of <a class="reference internal" href="quickstart.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.QuantumNumberSet</span></code></a>.</p>
+To store these values use an instance of <a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.QuantumNumberSet</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">QuantumNumberSet</span>
 
 <span class="n">state</span> <span class="o">=</span> <span class="n">QuantumNumberSet</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span>
@@ -268,7 +265,7 @@ One can access this as an attribute <code class="docutils literal notranslate"><
 e.g. <span class="math notranslate nohighlight">\(1s_{\frac{1}{2}}\)</span> instead of <span class="math notranslate nohighlight">\((n,l,j) = (1,0,\frac{1}{2})\)</span> or <span class="math notranslate nohighlight">\(4d_{\frac{3}{2}}\)</span> instead of <span class="math notranslate nohighlight">\((4,2,\frac{3}{2})\)</span>.
 Since for a hydrogenic system just <span class="math notranslate nohighlight">\(j = l \pm \frac{1}{2}\)</span> are possible also a <span class="math notranslate nohighlight">\(+\)</span> or <span class="math notranslate nohighlight">\(-\)</span> are common,
 e.g. <span class="math notranslate nohighlight">\(1s+ = 1s_{\frac{1}{2}}\)</span> or <span class="math notranslate nohighlight">\(4d- = 4d_{\frac{3}{2}}\)</span>.</p>
-<p>Both versions can be parsed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumNumberSet</span></code> using <a class="reference internal" href="quickstart.html#dish.util.atom.parse_atomic_term_symbol" title="dish.util.atom.parse_atomic_term_symbol"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atom.parse_atomic_term_symbol()</span></code></a>.
+<p>Both versions can be parsed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumNumberSet</span></code> using <a class="reference internal" href="api.html#dish.util.atom.parse_atomic_term_symbol" title="dish.util.atom.parse_atomic_term_symbol"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.util.atom.parse_atomic_term_symbol()</span></code></a>.
 Alternatively the notation <code class="docutils literal notranslate"><span class="pre">&quot;n[l]j&quot;</span></code> can be used, which is especially useful for higher <span class="math notranslate nohighlight">\(l\)</span>, or any combination of these versions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">parse_atomic_term_symbol</span>
 
@@ -289,60 +286,81 @@ and <span class="math notranslate nohighlight">\(\text{n}s_{-\frac{1}{2}}\)</spa
 </section>
 <section id="finding-the-states-energy-and-wave-function">
 <h2>Finding the states energy and wave function<a class="headerlink" href="#finding-the-states-energy-and-wave-function" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.schrodinger.solver</span> <span class="kn">import</span> <span class="n">solve</span>
-<span class="kn">from</span> <span class="nn">dish.dirac.solver</span> <span class="kn">import</span> <span class="n">solve</span>
+<p>Havin defined the state, the nucleus and the grid, one can solve the Dirac equation to find the energy and the wave function of the given state by calling the function
+<a class="reference internal" href="api.html#dish.dirac.solver.solve" title="dish.dirac.solver.solve"><code class="xref py py-func docutils literal notranslate"><span class="pre">dish.dirac.solver.solve()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.dirac.solver</span> <span class="kn">import</span> <span class="n">solve</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">nucleus</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Nucleus</span><span class="p">,</span>
                <span class="n">state</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">QuantumNumberSet</span><span class="p">,</span>
                <span class="n">r_grid</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">radial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">DistanceGrid</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
                <span class="n">potential_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;Fermi&quot;</span><span class="o">&gt;</span><span class="p">,</span>
                <span class="n">E_guess</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;auto&quot;</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">9</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">,</span>
                <span class="n">order_indir</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">,</span>
                <span class="n">max_number_of_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">20</span><span class="o">&gt;</span>
               <span class="p">)</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">energy</span>  <span class="c1"># actually E-c^2</span>
 <span class="n">wf</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">wave_function</span>  <span class="c1"># RadialDiracWaveFunction</span>
-
-<span class="n">wf</span><span class="o">.</span><span class="n">f</span>        <span class="c1"># large component</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">g</span>        <span class="c1"># small component</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">r_grid</span>   <span class="c1"># grid</span>
-
-
-<span class="kn">from</span> <span class="nn">dish.dirac.solver</span> <span class="kn">import</span> <span class="n">solve</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">nucleus</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Nucleus</span><span class="p">,</span>
-               <span class="n">state</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">QuantumNumberSet</span><span class="p">,</span>
-               <span class="n">r_grid</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">radial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">DistanceGrid</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">potential_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;Fermi&quot;</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">E_guess</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;auto&quot;</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">9</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">order_indir</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="n">max_number_of_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">20</span><span class="o">&gt;</span>
-              <span class="p">)</span>
-
-<span class="n">E</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">energy</span>  <span class="c1"># actually E-c^2</span>
-<span class="n">wf</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">wave_function</span>  <span class="c1"># RadialSchrodingerWaveFunction</span>
-
-<span class="n">wf</span><span class="o">.</span><span class="n">R</span>        <span class="c1"># radial function</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">Q</span>        <span class="c1"># dR/dr</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">r_grid</span>   <span class="c1"># grid</span>
+</pre></div>
+</div>
+<p>The objects constructed in the last few sections should be passed to the parameters <code class="docutils literal notranslate"><span class="pre">nucleus</span></code>, <code class="docutils literal notranslate"><span class="pre">state</span></code> and <code class="docutils literal notranslate"><span class="pre">r_grid</span></code>.
+The model of the nuclear potential can be specified by passing a corresponding alias (see above) to the parameter <code class="docutils literal notranslate"><span class="pre">potential_model</span></code>. By default a Fermi-like model is used as specified by “Fermi”.
+To <code class="docutils literal notranslate"><span class="pre">m</span></code> the mass of he particle for which Dirac’s equation should be solved can be passed. The default value is <span class="math notranslate nohighlight">\(1\)</span> (a.u.) which is the mass of an electron.
+By passing the mass of a muon <span class="math notranslate nohighlight">\(m_\mu \approx 207\)</span> (a.u.) one can also obtain muonic wave functions. See chapter 4.1.3 of the thesis for more details.
+The value passed to <code class="docutils literal notranslate"><span class="pre">E_guess</span></code> is used as an initial guess for the states energy. This usually expects a <em>float</em> but the default <em>string</em> value “auto” uses the analytic solution for a Coulomb potential.
+Changing the values of <code class="docutils literal notranslate"><span class="pre">order_AM</span></code>, <code class="docutils literal notranslate"><span class="pre">order_indir</span></code> and <code class="docutils literal notranslate"><span class="pre">max_number_of_iterations</span></code> the solving procedure can be adjusted.
+The default values have proven to be reliable and to yield good results. For more details refer to chapters 3 and 4 of the thesis.</p>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">dish.dirac.solve()</span></code>-function returns a <a class="reference internal" href="api.html#dish.util.misc.SolvingResult" title="dish.util.misc.SolvingResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.misc.SolvingResult</span></code></a>-object in which all important information about the solving process are stored.</p>
+</section>
+<section id="wave-functions">
+<h2>Wave Functions<a class="headerlink" href="#wave-functions" title="Link to this heading"></a></h2>
+<p>The wave function, calculated using <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>-function from the previous section, is stored in a <a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialDiracWaveFunction" title="dish.util.radial.wave_function.RadialDiracWaveFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.wave_function.RadialDiracWaveFunction</span></code></a>.
+Bound solutions of Dirac’s equation are of the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\psi_{n\kappa m}(r,\theta,\varphi) = \frac{1}{r}\begin{pmatrix} if_{n\kappa}(r)\Omega_{\kappa,m}(\theta,\varphi)\\ g_{n\kappa}(r)\Omega_{-\kappa, m}(\theta,\varphi) \end{pmatrix} \,.\end{split}\]</div>
+<p>The radial parts <span class="math notranslate nohighlight">\(f\)</span> and <span class="math notranslate nohighlight">\(g\)</span> evaluated on the <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceGrid</span></code> <code class="docutils literal notranslate"><span class="pre">grid</span></code> can be accessed using the corresponding fields:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">f</span>     <span class="c1"># large component values -&gt; stored in a numpy array</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">g</span>     <span class="c1"># small component values -&gt; stored in a numpy array</span>
+</pre></div>
+</div>
+<p>Additionally, information about the grid and the state to which the wave function belongs are stored:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">r</span>     <span class="c1"># grid points -&gt; stored in a numpy array</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">grid</span>  <span class="c1"># the DistanceGrid instance itself</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">state</span> <span class="c1"># the QuantumNumberSet instance of the state</span>
+</pre></div>
+</div>
+<p>Having found the wave function on a particular grid, the wave function can be interpolated on an arbitrary grid or even at arbitrary distance using cubic spline interpolation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">interpolate_at</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">DistanceGrid</span><span class="p">)</span>       <span class="c1"># new RadialDiracWaveFunction</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">interpolate_values</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>  <span class="c1"># values in an numpy array</span>
+</pre></div>
+</div>
+<p>To use the wave functions from another tool the values can be exported in a plain text file using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">write_to_file()</span></code>-method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="converting-values-to-atomic-units">
 <span id="label-convertunits"></span><h2>Converting values to atomic units<a class="headerlink" href="#converting-values-to-atomic-units" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atomic_units</span> <span class="kn">import</span> <span class="n">convert_units</span>
-
+<p>To convert from and to atomic unit use the utility function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish</span> <span class="kn">import</span> <span class="n">convert_units</span>
 <span class="n">convert_units</span><span class="p">(</span><span class="n">old_unit</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="nb">float</span><span class="p">,</span>
               <span class="n">new_unit</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="nb">float</span><span class="p">,</span>
               <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mf">1.</span><span class="o">&gt;</span><span class="p">,</span>
-              <span class="n">old_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-              <span class="n">new_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
+              <span class="n">old_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="n">new_unit_exp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">1</span><span class="o">&gt;</span>
              <span class="p">)</span>
-
-<span class="c1"># e.g.</span>
+</pre></div>
+</div>
+<p>which calculates</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{new\_value} = \frac{\left(\mathrm{value} \cdot \mathrm{new\_unit}\right)^\mathrm{old\_unit\_exp}}{\mathrm{new\_unit}^\mathrm{new\_unit\_exp}}\,.\]</div>
+<p>The fields <code class="docutils literal notranslate"><span class="pre">old_unit</span></code> and <code class="docutils literal notranslate"><span class="pre">new_unit</span></code> expect the alias of the old/new unit or alternatively a conversion factor to convert to the corresponding SI units of the same dimension.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are no checks of the dimension performed! Make sure to only convert units of matching dimensions.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># examples of common conversions</span>
 <span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;m_e&quot;</span><span class="p">)</span>
 <span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
 <span class="n">convert_units</span><span class="p">(</span><span class="s2">&quot;eV&quot;</span><span class="p">,</span> <span class="s2">&quot;E_h&quot;</span><span class="p">)</span>
@@ -355,62 +373,244 @@ and <span class="math notranslate nohighlight">\(\text{n}s_{-\frac{1}{2}}\)</spa
 </section>
 <section id="calculation-of-matrix-elements">
 <span id="label-matrixelements"></span><h2>Calculation of Matrix Elements<a class="headerlink" href="#calculation-of-matrix-elements" title="Link to this heading"></a></h2>
+<p>Having the relativistic radial wave functions <span class="math notranslate nohighlight">\(\mid n_1\kappa_1\rangle\)</span> and <span class="math notranslate nohighlight">\(\mid n_2\kappa_2\rangle\)</span> of two states, one can calculate radial matrix elements</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\langle n_1 \kappa_1\mid \hat{o}_r \mid n_2 \kappa_2\rangle = \int_0^\infty \begin{pmatrix} -if_{n_1\kappa_1}(r) &amp; g_{n_1\kappa_1}(r) \end{pmatrix} \hat{o}_r(r) \begin{pmatrix} if_{n_2\kappa_2}(r)\\g_{n_2\kappa_2}(r) \end{pmatrix} dr \,,\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{o}_r(r)\)</span> is a radial operator.
+In this formula the Jacobian determinant $r^2$ cancels with the factor $1 / r$ of the wave functions. Because of this, the radial wave functions are stored without this factor to avoid unnecessary loss of precision due to numerical errors when dividing by numbers very close to zero.</p>
+<p>To calculate these matrix elements two interfaces are provided. The low-level interface just performs the evaluation of a radial integral on a <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceGrid</span></code> or its subclass <code class="xref py py-class docutils literal notranslate"><span class="pre">RombergIntegrationGrid</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.integration</span> <span class="kn">import</span> <span class="n">integrate_on_grid</span>
+
+<span class="n">integrate_on_grid</span><span class="p">(</span><span class="n">y</span><span class="p">:</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">grid</span><span class="p">:</span><span class="n">DistanceGrid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This offers the most flexibility as <span class="math notranslate nohighlight">\(y\)</span> can be any array of values at the grid points while taking the integration mathematics off the user.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.integration</span> <span class="kn">import</span> <span class="n">integrate_on_grid</span>
 
 <span class="n">integrate_on_grid</span><span class="p">(</span><span class="n">y</span><span class="p">:</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">grid</span><span class="p">:</span><span class="n">DistanceGrid</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}\langle n_1 \kappa_1\mid O\mid n_2 \kappa_2\rangle = \int_0^\infty y(r) dr\\
-\langle n_1 \kappa_1\mid \gamma_5 \mid n_2\kappa_2 \rangle = i \int_0^\infty (-f_1 g_2 + g_1 f_2) d r\end{aligned}\end{align} \]</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf1</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">wave_function</span>
-<span class="n">wf2</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">wave_function</span>
-
-<span class="c1"># assure wf1 and wf2 are evaluated on the same grid</span>
-<span class="n">integrate_on_grid</span><span class="p">(</span><span class="o">-</span><span class="n">wf1</span><span class="o">.</span><span class="n">f</span><span class="o">*</span><span class="n">wf2</span><span class="o">.</span><span class="n">g</span> <span class="o">+</span> <span class="n">wf1</span><span class="o">.</span><span class="n">g</span> <span class="o">*</span> <span class="n">wf2</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">wf1</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">SymbolicMatrixOperator</span>
-
-<span class="n">y_5</span> <span class="o">=</span> <span class="n">SymbolicMatrixOperator</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
-
-<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">y_5</span> <span class="o">*</span> <span class="n">wf2</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">RadialOperator</span>
-
-<span class="n">r_hat</span> <span class="o">=</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span>
-
-<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_hat</span> <span class="o">*</span> <span class="n">wf2</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">RadialOperator</span><span class="p">,</span> <span class="n">SymbolicMatrixOperator</span>
-
-<span class="n">r_hat</span> <span class="o">=</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span>
-
-<span class="n">O</span> <span class="o">=</span> <span class="n">SymbolicMatrixOperator</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="n">r_hat</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="o">*</span><span class="n">r_hat</span><span class="p">,</span> <span class="n">r_hat</span><span class="o">*</span><span class="n">r_hat</span><span class="p">]])</span>
-
-<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">O</span> <span class="o">*</span> <span class="n">wf2</span>
-</pre></div>
-</div>
-</section>
+<p>Passing a <code class="xref py py-class docutils literal notranslate"><span class="pre">RombergIntegrationGrid</span></code> to the parameter <code class="docutils literal notranslate"><span class="pre">grid</span></code>, Romberg’s method will be used for integration, and if a <code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceGrid</span></code> instance is passed, it will simply fall back to the trapezoidal rule.
+As discussed above and in chapter 3.7 of the thesis a <code class="xref py py-class docutils literal notranslate"><span class="pre">RombergIntegrationGrid</span></code> should be used if possible.</p>
 <section id="a-high-level-interface-for-operators">
-<h2>A High-level Interface for Operators<a class="headerlink" href="#a-high-level-interface-for-operators" title="Link to this heading"></a></h2>
+<h3>A High-level Interface for Operators<a class="headerlink" href="#a-high-level-interface-for-operators" title="Link to this heading"></a></h3>
+<p>Alternatively the high-level interface implemented in the module <a class="reference internal" href="api.html#module-dish.util.radial.operator" title="dish.util.radial.operator"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dish.util.radial.operator</span></code></a> can be used. It enables a syntax very similar to the Bra-ket notation-</p>
+<p>You can define operators which extend the base-class <a class="reference internal" href="api.html#dish.util.radial.operator.AbstractOperator" title="dish.util.radial.operator.AbstractOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.AbstractOperator</span></code></a> and apply them on instances of subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.wave_function.RadialWaveFunction</span></code>.
+In the case of scalar or matrix operators, a new wave function is returned with values modified by the effect of the operator.
+Also, a <a class="reference internal" href="api.html#dish.util.radial.operator.BraOperator" title="dish.util.radial.operator.BraOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.BraOperator</span></code></a> can be constructed from a <code class="xref py py-class docutils literal notranslate"><span class="pre">RadialWaveFunction</span></code>-object which performs the integration when it is applied on a <code class="xref py py-class docutils literal notranslate"><span class="pre">RadialWaveFunction</span></code>-instance, and therefore this returns a scalar value.
+Applying an operator is done by multiplying the operator from the left to a wave function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.radial.operator</span> <span class="kn">import</span> <span class="n">BraOperator</span><span class="p">,</span> <span class="n">AbstractOperator</span>
+
+<span class="c1"># this is actually not valid but a subclass should be used</span>
+<span class="n">op</span> <span class="o">=</span> <span class="n">AbstractOperator</span><span class="p">()</span>
+
+<span class="n">op</span> <span class="o">*</span> <span class="n">wf1</span>  <span class="c1"># returns a new wave function</span>
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">op</span> <span class="o">*</span> <span class="n">wf2</span>  <span class="c1"># returns a scalar value</span>
+<span class="c1"># e.g. calculating an expectation value becomes</span>
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf1</span><span class="p">)</span> <span class="o">*</span> <span class="n">op</span> <span class="o">*</span> <span class="n">wf2</span>
+</pre></div>
+</div>
+<p>Operators can be chained and algebraic rules hold. The evaluation is performed from the right to the left:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># let op1, op2, op3 be instances of subclasses of AbstractOperator</span>
+
+<span class="n">op1</span> <span class="o">*</span> <span class="n">op2</span> <span class="o">*</span> <span class="n">wf1</span> <span class="c1"># == op1 * (op2 * wf1)</span>
+<span class="n">op1</span> <span class="o">*</span> <span class="p">(</span><span class="n">op2</span> <span class="o">+</span> <span class="n">op3</span><span class="p">)</span> <span class="o">*</span> <span class="n">wf1</span> <span class="c1"># == op1 * (op2 * wf1 + op3 * wf1)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The discussed syntax can be used for both, relativistic and non-relativistic wave functions. Note, that in the case of non-relativistic case the wave function is scalar and hence no matrix operators can be used.
+If a scalar operator <span class="math notranslate nohighlight">\(\hat{a}_r\)</span> is applied on a relativistic wave function, it is interpreted as <span class="math notranslate nohighlight">\(\hat{a}_r \cdot \text{id}_2\)</span>, where <span class="math notranslate nohighlight">\(\text{id}_2\)</span> is the unit matrix.</p>
+</div>
+<p>There are two types of operators that extend the base-class <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractOperator</span></code>.
+The first one are operators that are given as actual numbers at each grid point, i.e. the values are stored in an array and when applied on a wave function point-wise multiplied by it.
+These are implemented in the classes <a class="reference internal" href="api.html#dish.util.radial.operator.ScalarOperator" title="dish.util.radial.operator.ScalarOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.ScalarOperator</span></code></a> and <a class="reference internal" href="api.html#dish.util.radial.operator.MatrixOperator" title="dish.util.radial.operator.MatrixOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.MatrixOperator</span></code></a>.</p>
+<p>The more interesting kind are the symbolic operators which accept functions that take the wave function as an argument.
+These are implemented as subclasses of <a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicScalarOperator" title="dish.util.radial.operator.SymbolicScalarOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.SymbolicScalarOperator</span></code></a> and <a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicMatrixOperator" title="dish.util.radial.operator.SymbolicMatrixOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.SymbolicMatrixOperator</span></code></a>.
+This allows for very versatile usage like the implementation of the differential operator <span class="math notranslate nohighlight">\(d / dr\)</span> using numeric differentiation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish</span> <span class="kn">import</span> <span class="n">DifferentialOperator</span>
+<span class="n">DifferentialOperator</span><span class="p">()</span> <span class="o">*</span> <span class="n">wf</span>
+</pre></div>
+</div>
+<p>Also operators that are dependent of <span class="math notranslate nohighlight">\(r\)</span> can be easily constructed using a <a class="reference internal" href="api.html#dish.util.radial.operator.RadialOperator" title="dish.util.radial.operator.RadialOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.operator.RadialOperator</span></code></a> which is a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">SymbolicScalarOperator</span></code>.
+To calculate e.g. the expectation value <span class="math notranslate nohighlight">\(\langle r \rangle\)</span> one can write:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># let wf_s be a RadialSchrodingerWaveFunction</span>
+<span class="c1"># and wf_d a RadialDiracWaveFunction</span>
+<span class="kn">from</span> <span class="nn">dish</span> <span class="kn">import</span> <span class="n">RadialOperator</span>
+
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">wf_s</span>
+<span class="c1"># the same syntax can be used for the relativistic wave functions</span>
+<span class="c1"># where actually the scalar operator is multiplied by a unity matrix</span>
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf_d</span><span class="p">)</span> <span class="o">*</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">wf_d</span>
+</pre></div>
+</div>
+<p>Matrix versions can be constructed by passing scalar operators in a nested list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish</span> <span class="kn">import</span> <span class="n">SymbolicMatrixOperator</span>
+
+<span class="n">op</span> <span class="o">=</span> <span class="n">SymbolicMatrixOperator</span><span class="p">([[</span><span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">),</span> <span class="mi">5</span><span class="p">],</span>
+                              <span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="n">RadialOperator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">50</span><span class="p">)]])</span>
+<span class="c1"># physically useless but here for demonstration purposes</span>
+<span class="n">BraOperator</span><span class="p">(</span><span class="n">wf_d</span><span class="p">)</span> <span class="o">*</span> <span class="n">op</span> <span class="o">*</span> <span class="n">wf_d</span>
+</pre></div>
+</div>
+<p>Instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">RadialOperator</span></code> evaluate the function’s argument <span class="math notranslate nohighlight">\(r\)</span> on the grid of the wave function.
+For better readability, it is useful to use anonymous functions using the <code class="docutils literal notranslate"><span class="pre">lambda</span></code>-syntax, like shown in the example above, when constructing <code class="xref py py-class docutils literal notranslate"><span class="pre">RadialOperator</span></code>-instances.</p>
+</section>
 </section>
 <section id="non-relativistic-calculations">
 <span id="label-nonrelativisticcalculations"></span><h2>Non-relativistic Calculations<a class="headerlink" href="#non-relativistic-calculations" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>electronic state</p></li>
-</ul>
+<p>For non-relativistic calculations Schrödinger’s equation can be solved in the center of mass system to consider a finite mass of the nucleus and therefore nuclear recoil.
+Construct a <a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.Nucleus</span></code></a> with a finite mass by passing the value to the parameter <code class="docutils literal notranslate"><span class="pre">M</span></code> as discussed above.</p>
+<p>Since in the non-relativistic theory there is no coupling of orbital angular momentum and spin, the radial part of an electronic states just depends on the principal quantum number <span class="math notranslate nohighlight">\(n\)</span> and the orbital angular momentum quantum number <span class="math notranslate nohighlight">\(l\)</span>.
+These can be specified either using directly a <a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.atom.QuantumNumberSet</span></code></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">QuantumNumberSet</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">QuantumNumberSet</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or by parsing the spectroscopic notation similar to the relativistic states discussed above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.util.atom</span> <span class="kn">import</span> <span class="n">parse_atomic_term_symbol</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="n">state_repr</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span>
+<span class="c1"># e.g.</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;1s&quot;</span><span class="p">)</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;4d&quot;</span><span class="p">)</span>
+<span class="n">parse_atomic_term_symbol</span><span class="p">(</span><span class="s2">&quot;4[2]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There is no difference between the grid for a relativistic and a non-relativistic wave function. Follow the instructions above.</p>
+<p>Finally solving Schrödinger’s equation is done via:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dish.schrodinger.solver</span> <span class="kn">import</span> <span class="n">solve</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">nucleus</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Nucleus</span><span class="p">,</span>
+               <span class="n">state</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">QuantumNumberSet</span><span class="p">,</span>
+               <span class="n">r_grid</span><span class="p">:</span> <span class="n">dish</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">radial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">DistanceGrid</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">r0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">potential_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;Fermi&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">E_guess</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="s2">&quot;auto&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_AM</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">order_insch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="n">max_number_of_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">optional</span><span class="p">:</span><span class="mi">20</span><span class="o">&gt;</span>
+              <span class="p">)</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">energy</span>  <span class="c1"># actually E-c^2</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">wave_function</span>  <span class="c1"># RadialSchrodingerWaveFunction</span>
+</pre></div>
+</div>
+<p>In very close analogy to the relativistic wave functions the solutions of Schrödinger’s equation which are of the form</p>
+<div class="math notranslate nohighlight">
+\[\psi_{nlm}(r, \theta, \varphi) = \frac{1}{r}R_{nl}Y_{lm}(\theta, \varphi)\]</div>
+<p>are stored in a <a class="reference internal" href="api.html#dish.util.radial.wave_function.RadialSchrodingerWaveFunction" title="dish.util.radial.wave_function.RadialSchrodingerWaveFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">dish.util.radial.wave_function.RadialSchrodingerWaveFunction</span></code></a>.
+The radial component <span class="math notranslate nohighlight">\(R\)</span> can be accessed as well as its derivative <span class="math notranslate nohighlight">\(Q\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">R</span>        <span class="c1"># radial function&#39;s values -&gt; stored in a numpy array</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">Q</span>        <span class="c1"># dR/dr -&gt; stored in an numpy array</span>
+</pre></div>
+</div>
+<p>The other features are the same as for the relativistic wave functions.</p>
+<p>How to calculate matrix elements using non-relativistic wave functions is already covered in the <a class="reference internal" href="#label-matrixelements"><span class="std std-ref">above section</span></a>.</p>
 </section>
 <section id="functions-classes-used-in-this-introduction">
 <h2>Functions/Classes used in this introduction<a class="headerlink" href="#functions-classes-used-in-this-introduction" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">dish.dirac.solver.</span></span><span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">Nucleus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">QuantumNumberSet</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'h':</span> <span class="pre">0.005,</span> <span class="pre">'r0':</span> <span class="pre">2e-06}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">potential_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Fermi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_AM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_indir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_number_of_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#dish.util.misc.SolvingResult" title="dish.util.misc.SolvingResult"><span class="pre">SolvingResult</span></a></span></span></dt>
+<dd><p>Solve the radial Dirac equation for Hydrogen-like atoms in state ‘state’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus</strong> – parameters of the nucleus</p></li>
+<li><p><strong>state</strong> – electron state to find the wave function</p></li>
+<li><p><strong>r_grid</strong> – grid on which the wave function is to be evaluated.
+Can be constructed from dict.</p></li>
+<li><p><strong>potential_model</strong> – model of the charge distribution of the nucleus.
+Either ‘Fermi’, ‘uniform’ (charged ball) or ‘point-like’.
+The default is ‘Fermi’.</p></li>
+<li><p><strong>m</strong> – mass of the particle for which the SE is solved in m_e.
+The default is 1 (for an electron).</p></li>
+<li><p><strong>E_guess</strong> – initial guess for the energy of the state.
+Can be ‘auto’ which will use the analytical value for a point-like nucleus.
+The default is ‘auto’.</p></li>
+<li><p><strong>order_AM</strong> – order of the Adams-Moulton procedure which is used to solve the differential equation.
+The default is 5.</p></li>
+<li><p><strong>order_indir</strong> – order of the procedure which is used to find the most inner points of the wave function.
+The default is 7.</p></li>
+<li><p><strong>max_number_of_iterations</strong> – number of iterations after which the solving routine will stop.
+The default is 20.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the Dirac solving routine ‘master’ and additional information about the solving process.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="api.html#dish.util.misc.SolvingResult" title="dish.util.misc.SolvingResult">SolvingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">dish.schrodinger.solver.</span></span><span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">Nucleus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">QuantumNumberSet</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'h':</span> <span class="pre">0.005,</span> <span class="pre">'r0':</span> <span class="pre">2e-06}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">potential_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Fermi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_AM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_insch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_number_of_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#dish.util.misc.SolvingResult" title="dish.util.misc.SolvingResult"><span class="pre">SolvingResult</span></a></span></span></dt>
+<dd><p>Solve the radial Dirac equation for Hydrogen-like atoms for a particle in state ‘state’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nucleus</strong> – parameters of the nucleus</p></li>
+<li><p><strong>state</strong> – electron state to find the wave function</p></li>
+<li><p><strong>r_grid</strong> – grid on which the wave function is to be evaluated.
+Can be constructed from dict.</p></li>
+<li><p><strong>potential_model</strong> – model of the charge distribution of the nucleus.
+Either ‘Fermi’, ‘uniform’ (charged ball) or ‘point-like’.
+The default is ‘Fermi’.</p></li>
+<li><p><strong>m</strong> – mass of the particle for which the SE is solved in m_e.
+The default is 1 (for an electron).</p></li>
+<li><p><strong>E_guess</strong> – initial guess for the energy of the state.
+Can be ‘auto’ which will use the analytical value for a point-like nucleus.
+The default is ‘auto’.</p></li>
+<li><p><strong>order_AM</strong> – order of the Adams-Moulton procedure which is used to solve the differential equation.
+The default is 9.</p></li>
+<li><p><strong>order_indir</strong> – order of the procedure which is used to find the most inner points of the wave function.
+The default is 7.</p></li>
+<li><p><strong>max_number_of_iterations</strong> – number of iterations after which the solving routine will stop.
+The default is 20.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the solving routine ‘master’ as a ‘SolvingResult’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="api.html#dish.util.misc.SolvingResult" title="dish.util.misc.SolvingResult">SolvingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">dish.util.atomic_units.</span></span><span class="sig-name descname"><span class="pre">convert_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_unit_exp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unit_exp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span></dt>
+<dd><div class="line-block">
+<div class="line">Convert ‘value’ in unit ‘old_unit’ to ‘new_unit’.</div>
+<div class="line">! You need to assure that these values are of the same dimension !</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_unit</strong> – either the old units name or the conversion value into SI units</p></li>
+<li><p><strong>new_unit</strong> – either the new units name or the conversion value into SI units</p></li>
+<li><p><strong>value</strong> – value to convert. The default is 1 to just obtain the conversion factor.</p></li>
+<li><p><strong>old_unit_exp</strong> – exponent of the old unit. The default is 1.</p></li>
+<li><p><strong>new_unit_exp</strong> – exponent of the new unit. The default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>converted value</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.atom.</span></span><span class="sig-name descname"><span class="pre">Nucleus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_rms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9.890591475522296e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
 <dd><div class="line-block">
 <div class="line">Dataclass to store the properties of the nucleus.</div>
-<div class="line">The potential for point-like, ball-like and Fermi charge distributions is provided through the <a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus.potential" title="dish.util.atom.Nucleus.potential"><code class="xref py py-meth docutils literal notranslate"><span class="pre">potential()</span></code></a> method.</div>
+<div class="line">The potential for point-like, ball-like and Fermi charge distributions is provided through the <a class="reference internal" href="api.html#dish.util.atom.Nucleus.potential" title="dish.util.atom.Nucleus.potential"><code class="xref py py-meth docutils literal notranslate"><span class="pre">potential()</span></code></a> method.</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -425,65 +625,336 @@ and <span class="math notranslate nohighlight">\(\text{n}s_{-\frac{1}{2}}\)</spa
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Fermi'</span></span></em><span class="sig-paren">)</span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> – point(s) where the value of the potential should be evaluated</p></li>
+<li><p><strong>model</strong> – (optional) alias for the type of the potential model. Choose from “Fermi”, “ball-like”, “point-like”==”Coulomb”. Defaults to “Fermi”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Values of the nucleus’ potential in distance <em>r</em></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or np.ndarray, same as <em>r</em></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py class" id="module-dish.util.potential">
-<dt class="sig sig-object py" id="dish.util.potential.ChargeDistribution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">ChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.ChargeDistribution" title="Link to this definition"></a></dt>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">ChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.CoulombChargeDistribution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.CoulombChargeDistribution" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.CoulombPotential">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.CoulombPotential" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">CoulombPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.FermiChargeDistribution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.FermiChargeDistribution" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.FermiPotential">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.FermiPotential" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">FermiPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.PotentialModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">PotentialModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.PotentialModel" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">PotentialModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.UniformBallChargeDistribution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.UniformBallChargeDistribution" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallChargeDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.potential.UniformBallPotential">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.potential.UniformBallPotential" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.potential.</span></span><span class="sig-name descname"><span class="pre">UniformBallPotential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dish.util.radial.wave_function.RadialDiracWaveFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.wave_function.</span></span><span class="sig-name descname"><span class="pre">RadialDiracWaveFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="quickstart.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="quickstart.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">dish.util.atom.QuantumNumberSet</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dish.util.radial.wave_function.RadialDiracWaveFunction" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.atom.</span></span><span class="sig-name descname"><span class="pre">QuantumNumberSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>A container class to store the quantum numbers n, l and j.
+<span class="math notranslate nohighlight">\(\kappa\)</span> is calculated for convenience.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – principal quantum number</p></li>
+<li><p><strong>l</strong> – orbital angular momentum quantum number</p></li>
+<li><p><strong>j</strong> – (optional) total angular momentum quantum number. For non-relativistic calculations not defined.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">dish.util.atom.</span></span><span class="sig-name descname"><span class="pre">parse_atomic_term_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">QuantumNumberSet</span></a></span></span></dt>
+<dd><p>Parse the atomic term symbol into quantum numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>symbol</strong> – <p>spectroscopic representation of the electronic state</p>
+<p>format: ‘&lt;n&gt;&lt;l&gt;&lt;j&gt;’,
+where &lt;n&gt; is the integer value,
+&lt;l&gt; can be either the spectroscopic symbol (s,p,d,…) or an integer in brackets ([1], [2], …)
+and &lt;j&gt; can be either an explicit integer/2 or +/- .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p>”2s1/2” == “2[0]+”, “15d3/2” == “15[2]-”</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet">QuantumNumberSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.misc.</span></span><span class="sig-name descname"><span class="pre">SolvingResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">dish.util.atom.QuantumNumberSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.Nucleus" title="dish.util.atom.Nucleus"><span class="pre">dish.util.atom.Nucleus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">potential_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">dish.util.radial.grid.grid.DistanceGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dish.util.radial.wave_function.RadialWaveFunction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_convergence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solving_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dish.util.misc.SolvingParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solving_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.grid.grid.</span></span><span class="sig-name descname"><span class="pre">DistanceGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Class to hold the information about the grid and the grid points itself.
+The grid is constructed lazily, i.e. the grid points are calculated the first time they are required.
+The grid has the form <span class="math notranslate nohighlight">\(r(t) = r0 \cdot \left(\exp{t} - 1\right)\)</span> where <span class="math notranslate nohighlight">\(t(i) = i\cdot h\)</span> is a linear grid with <code class="docutils literal notranslate"><span class="pre">N</span></code> points.
+The number of values <code class="docutils literal notranslate"><span class="pre">N</span></code> can be constructed from the maximal r value <code class="docutils literal notranslate"><span class="pre">r_max</span></code>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.grid.grid.</span></span><span class="sig-name descname"><span class="pre">RombergIntegrationGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Class to hold the information about the grid and the grid points itself.
+The grid is constructed lazily, i.e. the grid points are calculated the first time they are required.
+The grid has the form <span class="math notranslate nohighlight">\(r(t) = r0 \cdot \left(\exp{t} - 1\right)\)</span> where <span class="math notranslate nohighlight">\(t(i) = i \cdot h\)</span> is a linear grid with <code class="docutils literal notranslate"><span class="pre">N</span></code> points.</p>
+<p>The number of grid points <code class="docutils literal notranslate"><span class="pre">N</span></code> needs to be of the form <span class="math notranslate nohighlight">\(N = 2^k + 1\)</span> where k is a positive integer.
+By using this number of grid points this grid is suited to perform Romberg integration on it which yields more accurate results than the naive trapezoidal rule.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_similar_grid_from_distance_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Construct a RombergIntegrationGrid from a DistanceGrid.
+The number of points is increased to the next integer k so that <span class="math notranslate nohighlight">\(N = 2^k + 1\)</span> is fulfilled by decreasing the value of <code class="docutils literal notranslate"><span class="pre">h</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>grid</strong> – DistanceGrid</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>RombergIntegrationGrid similar to grid</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.wave_function.</span></span><span class="sig-name descname"><span class="pre">RadialDiracWaveFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">dish.util.atom.QuantumNumberSet</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Class to store relativistic wave functions for a specific state that solves the radial Dirac equation.
-Stores the following information:
-- r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.
-- Psi: The values of the radial wave function. A two-dimensional array.</p>
-<blockquote>
-<div><ul class="simple">
+Stores the following information:</p>
+<ul class="simple">
+<li><p>r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.</p></li>
+<li><p>Psi: The values of the radial wave function. A two-dimensional array.</p>
+<ul>
 <li><p>f: The large component.</p></li>
 <li><p>g: The small component.</p></li>
 </ul>
-</div></blockquote>
-<ul class="simple">
+</li>
 <li><p>state: The associated state as a dish.util.atom.QuantumNumberSet.</p></li>
 </ul>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">f</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>large component of wave function</p>
+</dd>
+</dl>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">g</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>small component of wave function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">interpolate_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Interpolate the wave function at a DistanceGrid r using a cubic spline.
+Use this method to interpolate on arbitrary grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>interpolated wave_function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">interpolate_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>interpolate the wave function at points r using a cubic spline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the values of the interpolated wave function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>store the values of the radial wave function in a comma separated file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – name of the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.wave_function.</span></span><span class="sig-name descname"><span class="pre">RadialSchrodingerWaveFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.atom.QuantumNumberSet" title="dish.util.atom.QuantumNumberSet"><span class="pre">dish.util.atom.QuantumNumberSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Psi_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Class to store non-relativistic wave functions for a specific state that solves the radial Schrödinger equation.
+Stores the following information:</p>
+<ul class="simple">
+<li><p>r_grid: A dish.util.radial.grid.DistanceGrid on which the wave function is evaluated.</p></li>
+<li><p>Psi: The values of the radial wave function.</p></li>
+<li><p>Psi_prime: The values of the derivative of the radial wave function.</p></li>
+<li><p>state: The associated state as a dish.util.atom.QuantumNumberSet.</p></li>
+</ul>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Psi</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the values of the wave function at points r</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">interpolate_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>interpolate the wave function at points r using a cubic spline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>interpolated wave_function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">interpolate_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Interpolate the wave function at points r using a cubic spline.
+Use this method to interpolate on arbitrary grid points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> – np.ndarray of points or dish.util.radial.grid.DistanceGrid to interpolate on</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the values of the interpolated wave function and it’s derivative</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>store the values of the radial wave function in a comma separated file
+:param filename: name of the file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">AbstractOperator</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">BraOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RadialWaveFunction</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">DiagonalOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicScalarOperator" title="dish.util.radial.operator.SymbolicScalarOperator"><span class="pre">SymbolicScalarOperator</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">DifferentialOperator</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">MatrixOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">ProjectionOperator</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">RadialOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radial_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Number</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_to_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_to_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">ScalarOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api.html#dish.util.radial.grid.DistanceGrid" title="dish.util.radial.grid.grid.DistanceGrid"><span class="pre">DistanceGrid</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">SymbolicMatrixOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#dish.util.radial.operator.SymbolicScalarOperator" title="dish.util.radial.operator.SymbolicScalarOperator"><span class="pre">SymbolicScalarOperator</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">SymbolicScalarOperator</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dish.util.radial.operator.</span></span><span class="sig-name descname"><span class="pre">UnityOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
 
 </section>
 </section>

@@ -64,7 +64,7 @@ For example the :math:`3p_{1/2}` state can be specified the following way:
 
 .. code-block:: python
 
-   state = "3p+"
+   state = "3p-"
    # which is equivalent to
    state = "3[2]1/2
 
@@ -87,9 +87,11 @@ To change this pass the alias of the potential model a string to the ``potential
                   )
 
 
-After the solving process the wave function can be obtained from the :class:`SolvingResult <dish.util.misc.SolvingResult>` object which is stored in *result* via
+After the solving process the energy and wave function of the ``state`` can be obtained from the :class:`SolvingResult <dish.util.misc.SolvingResult>` object which is stored in *result* via
 
 .. code-block:: python
+
+   E = result.energy
 
    Psi = result.wave_function
 
@@ -100,7 +102,7 @@ has the form
 
 .. math::
 
-   \psi_{n \kappa m}(\overline{r})  = \frac{1}{r} \begin{pmatrix} i f_{n\kappa} (r) \Omega_{\kappa, m}(\theta, \varphi) \\ g_{n\kappa}(r) \Omega_{-\kappa,m}(\theta, \varphi) \end{pmatrix}
+   \psi_{n \kappa m}(\textbf{r})  = \frac{1}{r} \begin{pmatrix} i f_{n\kappa} (r) \Omega_{\kappa, m}(\theta, \varphi) \\ g_{n\kappa}(r) \Omega_{-\kappa,m}(\theta, \varphi) \end{pmatrix}
 
 where :math:`(r, \theta, \varphi)` are spherical coordinates and :math:`\Omega_{\kappa, m}` is a spherical spinor.
 It is stored in a :py:class:`RadialDiracWaveFunction <dish.util.radial.wave_function.RadialDiracWaveFunction>` object which stores the array of points where the wave function is evaluated in the field *r*, the large component :math:`f_\kappa` in the field *f* and the small component :math:`g_\kappa` in the field *g*:
@@ -114,13 +116,7 @@ It is stored in a :py:class:`RadialDiracWaveFunction <dish.util.radial.wave_func
 .. note::
 
    To allow further calculations (mainly the calculation of [matrix elements](#calculating-matrix-elements))
-   in opposite to literature :math:`f` and :math:`g` are stored like above (without the factor :math:`\frac{1}{r}`) to minimize loss of accuracy due to unnecessary rounding.
-
-The energy of the *state* is stored in the field *energy*:
-
-.. code-block:: python
-
-   result.energy
+   :math:`f` and :math:`g` are stored like above (without the factor :math:`\frac{1}{r}`) to minimize loss of accuracy due to unnecessary rounding.
 
 
 
@@ -205,7 +201,7 @@ The Adams-Moulton method
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 | Adams-Moulton (AM) methods are a linear multistep method to solve systems of ordinary differential equations numerically on a finite grid.
-| A multistep method of order :math:`k` uses the information if the previous :math:`k` points to determine the next point (for a detailed discussion see Chapter (???) of the underlying thesis). Therefore, the AM method requires :math:`k` initial values.
+| A multistep method of order :math:`k` uses the information if the previous :math:`k` points to determine the next point (for a detailed discussion see chapter 3.3 of the underlying thesis). Therefore, the AM method requires :math:`k` initial values.
 | In the algorithm the AM method is used from the most inner points in the outward direction and inwards from the most outer points.
 | The initial values are calculated from asymptotic considerations. The order of the method to retrieve the initial values for the inward integration can be specified by the parameter ``order_indir``.
 | The order of the AM itself can be set via ``order_AM``.
@@ -229,7 +225,7 @@ The ``indir`` function
 
 To use a :math:`k^\text{th}` order multistep method :math:`k` initial values are required
 in each direction. The initial guesses for the inward direction are obtained from asymptotic assumptions
-and the wave function is expanded in a converging series (see chapter ?? of the thesis).
+and the wave function is expanded in a converging series (see chapter 3 of the thesis).
 This series converges very fast if :math:`r` is large enough in the most outward region and hence
 only the first few terms need to be calculated.
 The number of terms can be passed via the parameter ``order_indir``.
@@ -239,22 +235,30 @@ Functions/Classes used in this Quickstart
 -----------------------------------------
 
 .. autofunction:: dish.dirac.solver.solve
+   :no-index:
 
 .. autofunction:: dish.util.atomic_units.convert_units
+   :no-index:
 
 .. autoclass:: dish.util.atom.Nucleus
    :members:
+   :no-index:
 
 
 .. autoclass:: dish.util.atom.QuantumNumberSet
+   :no-index:
 
 .. autofunction:: dish.util.atom.parse_atomic_term_symbol
+   :no-index:
 
 .. autoclass:: dish.util.misc.SolvingResult
+   :no-index:
 
 .. autoclass:: dish.util.radial.grid.DistanceGrid
+   :no-index:
 
 .. autoclass:: dish.util.radial.grid.RombergIntegrationGrid
+   :no-index:
 
 
 

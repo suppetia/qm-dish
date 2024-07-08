@@ -16,10 +16,13 @@ To set your system up to work with *dish* see :doc:`setup`.
 
 For a short introduction covering the most basic features see :doc:`quickstart`.
 
-For further information see the :doc:`introduction` or read the :doc:`api` documentation.
+For further information see the :doc:`introduction` or get some inspiration from the :doc:`examples`.
 
 
+.. toctree::
+   :hidden:
 
+   self
 
 .. toctree::
    :maxdepth: 2
