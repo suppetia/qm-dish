@@ -7,6 +7,7 @@ The calculation is done by default in a relativistic context by solving the Dira
 A subpackage also allows to retrieve the non-relativistic wavefunctions and energy-levels by solving the Schrödinger equation.
 
 A more extensive version of the documentation can be found on https://suppetia.github.io/qm-dish/.
+The thesis in which this package was developed and where the theory is discussed is provided as [thesis.pdf](thesis.pdf).
 
 ## Setup
 
