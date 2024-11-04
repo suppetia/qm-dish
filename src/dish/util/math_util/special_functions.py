@@ -1,4 +1,5 @@
 import math
+from scipy.special import hyp1f1
 
 import numpy as np
 import gmpy2
@@ -46,12 +47,7 @@ def confluent_hypergeometric_f(a: int, b: int, x, order=150):
     r"""
     F(a,b,x) = \sum_{k=0}^{order} \prod_{i=0}^{k-1} \frac{1+i}{b+i} \frac{x^k}{k!}
     """
-    if a <= 0:  # for non-positive values of 'a' F collapses into a polynomial of degree |a|
-        order = min(order, -a)
-    F_x = np.ones_like(x, dtype="float64")
-    for k in range(1, order+1):
-        F_x += (np.prod((np.arange(k, dtype=np.intc) + a) / (np.arange(k, dtype=np.intc) + b)) * np.power(x, k) / math.factorial(k)).astype(np.float64)
-    return F_x
+    return hyp1f1(a,b,x)
 
 def confluent_hypergeometric_f2(a: int,b: int, x, order=10):
     r"""
