@@ -71,7 +71,9 @@ class MatrixOperator(AbstractOperator):
             # in 1-dimensional case (scalar wavefunction) use elementwise multiplication
             new_ket = self.op * ket.Psi
         else:
-            new_ket = matmul_pointwise(self.op, ket.Psi)
+            ket_psi = ket.Psi.astype(np.complex128)
+            ket_psi[:,0] *= 1j
+            new_ket = matmul_pointwise(self.op, ket_psi)
 
         new_ket *= self.sign
         return type(ket)(ket.grid, new_ket, state=ket.state)
@@ -100,8 +102,13 @@ class BraOperator(AbstractOperator):
                 raise ValueError("Ket must be a RadialDiracWaveFunction but is of type RadialSchrodingerWaveFunction")
             bra_conj = self._ket.Psi.astype(np.complex128)
             bra_conj[:, 0] *= -1j
-            ket = ket.Psi.astype(np.complex128)
-            ket[:, 0] *= 1j
+            # TODO: put this somewhere else?
+            # if an operator has been applied to the wave function the complex component is already fixed
+            if ket.Psi.dtype == np.float64:
+                ket = ket.Psi.astype(np.complex128)
+                ket[:, 0] *= 1j
+            else:
+                ket = ket.Psi
             return self.sign * integrate_on_grid(np.sum(bra_conj * ket, axis=1), grid=self._ket.grid)
         elif isinstance(self._ket, RadialSchrodingerWaveFunction):
             if not isinstance(self._ket, RadialSchrodingerWaveFunction):
@@ -152,7 +159,7 @@ class ProjectionOperator(SymbolicScalarOperator):
         if dim_ket == 1:
             return ket.Psi
         if dim == 1:
-            return (ket.Psi[:, 0]).astype(np.complex128)
+            return (ket.Psi[:, 0]).astype(np.complex128) * 1j
         return ket.Psi[:, dim - 1]
 
 

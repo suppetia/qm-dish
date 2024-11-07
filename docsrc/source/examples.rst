@@ -22,11 +22,11 @@ Calculating two states and plotting both radial components using *matplotlib*.
                M=np.inf,
                )
    grid = DistanceGrid(r0=1e-3, h=1e-3, r_max=150)
-   res1 = solve(nucleus=nuc, state=parse_atomic_term_symbol("5d-"), r_grid=grid)
+   res1 = solve(nucleus=nuc, state=parse_atomic_term_symbol("5d-"), r_grid=grid, potential_model="uniform")
    ax[0].plot(grid.r, res1.wave_function.f, label="$5d-$")
    ax[1].plot(grid.r, res1.wave_function.g)
 
-   res2 = solve(nucleus=nuc, state=parse_atomic_term_symbol("3p-"), r_grid=grid)
+   res2 = solve(nucleus=nuc, state=parse_atomic_term_symbol("3p-"), r_grid=grid, potential_model="uniform")
    ax[0].plot(grid.r, res2.wave_function.f, label="$3p-$")
    ax[1].plot(grid.r, res2.wave_function.g)
 
